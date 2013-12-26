@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="java"/>
+	<classpathentry kind="src" path="data/scripts"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libs/jacksum.jar"/>
+	<classpathentry kind="lib" path="libs/javolution-5.5.1.jar"/>
+	<classpathentry kind="lib" path="libs/jawnae-pyronet-bin-140.jar"/>
+	<classpathentry kind="lib" path="libs/jawnae-pyronet-src-140.jar"/>
+	<classpathentry kind="lib" path="libs/mmocore.jar"/>
+	<classpathentry kind="lib" path="libs/mysq-5.1.26_c3p0-0.9.2.1.jar"/>
+	<classpathentry kind="lib" path="libs/fw/baseline.jar"/>
+	<classpathentry kind="lib" path="libs/fw/db4o-6.1-java5.jar"/>
+	<classpathentry kind="lib" path="libs/fw/db4o-6.4.14.8131-java5.jar"/>
+	<classpathentry kind="lib" path="libs/fw/swt-grouplayout.jar"/>
+	<classpathentry kind="lib" path="libs/fw/swt.jar"/>
+	<classpathentry kind="lib" path="libs/objectmanager/lib/db4o-6.1-java1.2.jar"/>
+	<classpathentry kind="lib" path="libs/objectmanager/lib/db4o-6.1-java5.jar"/>
+	<classpathentry kind="lib" path="libs/objectmanager/lib/db4o-sql.jar"/>
+	<classpathentry kind="lib" path="libs/objectmanager/lib/forms-1.0.7.jar"/>
+	<classpathentry kind="lib" path="libs/objectmanager/lib/looks-2.0.4.jar"/>
+	<classpathentry kind="lib" path="libs/objectmanager/lib/objectmanager-api.jar"/>
+	<classpathentry kind="output" path="build"/>
+</classpath>

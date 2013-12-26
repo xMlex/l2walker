@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><Form builder="jigloo" ide="eclipse" laf="com.sun.java.swing.plaf.gtk.GTKLookAndFeel" style="SWT" version="3.9.5">
+<NonVisualComponents>
+		<Component class="UNKNOWN" name="Non-visual components" style="0">
+			<Constraints>
+				<LayoutConstraint/>
+			</Constraints>
+			<SubComponents>
+				<Component class="java.lang.Boolean" name="boolean_IL" style="0">
+					<Constraints>
+						<LayoutConstraint/>
+					</Constraints>
+					<Properties>
+					</Properties>
+				</Component>
+				<Component class="org.eclipse.swt.graphics.Rectangle" name="%2.bounds" style="0">
+					<Constraints>
+						<LayoutConstraint/>
+					</Constraints>
+					<Properties>
+					</Properties>
+				</Component>
+				<Component class="org.eclipse.swt.graphics.GC" name="%4.gc" style="0">
+					<Constraints>
+						<LayoutConstraint/>
+					</Constraints>
+					<Properties>
+					</Properties>
+				</Component>
+			</SubComponents>
+		</Component></NonVisualComponents>
+	<Component class="org.eclipse.swt.widgets.Canvas" name="this" style="0">
+		<Constraints>
+			<LayoutConstraint/>
+		</Constraints>
+		<Events>
+			<EventHandler event="controlResized" handler="rootControlResizedhandler method" listener="org.eclipse.swt.events.ControlListener"/>
+			<EventHandler event="widgetDisposed" handler="rootWidgetDisposedhandler method" listener="org.eclipse.swt.events.DisposeListener"/>
+			<EventHandler event="paintControl" handler="rootPaintControlhandler method" listener="org.eclipse.swt.events.PaintListener"/>
+		</Events>
+		<Properties>
+		</Properties>
+	</Component>
+</Form>

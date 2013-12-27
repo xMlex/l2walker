@@ -18,20 +18,17 @@ public class TestClient implements ISocketClientListener {
 	public void disconnect() {
 		_client.disconnect();
 	}
-	
-	@Override
+
 	public void onConnected() {
 		// TODO Auto-generated method stub
 		_log.info("onConnected");
 	}
 
-	@Override
 	public void onDisconnected() {
 		// TODO Auto-generated method stub
 		_log.info("onDisconnected");
 	}
 
-	@Override
 	public void onDataRead(ByteBuffer buf) {
 		// TODO Auto-generated method stub
 		_log.info("onDataRead");
@@ -39,10 +36,14 @@ public class TestClient implements ISocketClientListener {
 		
 	}
 
-	@Override
 	public void onDataWrite(ByteBuffer buf) {
 		// TODO Auto-generated method stub
 		_log.info("onDataWrite");
+	}
+
+	public SocketClient getSocket() {
+		// TODO Auto-generated method stub
+		return _client;
 	}
 
 }

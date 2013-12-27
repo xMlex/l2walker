@@ -1,4 +1,4 @@
-package fw.loginserver.crypt;
+package fw.connection.crypt;
 
 import java.io.IOException;
 import java.util.logging.Logger;

@@ -30,7 +30,6 @@ public abstract class ReceivablePacket<T extends MMOClient> extends AbstractPack
 
 	protected abstract boolean read();
 
-	@Override
 	public abstract void run();
 
 	protected void readB(byte[] dst)

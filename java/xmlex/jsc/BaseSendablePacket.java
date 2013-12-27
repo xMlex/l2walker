@@ -1,13 +1,11 @@
-package fw.connection.login.clientpackets;
+package xmlex.jsc;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import fw.connection.LoginConnection;
-import fw.connection.crypt.NewCrypt;
 import xmlex.jsc.ISendablePacket;
 
-public abstract class BaseLoginClientPacket<T extends LoginConnection> implements ISendablePacket,Runnable {
+public abstract class BaseSendablePacket<T extends ISocketClientListener> implements ISendablePacket,Runnable {
 
 	protected T _client;
 	protected ByteBuffer _buf;
@@ -90,13 +88,9 @@ public abstract class BaseLoginClientPacket<T extends LoginConnection> implement
 	public ByteBuffer getData()
 	{		
 		byte[] result;
-		_buf.flip();
-		int size = _buf.limit() + 4;		
-		size += 8 - size % 8;
-		
-		result = new byte[size];
+		_buf.flip();		
+		result = new byte[_buf.limit()];
 		System.arraycopy(_buf.array(), 0, result, 0, result.length);
-		NewCrypt.appendChecksum(result);
 		return ByteBuffer.wrap(result).order(ByteOrder.LITTLE_ENDIAN);		
 	}
 

@@ -1,173 +1,109 @@
 package fw.connection;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 
-import fw.connection.game.*;
-import fw.extensions.GameCryptHB;
-import fw.util.*;
+import xmlex.jsc.BaseReceivablePacket;
+import xmlex.jsc.BaseSendablePacket;
+import xmlex.jsc.ISocketClientListener;
+import xmlex.jsc.SocketClient;
+import fw.common.ThreadPoolManager;
+import fw.connection.crypt.GameCrypt;
+import fw.connection.game.L2GamePaccketHandler;
+import fw.connection.game.clientpackets.*;
+import fw.util.Printer;
 
-public class GameConnection extends Thread {
+public class GameConnection implements ISocketClientListener {
 	private static Logger _log = Logger.getLogger(GameConnection.class.getName());
-	private byte[] cryptkey = { (byte) 0x94, (byte) 0x35, (byte) 0x00,
-			(byte) 0x00, (byte) 0xa1, (byte) 0x6c, (byte) 0x54, (byte) 0x87 };
 
 	public LoginResult loginResult = null;
-	Socket sock;
-	BufferedInputStream in;
-	BufferedOutputStream out;
-	boolean terminate = false;
-	public int clientProtocolVersion = 152;
 	int charNum = 1;
 	ConnectionEventReceiver connectionEventReceiver;
-	GamePackageEventReceiver gamePackageEventReceiver;
-	GameCryptHB _Crypt = new GameCryptHB();
+	
+	// NETWORK
+	private SocketClient _socket = new SocketClient();
+	private GameCrypt _crypt = new GameCrypt();
+	private final L2GamePaccketHandler _packetHandler = new L2GamePaccketHandler();
+	
+	private int ProtocolVersion = 152;
 
-	public GameConnection(GamePackageEventReceiver gamePackageEventReceiver,
-			ConnectionEventReceiver connectionEventReceiver,
-			LoginResult loginResult, int clientProtocolVersion, int charNum) {
-		this.gamePackageEventReceiver = gamePackageEventReceiver;
+	public GameConnection(ConnectionEventReceiver connectionEventReceiver,
+			LoginResult loginResult, int clientProtocolVersion, int charNum) {	
 		this.connectionEventReceiver = connectionEventReceiver;
 		this.loginResult = loginResult;
 		if(loginResult == null) System.out.println("loginResult == null");
-		this.clientProtocolVersion = clientProtocolVersion;
+		setProtocolVersion(clientProtocolVersion);
 		this.charNum = charNum;
+		_socket = new SocketClient();
+		_socket.setListener(this);
+		_socket.setHostPort(loginResult.host.Addr, loginResult.host.port);
 	}
-
-	public void fireGame() throws IOException {
-		sock = new Socket(loginResult.host.Addr, loginResult.host.port);
-		in = new BufferedInputStream(sock.getInputStream());
-		out = new BufferedOutputStream(sock.getOutputStream());
+	
+	private void showMSG(String msg){
 		connectionEventReceiver.procConnectionEvent(new Msg(
-				Msg.MSG_TYPE.SUCESS, "GAME CONNECTION OK host: "+loginResult.host.Addr+" port: "+loginResult.host.port),
+				Msg.MSG_TYPE.SUCESS, msg),
 				ENUM_CONECTION_EVENT.EVT_MSG);
 	}
-
-
-	@Override
-	public void run() {
-		byte packetData[];
-		PacketStream.setName("Game server");
-	
-		try {
-
-			if (terminate)return;
-			_log.info("startet parse game connection");
-			GameSendablePacket _packet = null;
-			_packet = new ProtocolVersion();
-			_packet.setClient(this);
-			packetData = _packet.getBytes();
-			PacketStream.writePacket(out, packetData);
-			_log.info("Writed paket Protocol version");
-			packetData = PacketStream.readPacket(in);
-			if (packetData == null) {
-				_log.warning("Unknow error in protocolVersionPack");
-				setTerminate();
-				return;
-			}				
-			if(packetData[1] != 0x01){
-				_log.warning("Error: wrong protocol version");
-				setTerminate();
-				return;
-			}
-			
-			System.arraycopy(packetData, 2, cryptkey, 0, 8);
-			_Crypt.setClientKey(cryptkey);
-			//outCrypt.setClientKey(cryptkey);			
-			
-			sendPacket(new GameAuthLogin());			
-			
-			while (!terminate && (packetData = readPacket()) != null) {
-				_log.info("Read encrypt: "+packetData.length);
-				gamePackageEventReceiver.procGamePackage(packetData);
-			}
-
-			setTerminate();
-		} catch (IOException e) {
-			setTerminate();
-			_log.warning("IOException: "+e.getMessage());
-		} catch (Exception e) {
-			setTerminate();
-			e.printStackTrace();
-		}
+	private void showWarning(String msg){
+		connectionEventReceiver.procConnectionEvent(new Msg(
+				Msg.MSG_TYPE.ATENTION, msg),
+				ENUM_CONECTION_EVENT.EVT_MSG);
 	}
 
 	public LoginResult getLoginResult() {
 		return loginResult;
 	}
+	
+	public void sendPacket(L2GameClientPacket pkt){
+		pkt.setClient(this);
+		ThreadPoolManager.getInstance().executeLSGSPacket(pkt);
+	}
 
-	public void setTerminate() {
-		this.terminate = true;
-		try {
-			sock.close();
-			in.close();
-			out.close();
-		} catch (IOException e) {
-			// NADA
+	public void onConnected() {
+		showMSG("Connected to game server.");	
+		sendPacket(new ProtocolVersion());
+	}
+
+	public void onDisconnected() {
+		showWarning("Disconnected from game server.");		
+	}
+
+	public void onDataRead(ByteBuffer buf) {		
+		_crypt.decrypt(buf.array(),0,buf.array().length);
+		_log.info(Printer.printData(buf.array(), buf.array().length, "[R] Packet"));
+		BaseReceivablePacket<GameConnection> pkt = _packetHandler.handlePacket(buf, this);
+		if(pkt != null){
+			pkt.setClient(this);
+			pkt.setByteBuffer(buf);
+			ThreadPoolManager.getInstance().executeLSGSPacket(pkt);
 		}
 	}
 
-	public boolean isConnected() {
-		return sock.isConnected() && !terminate;
+	public void onDataWrite(ByteBuffer buf) {		
+		_crypt.encrypt(buf.array(),0,buf.array().length);
 	}
 
-	/**
-	 * Read encrypted packet
-	 * 
-	 * @return
-	 * @throws IOException
-	 */
-
-	protected void writeS(ByteBuffer buf, String text) {
-		try {
-			if (text != null) {
-				buf.put(text.getBytes("UTF-16LE"));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		buf.put((byte) 0x00);
-		buf.put((byte) 0x00);
+	public void start() {
+		_socket.connect();
+	}
+	public void stop() {
+		_socket.disconnect();
 	}
 
-	public final String readS(ByteBuffer buf) {
-		StringBuilder sb = new StringBuilder();
-		char ch;
-		try {
-			while ((ch = buf.getChar()) != 0)
-				sb.append(ch);
-		} catch (Exception e) {
-		}
-		return sb.toString();
+	public SocketClient getSocket() {
+		return _socket;
 	}
 
-	public byte[] readPacket() throws IOException {
-		byte packetData[] = PacketStream.readPacket(in);
-		if (packetData == null)
-			return null;
-		_Crypt.decrypt(packetData,0,packetData.length);
-		return packetData;
+	public int getProtocolVersion() {
+		return ProtocolVersion;
 	}
-	public void sendPacket(GameSendablePacket _pkt) throws IOException{
-		_pkt.setClient(this);
-		byte[] data = _pkt.getBytes();
-		System.out.print(Printer.printData(data,data.length,"WRITE PACKET"));
-		_Crypt.encrypt(data,0,data.length);
-		PacketStream.writePacket(out, data);
-	}
-	public void sendPacket(byte data[]) throws IOException {
-		// System.out.println(Printer.printData(data,data.length,Packets.getClientMessageType(data[0],
-		// data[1])));
-		if (out == null)
-			return;
 
-		_Crypt.encrypt(data,0,data.length);
-		PacketStream.writePacket(out, data);
+	public void setProtocolVersion(int protocolVersion) {
+		ProtocolVersion = protocolVersion;
+	}
+	
+	public void setCryptKey(byte[] _key){
+		_crypt.setKey(_key);
 	}
 
 }

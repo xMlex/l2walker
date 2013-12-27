@@ -1,8 +1,8 @@
 package fw.game;
 
 import fw.game.clientpackets.*;
+
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 
 import fw.common.ThreadPoolManager;
@@ -13,15 +13,12 @@ import javolution.util.FastMap;
 import fw.connection.ConnectionEventReceiver;
 import fw.connection.ENUM_CONECTION_EVENT;
 import fw.connection.GameConnection;
-import fw.connection.GamePackageEventReceiver;
 import fw.connection.LoginConnection;
 import fw.connection.LoginResult;
 import fw.connection.Msg;
-import fw.connection.game.server.*;
 import fw.dbClasses.DbObjects;
 
-public class GameEngine implements ConnectionEventReceiver,
-		GamePackageEventReceiver {
+public class GameEngine implements ConnectionEventReceiver {
 	private static final Logger _log = Logger.getLogger(GameEngine.class
 			.getName());
 	public final static int MSG_SYSTEM_NORMAL = 1;
@@ -87,7 +84,7 @@ public class GameEngine implements ConnectionEventReceiver,
 					isInLogedState = true;
 
 					LoginResult loginResult = null;
-					loginConnection.fireLogin();
+					// loginConnection.fireLogin();
 					loginConnection.start();
 
 					while ((loginResult = loginConnection.getLoginResult()) == null) {
@@ -101,7 +98,7 @@ public class GameEngine implements ConnectionEventReceiver,
 						}
 					}
 
-					loginConnection.setTerminate();
+					// loginConnection.setTerminate();
 
 					if (!logout) {
 						if (!loginResult.ok) {
@@ -150,25 +147,9 @@ public class GameEngine implements ConnectionEventReceiver,
 		visualInterface.putMessage("GAME CHAR [" + charNum + "]",
 				MSG_SYSTEM_ATENTION, true);
 
-		gameConnection = new GameConnection(this, this, loginResult, protocol,
+		gameConnection = new GameConnection(this, loginResult, protocol,
 				charNum);
-		gameConnection.fireGame();
 		gameConnection.start();
-
-		while (gameConnection.isConnected()) {
-			if (logout) {
-				gameConnection.setTerminate();
-				return;
-			}
-
-			try {
-				Thread.currentThread().sleep(200);
-			} catch (InterruptedException e) {
-				// NADA
-			}
-		}
-
-		gameConnection.setTerminate();
 	}
 
 	public void procConnectionEvent(Object data, ENUM_CONECTION_EVENT event) {
@@ -213,7 +194,8 @@ public class GameEngine implements ConnectionEventReceiver,
 	}
 
 	public UserChar getUserChar() {
-		if(userChar == null) userChar = new UserChar();
+		if (userChar == null)
+			userChar = new UserChar();
 		return userChar;
 	}
 
@@ -224,44 +206,36 @@ public class GameEngine implements ConnectionEventReceiver,
 	public void sendPacket(byte data[]) {
 		if (gameConnection != null)
 			try {
-				gameConnection.sendPacket(data);
-			} catch (IOException e) {
+				//gameConnection.sendPacket(data);
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 	}
 
-	public void procGamePackage(byte[] data) {
+	/*public void procGamePackage(byte[] data) {
 
 		byte id = data[0];
 		_log.info("PKT id: " + Integer.toHexString(id));
-		/*
-		 * System.out .println(
-		 * "\nINI====================================================================="
-		 * ); System.out.println(Packets.getServerMessageType(pktType, 0));
-		 * System.out.print(Printer.printData(data, data.length)); System.out
-		 * .println(
-		 * "\nEND====================================================================="
-		 * );
-		 */
+
 		GameServerPacket packet = null;
 		switch (id) {
 		case 0x0A:
-			getVisualInterface().putMessage("LoginFail",0, true);
-			break;	
+			getVisualInterface().putMessage("LoginFail", 0, true);
+			break;
 		case 0x09:
 			packet = new CharSelectionInfo();
 			break;
 		default:
-			_log.warning("Unknow id: "+Integer.toHexString(id));
+			_log.warning("Unknow id: " + Integer.toHexString(id));
 			break;
 		}
-		if(packet != null){
+		if (packet != null) {
 			packet.setClient(this);
-			packet.setByteBuffer(ByteBuffer.wrap(data));			
+			packet.setByteBuffer(ByteBuffer.wrap(data));
 			ThreadPoolManager.getInstance().executeLSGSPacket(packet);
 		}
 
-	}
+	}*/
 
 	public void setDbObjects(DbObjects dbObjects) {
 		this.dbObjects = dbObjects;

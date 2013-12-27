@@ -60,7 +60,7 @@ import org.eclipse.swt.widgets.Text;
 import fw.util.Printer;
 import fw.com.swtdesigner.SWTResourceManager;
 
-import fw.connection.game.server.CharSelectionInfo.Heroes;
+import fw.connection.game.serverpackets.CharSelectionInfo.Heroes;
 import fw.dbClasses.DbObjects;
 
 /**

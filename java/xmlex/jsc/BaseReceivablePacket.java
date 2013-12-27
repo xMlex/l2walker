@@ -1,11 +1,10 @@
-package fw.connection.login.serverpackets;
+package xmlex.jsc;
 
 import java.nio.ByteBuffer;
 
 import javolution.text.TextBuilder;
-import fw.connection.LoginConnection;
 
-public abstract class BaseLoginServerPacket <T extends LoginConnection> implements Runnable {
+public abstract class BaseReceivablePacket <T extends ISocketClientListener> implements Runnable {
 
 	protected T _client;
 	protected ByteBuffer _buf;

@@ -102,7 +102,6 @@ public class MMOConnection<T extends MMOClient>
 
 	private class ScheduleInterest implements Runnable
 	{
-		@Override
 		public void run()
 		{
 			if(useInterestScheduler() && !_sendQueue.isEmpty())

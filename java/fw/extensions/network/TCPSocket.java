@@ -15,31 +15,26 @@ public class TCPSocket implements ISocket
 		_socket = socket;
 	}
 
-	@Override
 	public void close() throws IOException
 	{
 		_socket.close();
 	}
 
-	@Override
 	public ReadableByteChannel getReadableByteChannel()
 	{
 		return _socket.getChannel();
 	}
 
-	@Override
 	public WritableByteChannel getWritableByteChannel()
 	{
 		return _socket.getChannel();
 	}
 
-	@Override
 	public InetAddress getInetAddress()
 	{
 		return _socket.getInetAddress();
 	}
 
-	@Override
 	public InetAddress getLocalAddress()
 	{
 		return _socket.getLocalAddress();

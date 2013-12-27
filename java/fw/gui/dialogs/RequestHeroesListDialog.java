@@ -14,7 +14,7 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 
-import fw.connection.game.server.CharSelectionInfo.Heroes;
+import fw.connection.game.serverpackets.CharSelectionInfo.Heroes;
 
 
 /**

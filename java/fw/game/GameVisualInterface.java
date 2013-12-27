@@ -1,6 +1,6 @@
 package fw.game;
 
-import fw.connection.game.server.CharSelectionInfo.Heroes;
+import fw.connection.game.serverpackets.CharSelectionInfo.Heroes;
 
 
 

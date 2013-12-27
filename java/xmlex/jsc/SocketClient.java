@@ -68,7 +68,6 @@ public class SocketClient implements PyroClientListener, Runnable {
 		this._client.addListener(this);
 	}
 
-	@Override
 	public void connectedClient(PyroClient client) {
 		_connected = true;
 		if (_listener != null)
@@ -88,7 +87,6 @@ public class SocketClient implements PyroClientListener, Runnable {
 		this._client.addListener(feeder);
 	}
 
-	@Override
 	public void unconnectableClient(PyroClient client) {
 		_connected = false;
 		if (_listener != null)
@@ -96,7 +94,6 @@ public class SocketClient implements PyroClientListener, Runnable {
 		// _log.info("unconnectableClient");
 	}
 
-	@Override
 	public void droppedClient(PyroClient client, IOException cause) {
 		_connected = false;
 		if (_listener != null)
@@ -104,7 +101,6 @@ public class SocketClient implements PyroClientListener, Runnable {
 		// _log.info("droppedClient");
 	}
 
-	@Override
 	public void disconnectedClient(PyroClient client) {
 		_connected = false;
 		if (_listener != null)
@@ -112,18 +108,15 @@ public class SocketClient implements PyroClientListener, Runnable {
 		// _log.info("disconnectedClient");
 	}
 
-	@Override
 	public void receivedData(PyroClient client, ByteBuffer data) {
 		// _log.info("receivedData");
 		// data.clear();
 	}
 
-	@Override
 	public void sentData(PyroClient client, int bytes) {
 		// _log.info("sentData");
 	}
 
-	@Override
 	public void run() {
 		if (_selector == null)
 			_selector = new PyroSelector();
@@ -143,15 +136,16 @@ public class SocketClient implements PyroClientListener, Runnable {
 			synchronized (_sendList) {
 				if (_sendList.size() > 0)
 					for (ISendablePacket pkt : _sendList){
+						ByteBuffer buf = _selector.copy(pkt.getData());
 						if (_listener != null)
-							_listener.onDataWrite(pkt.getData());
-						int len =pkt.getData().remaining() + 2;
+							_listener.onDataWrite(buf);
+						int len =buf.remaining() + 2;
 						byte[] lendata = new byte[2];
 						lendata[0] = (byte) (len & 0xff);
 						lendata[1] = (byte) (len >> 8 & 0xff);
-						
+						//_log.info("Sen packet size: "+len);
 						_client.write(ByteBuffer.wrap(lendata));
-						_client.write(pkt.getData());
+						_client.write(buf);
 					}
 				_sendList.clear();	
 			}

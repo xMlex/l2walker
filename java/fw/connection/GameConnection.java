@@ -5,12 +5,14 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.util.logging.Logger;
 
 import fw.connection.game.*;
 import fw.extensions.GameCryptHB;
 import fw.util.*;
 
 public class GameConnection extends Thread {
+	private static Logger _log = Logger.getLogger(GameConnection.class.getName());
 	private byte[] cryptkey = { (byte) 0x94, (byte) 0x35, (byte) 0x00,
 			(byte) 0x00, (byte) 0xa1, (byte) 0x6c, (byte) 0x54, (byte) 0x87 };
 
@@ -41,7 +43,7 @@ public class GameConnection extends Thread {
 		in = new BufferedInputStream(sock.getInputStream());
 		out = new BufferedOutputStream(sock.getOutputStream());
 		connectionEventReceiver.procConnectionEvent(new Msg(
-				Msg.MSG_TYPE.SUCESS, "GAME CONNECTION OK"),
+				Msg.MSG_TYPE.SUCESS, "GAME CONNECTION OK host: "+loginResult.host.Addr+" port: "+loginResult.host.port),
 				ENUM_CONECTION_EVENT.EVT_MSG);
 	}
 
@@ -50,24 +52,25 @@ public class GameConnection extends Thread {
 	public void run() {
 		byte packetData[];
 		PacketStream.setName("Game server");
+	
 		try {
 
 			if (terminate)return;
-
+			_log.info("startet parse game connection");
 			GameSendablePacket _packet = null;
 			_packet = new ProtocolVersion();
 			_packet.setClient(this);
 			packetData = _packet.getBytes();
 			PacketStream.writePacket(out, packetData);
-			
+			_log.info("Writed paket Protocol version");
 			packetData = PacketStream.readPacket(in);
 			if (packetData == null) {
-				System.out.println("Unknow error in protocolVersionPack");
+				_log.warning("Unknow error in protocolVersionPack");
 				setTerminate();
 				return;
 			}				
 			if(packetData[1] != 0x01){
-				System.out.println("Error: wrong protocol version");
+				_log.warning("Error: wrong protocol version");
 				setTerminate();
 				return;
 			}
@@ -79,13 +82,14 @@ public class GameConnection extends Thread {
 			sendPacket(new GameAuthLogin());			
 			
 			while (!terminate && (packetData = readPacket()) != null) {
-				System.out.println("Read encrypt: "+packetData.length);
+				_log.info("Read encrypt: "+packetData.length);
 				gamePackageEventReceiver.procGamePackage(packetData);
 			}
 
 			setTerminate();
 		} catch (IOException e) {
 			setTerminate();
+			_log.warning("IOException: "+e.getMessage());
 		} catch (Exception e) {
 			setTerminate();
 			e.printStackTrace();

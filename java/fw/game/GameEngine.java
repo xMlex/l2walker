@@ -233,7 +233,7 @@ public class GameEngine implements ConnectionEventReceiver,
 	public void procGamePackage(byte[] data) {
 
 		byte id = data[0];
-		_log.fine("PKT id: " + Integer.toHexString(id));
+		_log.info("PKT id: " + Integer.toHexString(id));
 		/*
 		 * System.out .println(
 		 * "\nINI====================================================================="

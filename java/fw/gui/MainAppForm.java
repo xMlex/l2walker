@@ -1,9 +1,12 @@
 package fw.gui;
 
 import fw.gui.mainArea.UserMainArea;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
+
 import javolution.util.FastMap;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -28,9 +31,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
+import xmlex.config.ConfigSystem;
 import fw.com.swtdesigner.SWTResourceManager;
 import fw.common.ThreadPoolManager;
-
 import fw.dbClasses.DbObjects;
 
 /**
@@ -180,6 +183,7 @@ public class MainAppForm extends org.eclipse.swt.widgets.Composite
 	 */
 	public static void main(String[] args)
 	{
+		ConfigSystem.load();
 		Display display = Display.getDefault();
 		final Shell shell = new Shell(display);
 		shell.setText("FoxWalker");

@@ -7,7 +7,10 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.interfaces.RSAPublicKey;
+import java.util.logging.Logger;
 
+import xmlex.jsc.ISocketClientListener;
+import xmlex.jsc.SocketClient;
 import javolution.util.FastList;
 import javolution.util.FastMap;
 import fw.loginserver.clientpackets.*;
@@ -16,7 +19,10 @@ import fw.loginserver.serverpackets.*;
 import fw.util.PacketStream;
 import fw.util.Printer;
 
-public class LoginConnection extends Thread {
+public class LoginConnection /*extends Thread*/ implements ISocketClientListener{
+	
+	private static Logger _log = Logger.getLogger(LoginConnection.class.getName());
+	
 	private String hostDestino;
 	private int portaDestino;
 	private String login, password;
@@ -38,6 +44,9 @@ public class LoginConnection extends Thread {
 	byte loginId[] = new byte[8];
 	FastMap<String, Host> serverList = null;
 	ConnectionEventReceiver connectionEventReceiver;
+	
+	// NETWORK
+	private SocketClient _socket = new SocketClient();
 
 	public LoginConnection(ConnectionEventReceiver connectionEventReceiver, String hostDestino, int portaDestino,
 			int serverNum, String login, String password) {
@@ -49,15 +58,21 @@ public class LoginConnection extends Thread {
 		this.password = password;
 		//this.staticCrypt = new NewCrypt(true);
 		this.crypt = new NewCrypt(true);
+		_socket.setHostPort(hostDestino, portaDestino);
+		_socket.setListener(this);
 	}
 
 	public void fireLogin() throws IOException {
 		System.out.println("Login Started.");
-		sock = new Socket(hostDestino, portaDestino);
+		/*sock = new Socket(hostDestino, portaDestino);
 		in = new BufferedInputStream(sock.getInputStream());
 		out = new BufferedOutputStream(sock.getOutputStream());
 		connectionEventReceiver.procConnectionEvent(new Msg(Msg.MSG_TYPE.SUCESS, "LOGIN CONNECTION OK"),
-				ENUM_CONECTION_EVENT.EVT_MSG);
+				ENUM_CONECTION_EVENT.EVT_MSG);*/
+		_socket.connect();
+	}
+	public void start(){
+		
 	}
 
 	private void processPlayOkPacket(byte data[]) throws IOException {
@@ -77,7 +92,7 @@ public class LoginConnection extends Thread {
 		buf.position(0);
 		logRes.loginId1 = _loginOk[0];
 		logRes.loginId2 = _loginOk[1];
-
+		System.out.println("Play ok on server id: "+serverNum);
 		loginResult = logRes;
 	}
 
@@ -247,7 +262,7 @@ public class LoginConnection extends Thread {
 		}		
 
 	}
-
+	
 	public void run() {
 		byte packetData[];
 		byte sessionKeyPacket[] = null;
@@ -293,6 +308,54 @@ public class LoginConnection extends Thread {
 		} catch (IOException e) {
 			// NADA
 		}
+	}
+
+	
+	private void packetHandler(ByteBuffer buf) throws IOException{
+		
+		crypt.decrypt(buf.array(),0,buf.remaining());
+		
+		byte id = (byte) (buf.get() & 0xFF);
+		System.out.println("Read packet id: " + Integer.toHexString(id));
+		
+		switch (id) {
+		case 0x00:
+			NewCrypt.decXORPass(buf.array());
+			System.out.println("Read packet INIT");
+			break;
+
+		default:
+			break;
+		}
+		
+	}
+	
+	@Override
+	public void onConnected() {
+		_log.info("onConnected");		
+	}
+
+	@Override
+	public void onDisconnected() {
+		_log.info("onDisconnected");		
+	}
+
+	@Override
+	public void onDataRead(ByteBuffer buf) {
+		_log.info("onDataRead, size: "+buf.remaining());
+		
+		try {
+			//processPacket(crypt.decrypt(buf.array()));
+			packetHandler(buf);
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onDataWrite(ByteBuffer buf) {
+		_log.info("onDataWrite, size: "+buf.remaining());
+		
 	}
 
 }

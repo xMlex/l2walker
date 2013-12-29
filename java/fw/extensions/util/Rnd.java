@@ -101,4 +101,5 @@ public class Rnd
 	{
 		return coordsRandomize(pos.x, pos.y, pos.z, pos.h, radius_min, radius_max);
 	}
+
 }

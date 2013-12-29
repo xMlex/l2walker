@@ -1,66 +1,28 @@
 package fw.gui.mainArea;
 
-import fw.game.GameEngine;
-import fw.game.GameVisualInterface;
-import fw.game.L2Char;
-import fw.game.L2Item;
-import fw.game.L2PartyChar;
-import fw.game.L2Skill;
-import fw.game.L2SkillUse;
-import fw.game.NpcChar;
-import fw.game.PlayerChar;
-import fw.game.UserChar;
+import fw.game.*;
 import fw.game.clientpackets.Say;
+import fw.game.model.CharSelectInfoPackage;
 import fw.gui.ServerConfig;
-import fw.gui.dialogs.RequestHeroesListDialog;
-import fw.gui.dialogs.RequestHtmlDialog;
-import fw.gui.dialogs.RequestPartyDaialog;
-import fw.gui.dialogs.RequestTradeDialog;
+import fw.gui.dialogs.*;
 import fw.gui.game_canvas.GameCanvas;
 import fw.gui.game_canvas.GameDraw;
 import fw.gui.mainArea.efects.VisualEfectsTimer;
+
 import java.util.Iterator;
+import java.util.logging.Logger;
+
 import javolution.util.FastMap;
+
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.custom.StyleRange;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.custom.*;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
+
 import fw.util.Printer;
 import fw.com.swtdesigner.SWTResourceManager;
-
-import fw.connection.game.serverpackets.CharSelectionInfo.Heroes;
 import fw.dbClasses.DbObjects;
 
 /**
@@ -73,6 +35,8 @@ import fw.dbClasses.DbObjects;
  */
 public class UserMainArea extends org.eclipse.swt.widgets.Composite implements GameVisualInterface
 {
+	private static final Logger _log = Logger.getLogger(UserMainArea.class
+			.getName());
 	private Button btnLeaveParty;
 	private Button btnInviteParty;
 	private Composite cpPartyActions;
@@ -1196,7 +1160,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 		if (evt.keyCode == 13 || evt.keyCode == 16777296)
 		{
 			evt.doit = false;
-			gameEngine.sendMessage(cbChatType.getText(), edChatSend.getText(), cbChatTarget.getText().trim());
+			//gameEngine.sendMessage(cbChatType.getText(), edChatSend.getText(), cbChatTarget.getText().trim());
 			edChatSend.setText("");
 		}
 	}
@@ -1211,14 +1175,14 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 
 	public void setDbObjects(DbObjects dbObjects)
 	{
-		gameEngine.setDbObjects(dbObjects);
+		//gameEngine.setDbObjects(dbObjects);
 	}
 
 	private void btnLeavePartyWidgetSelected(SelectionEvent evt)
 	{
 		try
 		{
-			gameEngine.sendLeaveParty();
+			//gameEngine.sendLeaveParty();
 		}
 		catch (Exception e)
 		{
@@ -1346,10 +1310,10 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 					messageBox.setText(tradeChar.realName+" - trade request");
 					messageBox.setMessage("Do you accept?");
 						if (messageBox.open() == SWT.OK){
-							gameEngine.sendAnswerTradeRequest(1);
+							//gameEngine.sendAnswerTradeRequest(1);
 						}
 						else{
-							gameEngine.sendAnswerTradeRequest(0);
+							//gameEngine.sendAnswerTradeRequest(0);
 						}
 				}
 				catch (Exception e)
@@ -1360,8 +1324,9 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 		});
 	}
 
-	public void requestHeroesListDialog(Heroes[] heroesList, int size)
+	public void requestHeroesListDialog(CharSelectInfoPackage[] heroesList, int size)
 	{
+		_log.info("dialog RequestHeroesListDialog");
 		RequestHeroesListDialog.main(this, heroesList, size);
 	}
 
@@ -1634,7 +1599,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 			return;
 		TableItem tableItem = gridPlayers.getSelection()[0];
 		PlayerChar playerChar = (PlayerChar) tableItem.getData();
-		gameEngine.sendAction(playerChar.objId);
+		//gameEngine.sendAction(playerChar.objId);
 	}
 
 	private void procRequestTrade()
@@ -1643,7 +1608,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 			return;
 		TableItem tableItem = gridPlayers.getSelection()[0];
 		PlayerChar playerChar = (PlayerChar) tableItem.getData();
-		gameEngine.requestTrade(playerChar.objId);
+		//gameEngine.requestTrade(playerChar.objId);
 	}
 	
 	public boolean checkTradeDialog()
@@ -2002,13 +1967,13 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 	{
 		if (evt.keyCode == 27)
 		{
-			gameEngine.sendCancelTarget();
+			//gameEngine.sendCancelTarget();
 		}
 	}
 
 	private void btnInvitePartyWidgetSelected(SelectionEvent evt)
 	{
-		gameEngine.sendPartyInvite(edPartyTarget.getText(), 0);
+		//gameEngine.sendPartyInvite(edPartyTarget.getText(), 0);
 	}
 
 	private void gridMobsMouseDoubleClick(MouseEvent evt)
@@ -2017,7 +1982,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 			return;
 		TableItem tableItem = gridMobs.getSelection()[0];
 		NpcChar npcChar = (NpcChar) tableItem.getData();
-		gameEngine.sendAction(npcChar.objId);
+		//gameEngine.sendAction(npcChar.objId);
 	}
 
 	private void gridNpcsMouseDoubleClick(MouseEvent evt)
@@ -2026,7 +1991,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 			return;
 		TableItem tableItem = gridNpcs.getSelection()[0];
 		NpcChar npcChar = (NpcChar) tableItem.getData();
-		gameEngine.sendAction(npcChar.objId);
+		//gameEngine.sendAction(npcChar.objId);
 	}
 
 	private void gridItemsMouseDoubleClick(MouseEvent evt)
@@ -2035,22 +2000,22 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 			return;
 		TableItem tableItem = gridItems.getSelection()[0];
 		L2Item myItem = (L2Item) tableItem.getData();
-		gameEngine.sendAction(myItem.objectId);
+		//gameEngine.sendAction(myItem.objectId);
 	}
 
 	private void targetAreaMouseDoubleClick(MouseEvent evt)
 	{
 		System.out.println("UserMainArea.targetAreaMouseDoubleClick()");
 		L2Char l2Char = targetArea.getTargetChar();
-		if (l2Char != null)
-			gameEngine.sendAction(l2Char.objId);
+		//if (l2Char != null)
+		//	gameEngine.sendAction(l2Char.objId);
 	}
 
 	private void user_life_areaMouseDoubleClick(MouseEvent evt)
 	{
 		UserChar userChar = user_life_area.getUserChar();
-		if (userChar != null)
-			gameEngine.sendAction(userChar.objId);
+		//if (userChar != null)
+		//	gameEngine.sendAction(userChar.objId);
 	}
 
 	private void tab_informationsWidgetSelected(SelectionEvent evt)

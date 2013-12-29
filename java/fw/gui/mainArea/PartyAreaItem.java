@@ -274,8 +274,8 @@ public class PartyAreaItem extends Canvas
 		//int control = ((evt.stateMask & SWT.CONTROL) != 0) ? 1 : 0;
 		//int shift = ((evt.stateMask & SWT.SHIFT) != 0) ? 1 : 0;
 		
-		if(l2PartyChar!=null)
-		gameEnginer.sendAction(l2PartyChar.objIdPartyChar);
+		//if(l2PartyChar!=null)
+		//gameEnginer.sendAction(l2PartyChar.objIdPartyChar);
  
 	}
  
@@ -329,8 +329,8 @@ public class PartyAreaItem extends Canvas
 		{
 			//int control = ((evt.stateMask & SWT.CONTROL) != 0) ? 1 : 0;
 			//int shift = ((evt.stateMask & SWT.SHIFT) != 0) ? 1 : 0;
-			if(l2PartyChar!=null)
-				gameEnginer.sendAction(l2PartyChar.objIdPartyChar);
+			//if(l2PartyChar!=null)
+			//	gameEnginer.sendAction(l2PartyChar.objIdPartyChar);
 			 
 		}
 		

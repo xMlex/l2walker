@@ -1,20 +1,16 @@
 package fw.gui.dialogs;
 
 import fw.game.L2ClassList;
+import fw.game.model.CharSelectInfoPackage;
 import fw.gui.mainArea.UserMainArea;
 
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 
-import fw.connection.game.serverpackets.CharSelectionInfo.Heroes;
 
 
 /**
@@ -39,7 +35,7 @@ public class RequestHeroesListDialog extends org.eclipse.swt.widgets.Dialog {
 	private TableColumn heroClass;
 	private TableColumn heroName;
 	UserMainArea mainArea;
-	Heroes[] myHeroes;
+	CharSelectInfoPackage[] myHeroes;
 	int heroesSize;
 	TableItem[] tableHeroChar;
 	boolean isDisposed = false;
@@ -48,7 +44,7 @@ public class RequestHeroesListDialog extends org.eclipse.swt.widgets.Dialog {
 	* Auto-generated main method to display this
 	* org.eclipse.swt.widgets.Dialog inside a new Shell.
 	*/
-	public static void main(final UserMainArea mainArea, final Heroes[] heroesList,final int size) {
+	public static void main(final UserMainArea mainArea, final CharSelectInfoPackage[] heroesList,final int size) {
 
 		new Thread()
 		{
@@ -110,7 +106,7 @@ public class RequestHeroesListDialog extends org.eclipse.swt.widgets.Dialog {
 			dialogShell.setLayout(null);
 			dialogShell.layout();
 			dialogShell.pack();
-			dialogShell.setSize(750, 450);
+			dialogShell.setSize(600, 400);
 			{
 				{
 					heroesTable = new Table(dialogShell, SWT.NONE);
@@ -153,11 +149,11 @@ public class RequestHeroesListDialog extends org.eclipse.swt.widgets.Dialog {
 			{
 				tableHeroChar[i] = new TableItem(heroesTable, SWT.NONE);
 
-				String[] realClassName = L2ClassList.getL2ClassName(myHeroes[i].ClassID).split("_");
+				String[] realClassName = L2ClassList.getL2ClassName(myHeroes[i].getClassId()).split("_");
 
 				tableHeroChar[i].setText(new String[]
 				{
-						myHeroes[i].Name, realClassName[1], myHeroes[i].Name, myHeroes[i].Name,String.valueOf(myHeroes[i]._heroCount)
+						myHeroes[i].getName(), realClassName[1], myHeroes[i].getName(), myHeroes[i].getName(),String.valueOf(myHeroes.length)
 				});
 			}
 

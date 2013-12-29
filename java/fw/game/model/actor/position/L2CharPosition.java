@@ -16,33 +16,47 @@
  *
  * http://www.gnu.org/copyleft/gpl.html
  */
-package fw.game.serverpackets;
+package fw.game.model.actor.position;
 
+import fw.game.model.L2Character;
 
 /**
- * This class ...
- * 
- * @version $Revision: 1.1 $ $Date: 2008/11/11 01:44:06 $
+ * This class permit to pass (x, y, z, heading) position data to method.
  */
-public class ActionFailed extends ServerBasePacket
+public final class L2CharPosition
 {
-	private static final String _S__35_ACTIONFAILED = "[S] 25 ActionFailed";
-	
-	final void runImpl()
-	{
-		// no long-running tasks
-	}
-	
-	final void writeImpl()
-	{
-		writeC(0x25);
-	}
+	/** The heading. */
+	public final int x, y, z, heading;
 
-	/* (non-Javadoc)
-	 * @see net.sf.l2j.gameserver.serverpackets.ServerBasePacket#getType()
+	/**
+	 * Constructor of L2CharPosition.<BR>
+	 * <BR>
+	 *
+	 * @param pX the p x
+	 * @param pY the p y
+	 * @param pZ the p z
+	 * @param pHeading the heading
 	 */
-	public String getType()
+	public L2CharPosition(int pX, int pY, int pZ, int pHeading)
 	{
-		return _S__35_ACTIONFAILED;
+		x = pX;
+		y = pY;
+		z = pZ;
+		heading = pHeading;
 	}
+	
+	/**
+	 * Instantiates a new l2 char position.
+	 *
+	 * @param _actor the _actor
+	 */
+	public L2CharPosition(L2Character _actor)
+	{
+		x = _actor.getX();
+		y = _actor.getY();
+		z = _actor.getZ();
+		heading = _actor.getHeading();
+	}
+	
+
 }

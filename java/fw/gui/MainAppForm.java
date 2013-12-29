@@ -187,7 +187,7 @@ public class MainAppForm extends org.eclipse.swt.widgets.Composite
 		Display display = Display.getDefault();
 		final Shell shell = new Shell(display);
 		shell.setText("FoxWalker");
-		shell.setMaximized(true);
+		shell.setMaximized(false);
 		shell.setImage(SWTResourceManager.getImage("res_images/fox.jpg"));
 
 		shell.addShellListener(new ShellListener()

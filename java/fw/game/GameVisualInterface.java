@@ -1,9 +1,6 @@
 package fw.game;
 
-import fw.connection.game.serverpackets.CharSelectionInfo.Heroes;
-
-
-
+import fw.game.model.CharSelectInfoPackage;
 
 public interface GameVisualInterface
 {
@@ -12,7 +9,7 @@ public interface GameVisualInterface
 	public void procLogoutEvent();
 	public void requestPartyDialog(final String requestor,final String partyType);
 	public void requestHtmlDialog(final String htmlMessage);
-	public void requestHeroesListDialog(final Heroes[] heroesList, int size);
+	public void requestHeroesListDialog(final CharSelectInfoPackage[] heroesList, int size);
 	public void procPlayerChar(final PlayerChar playerChar);
 	public void procNpcChar(final NpcChar npcChar);
 	public void procDeleteL2char(final L2Char l2Char);

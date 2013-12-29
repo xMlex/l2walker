@@ -261,7 +261,7 @@ public class InventoryAreaItem extends Canvas
 
 		if (l2Item != null)
 		{
-			 gameEnginer.sendUseItem(l2Item.objectId);
+			 //gameEnginer.sendUseItem(l2Item.objectId);
 		}
 
 	}
@@ -339,7 +339,7 @@ public class InventoryAreaItem extends Canvas
 
 			if (l2Item != null)
 			{
-				 gameEnginer.sendUseItem(l2Item.objectId);
+				 //gameEnginer.sendUseItem(l2Item.objectId);
 			}
 
 		}
@@ -360,10 +360,10 @@ public class InventoryAreaItem extends Canvas
 						InputNumberDialog dialog  = new	InputNumberDialog(getShell());
 						cnt = dialog.open();
 
-						if(cnt == 1)
-							gameEnginer.sendDropItem(l2Item.objectId, cnt,gameEnginer.getUserChar().x,gameEnginer.getUserChar().y,gameEnginer.getUserChar().z );
+						//if(cnt == 1)
+						//	gameEnginer.sendDropItem(l2Item.objectId, cnt,gameEnginer.getSelfChar().getX(),gameEnginer.getSelfChar().getY(),gameEnginer.getSelfChar().getZ() );
 					}else{
-						gameEnginer.sendDropItem(l2Item.objectId, 1,gameEnginer.getUserChar().x,gameEnginer.getUserChar().y,gameEnginer.getUserChar().z );
+						//gameEnginer.sendDropItem(l2Item.objectId, 1,gameEnginer.getSelfChar().getX(),gameEnginer.getSelfChar().getY(),gameEnginer.getSelfChar().getZ());
 					}
 				}
 				catch (Exception e)
@@ -394,13 +394,13 @@ public class InventoryAreaItem extends Canvas
 						InputNumberDialog dialog  = new	InputNumberDialog(getShell());
 						cnt = dialog.open();
 
-						if(cnt != null)
-							gameEnginer.sendDeleteItem(l2Item.objectId, cnt);
+						//if(cnt != null)
+						//	gameEnginer.sendDeleteItem(l2Item.objectId, cnt);
 					}
 
 					if(l2Item.itemCount == 1 && messageBox.open() == SWT.OK)
 					{
-						gameEnginer.sendDeleteItem(l2Item.objectId, 1);
+						//gameEnginer.sendDeleteItem(l2Item.objectId, 1);
 					}
 				}
 				catch (Exception e)

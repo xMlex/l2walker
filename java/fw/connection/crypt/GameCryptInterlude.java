@@ -10,21 +10,26 @@
  */
 package fw.connection.crypt;
 
+//import java.util.logging.Logger;
+
+//import fw.util.Printer;
+
 /**
  * @author L2JFrozen
  */
-public class GameCrypt
+public class GameCryptInterlude
 {
+	//private static final Logger _log = Logger.getLogger(GameCryptInterlude.class.getName());
 	private final byte[] _inKey = new byte[16];
 	private final byte[] _outKey = new byte[16];
-	private boolean _isEnabled;
+	private boolean _isEnabled = false;
 
 	public  void decrypt(final byte[] raw, final int offset, final int size)
 	{
-		if(!_isEnabled){
-			_isEnabled = true;
+		if(!_isEnabled)
 			return;
-		}
+		
+		//_log.info("Game crypt decrypted.");
 
 		int temp = 0;
 
@@ -54,7 +59,7 @@ public class GameCrypt
 		if(!_isEnabled)				
 			return;
 		
-
+		//_log.info("Game crypt crypted");
 		int temp = 0;
 
 		for(int i = 0; i < size; i++)
@@ -83,5 +88,7 @@ public class GameCrypt
 	{
 		System.arraycopy(key, 0, _inKey, 0, 16);
 		System.arraycopy(key, 0, _outKey, 0, 16);
+		this._isEnabled = true;
+		//_log.info(Printer.printData(key, key.length, "Set Game crypt key"));
 	}
 }

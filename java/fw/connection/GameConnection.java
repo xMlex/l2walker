@@ -46,7 +46,7 @@ public class GameConnection implements ISocketClientListener {
 	
 	public void sendPacket(L2GameClientPacket pkt){
 		pkt.setClient(this);
-		_log.info("[W] "+pkt.getClass().getSimpleName());
+		//_log.info("[W] "+pkt.getClass().getSimpleName());
 		ThreadPoolManager.getInstance().executeLSGSPacket(pkt);
 	}
 

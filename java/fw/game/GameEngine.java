@@ -50,8 +50,10 @@ public class GameEngine implements IGameConnectionLitener,ILoginConnectionListen
 	// GAME
 	private L2World _world = new L2World();
 	private L2Player _selfChar;
+	private final CombatEngine _combatengine;
 	
 	public GameEngine(GameVisualInterface visualInterface) {
+		_combatengine = new CombatEngine(this);
 		this.visualInterface = visualInterface;
 		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(this, 1000, 1000);
 	}
@@ -105,10 +107,6 @@ public class GameEngine implements IGameConnectionLitener,ILoginConnectionListen
 
 	public L2Object getCurrentTarget() {
 		return getSelfChar().getTarget();
-	}
-
-	public DbObjects getDbObjects() {
-		return dbObjects;
 	}
 
 	public GameConnection getGameConnection() {
@@ -217,7 +215,8 @@ public class GameEngine implements IGameConnectionLitener,ILoginConnectionListen
 
 	public void GameConnectionOnDisconnect() {
 		logoutEvent();
-		visualInterface.putMessage("Disconnected from game server",MSG_SYSTEM_NORMAL, true);			
+		visualInterface.putMessage("Disconnected from game server",MSG_SYSTEM_NORMAL, true);
+		getWorld().clear();
 	}
 
 	public void GameConnectionMessage(String msg) {
@@ -279,7 +278,7 @@ public class GameEngine implements IGameConnectionLitener,ILoginConnectionListen
 	}
 
 	public void LoginConnectionOnDisconnect() {		
-		visualInterface.putMessage("[L] Disconnected",MSG_SYSTEM_ATENTION, false);
+		visualInterface.putMessage("[L] Disconnected",MSG_SYSTEM_ATENTION, false);		
 	}
 
 	public void run() {
@@ -310,5 +309,15 @@ public class GameEngine implements IGameConnectionLitener,ILoginConnectionListen
 
 	public void setSelfChar(L2Player _selfChar) {
 		this._selfChar = _selfChar;
+	}
+
+	public DbObjects getDbObjects()
+	{
+		return dbObjects;
+	}
+
+	public void setDbObjects(DbObjects dbObjects)
+	{
+		this.dbObjects = dbObjects;
 	}
 }

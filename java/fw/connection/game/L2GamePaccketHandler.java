@@ -54,15 +54,42 @@ public class L2GamePaccketHandler implements IPacketHandler<GameConnection> {
 			}
 		case IN_GAME:
 			switch (id) {
+			
+			case 0x01:
+				msg = new MoveToLocation();
+				break;
+			case 0x03:
+				msg = new CharInfo();
+				break;
+			case 0x04:
+				msg = new UserInfo();
+				break;
+			case 0x06:
+				msg = new Die();
+				break;
+			case 0x12:
+				msg = new DeleteObject();
+				break;
+			case 0x16:
+				msg = new NpcInfo();
+				break;
+			case 0x0E:
+				msg = new StatusUpdate();
+				break;
+			case 0x0C:
+				msg = new DropItem();
+				break;
+			
+				
 			default:
-				System.out.println("Uncknow packet(IN_GAME): 0x"+ Integer.toHexString(id));
+				//System.out.println("Uncknow packet(IN_GAME): 0x"+ Integer.toHexString(id));
 				break;
 			}
 			break;
 		}
 
-		if (msg != null)
-			_log.info("[R] " + msg.getClass().getSimpleName());
+		//if (msg != null)
+		//	_log.info("[R] " + msg.getClass().getSimpleName());
 		return msg;
 	}
 

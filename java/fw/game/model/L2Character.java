@@ -18,7 +18,6 @@
  */
 package fw.game.model;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import fw.connection.game.clientpackets.L2GameClientPacket;
@@ -44,6 +43,7 @@ import fw.extensions.util.Location;
  */
 public abstract class L2Character extends L2Object
 {
+
 	/** The Constant _log. */
 	protected static final Logger _log = Logger.getLogger(L2Character.class.getName());
 	
@@ -52,7 +52,7 @@ public abstract class L2Character extends L2Object
 	
 	protected double _currentCp = 0;
 	protected double _currentHp = 1;
-	protected double _currentMp = 1;
+	protected double _currentMp = 1, _MovementSpeedMultiplier = 1.2;
 	
 	private int _heading;
 	protected String _name;
@@ -65,6 +65,8 @@ public abstract class L2Character extends L2Object
 	private int _max_hp;
 
 	private int _max_mp;
+	
+	private int _cur_matk;
 
 	private int _cur_mdef;
 
@@ -76,8 +78,7 @@ public abstract class L2Character extends L2Object
 
 	private L2Object _target;
 
-	private boolean _running;
-
+	private boolean _running, HasHideout,HasCastle,flags,Sweepable,Access,isDead;
 	private boolean _isTeleporting;
 	
 	public L2Character(Integer objectId) {
@@ -259,7 +260,7 @@ public abstract class L2Character extends L2Object
 	}
 	public boolean isDead()
 	{
-		return _currentHp <= 0;
+		return ((_currentHp <= 0) || isDead ) ;
 	}
 	public final boolean isRunning()
 	{
@@ -292,7 +293,7 @@ public abstract class L2Character extends L2Object
 	}
 	public final void setIsTeleporting(boolean value)
 	{
-		_isTeleporting = value;
+		setTeleporting(value);
 	}
 	public final void setName(String name)
 	{
@@ -359,4 +360,104 @@ public abstract class L2Character extends L2Object
 	}
 	public abstract byte getLevel();
 	
+	
+	
+	public void setmAtkSpd(int _mAtkSpd) {
+		this._mAtkSpd = _mAtkSpd;
+	}
+
+	public void setMax_cp(int _max_cp) {
+		this._max_cp = _max_cp;
+	}
+
+	public void setMax_hp(int _max_hp) {
+		this._max_hp = _max_hp;
+	}
+
+	public void setMax_mp(int _max_mp) {
+		this._max_mp = _max_mp;
+	}
+
+	public void setMdef(int _cur_mdef) {
+		this._cur_mdef = _cur_mdef;
+	}
+
+	public void setPatk(int _cur_patk) {
+		this._cur_patk = _cur_patk;
+	}
+
+	public void setPdef(int _cur_pdef) {
+		this._cur_pdef = _cur_pdef;
+	}
+
+	public void setRunspd(int _cur_runspd) {
+		this._cur_runspd = _cur_runspd;
+	}
+	
+	public int getMatk() {
+		return _cur_matk;
+	}
+
+	public void setMatk(int _cur_matk) {
+		this._cur_matk = _cur_matk;
+	}
+
+	public double getMovementSpeedMultiplier() {		
+		return _MovementSpeedMultiplier;
+	}
+	public  void setMovementSpeedMultiplier(double _spd) {		
+		_MovementSpeedMultiplier = _spd;
+	}
+
+	public boolean isHasCastle() {
+		return HasCastle;
+	}
+
+	public void setHasCastle(boolean hasCastle) {
+		HasCastle = hasCastle;
+	}
+
+	public boolean isFlags() {
+		return flags;
+	}
+
+	public void setFlags(boolean flags) {
+		this.flags = flags;
+	}
+
+	public boolean isSweepable() {
+		return Sweepable;
+	}
+
+	public void setSweepable(boolean sweepable) {
+		Sweepable = sweepable;
+	}
+
+	public boolean isHasHideout() {
+		return HasHideout;
+	}
+
+	public void setHasHideout(boolean hasHideout) {
+		HasHideout = hasHideout;
+	}
+
+	public boolean isAccess() {
+		return Access;
+	}
+
+	public void setAccess(boolean access) {
+		Access = access;
+	}
+
+	public boolean isTeleporting() {
+		return _isTeleporting;
+	}
+
+	public void setTeleporting(boolean _isTeleporting) {
+		this._isTeleporting = _isTeleporting;
+	}
+
+	public void setDead(boolean isDead) {
+		this.isDead = isDead;
+	}
 }

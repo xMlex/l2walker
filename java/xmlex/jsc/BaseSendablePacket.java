@@ -3,6 +3,7 @@ package xmlex.jsc;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import fw.extensions.util.Location;
 import xmlex.jsc.ISendablePacket;
 
 public abstract class BaseSendablePacket<T extends ISocketClientListener> implements ISendablePacket,Runnable {
@@ -42,6 +43,12 @@ public abstract class BaseSendablePacket<T extends ISocketClientListener> implem
 	protected void writeD(int value)
 	{
 		getByteBuffer().putInt(value);
+	}
+	
+	protected void writeLoc(Location loc){
+		writeD(loc.x);
+		writeD(loc.y);
+		writeD(loc.z);
 	}
 
 	/**

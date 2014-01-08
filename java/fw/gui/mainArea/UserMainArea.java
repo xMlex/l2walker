@@ -3,6 +3,8 @@ package fw.gui.mainArea;
 import fw.game.*;
 import fw.game.clientpackets.Say;
 import fw.game.model.CharSelectInfoPackage;
+import fw.game.model.L2Player;
+import fw.game.model.instances.L2NpcInstance;
 import fw.gui.ServerConfig;
 import fw.gui.dialogs.*;
 import fw.gui.game_canvas.GameCanvas;
@@ -23,6 +25,7 @@ import org.eclipse.swt.widgets.*;
 
 import fw.util.Printer;
 import fw.com.swtdesigner.SWTResourceManager;
+import fw.connection.game.clientpackets.Action;
 import fw.dbClasses.DbObjects;
 
 /**
@@ -112,6 +115,8 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 	private Label lClan;
 	private Composite composite1;
 	private CTabItem tbiPlayer;
+	
+	private DbObjects dbObjects = null;
 
 	public UserMainArea(Composite composite, int style)
 	{
@@ -320,10 +325,15 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 							gameCanvasLData.verticalAlignment = GridData.FILL;
 							gameCanvasLData.grabExcessHorizontalSpace = true;
 							gameCanvasLData.grabExcessVerticalSpace = true;
+							
 							gameCanvas = new GameCanvas(cpGame, SWT.BORDER);
 							gameCanvas.setLayoutData(gameCanvasLData);
-							gameCanvas.setBackground(SWTResourceManager.getColor(210, 230, 250));
-							gameCanvas.setDrawInterface(new GameDraw(gameCanvas));
+							gameCanvas.setBackground(SWTResourceManager.getColor(0, 0, 0));
+							gameCanvas.setDrawInterface(new GameDraw(gameCanvas,gameEngine));
+							
+							/*l2mapcanvas = new L2MapCanvas(cpGame, SWT.BORDER);
+							l2mapcanvas.setLayoutData(gameCanvasLData);*/
+							
 						}
 						{
 							cpMessages = new Composite(cpGame, SWT.BORDER);
@@ -1175,7 +1185,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 
 	public void setDbObjects(DbObjects dbObjects)
 	{
-		//gameEngine.setDbObjects(dbObjects);
+		gameEngine.setDbObjects(dbObjects);
 	}
 
 	private void btnLeavePartyWidgetSelected(SelectionEvent evt)
@@ -1356,7 +1366,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 		cbHostNum.select(0);
 	}
 
-	public void procSetUserChar(final UserChar userChar)
+	public void procSetUserChar(final L2Player userChar)
 	{
 		Display.getDefault().syncExec(new Runnable()
 		{
@@ -1365,7 +1375,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 				try
 				{
 					user_life_area.setUserChar(userChar);
-					setTabName("[" + userChar.realName + "]");
+					setTabName("[" + userChar.getName() + "]");
 				}
 				catch (Exception e)
 				{
@@ -1376,7 +1386,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 
 	}
 
-	public void procPlayerChar(final PlayerChar playerChar)
+	public void procPlayerChar(final L2Player playerChar)
 	{
 		if (playerChar.visualObject == null)
 		{
@@ -1391,7 +1401,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 						visualObject.tableItemChar.setData(playerChar);
 						visualObject.tableItemChar.setText(new String[]
 						{
-								playerChar.name, playerChar.className, playerChar.clanInfo.clanName
+								playerChar.getName(), "class *"/*playerChar.className*/, "Clan name*"
 						});
 						playerChar.visualObject = visualObject;
 					}
@@ -1493,7 +1503,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 		});
 	}
 
-	public void procNpcChar(final NpcChar npcChar)
+	public void procNpcChar(final L2NpcInstance npcChar)
 	{
 		if (npcChar.visualObject == null)
 		{
@@ -1503,22 +1513,27 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 				{
 					try
 					{
-						String npcType = npcChar.dbl2npc.getType();
+						//String npcType = npcChar.dbl2npc.getType();
 						Table grid = null;
-						if (npcType.equalsIgnoreCase("Monster") || npcType.equalsIgnoreCase("Minion") || npcType.equalsIgnoreCase("FriendlyMob") || npcType.equalsIgnoreCase("RaidBoss"))
+						/*if (npcType.equalsIgnoreCase("Monster") || npcType.equalsIgnoreCase("Minion") || npcType.equalsIgnoreCase("FriendlyMob") || npcType.equalsIgnoreCase("RaidBoss"))
 						{
 							grid = gridMobs;
 						} else
 						{
 							grid = gridNpcs;
-						}
+						}*/
+						
+						if(npcChar.isAttackable())
+							grid = gridMobs;
+						else
+							grid = gridNpcs;
 
 						L2CharVisualObject visualObject = new L2CharVisualObject();
 						visualObject.tableItemChar = new TableItem(grid, SWT.NONE);
 						visualObject.tableItemChar.setData(npcChar);
 						visualObject.tableItemChar.setText(new String[]
 						{
-								npcChar.realName, npcChar.dbl2npc.getType()
+								npcChar.getName(), " procNpcChar"/*npcChar.dbl2npc.getType()*/
 						});
 
 						npcChar.visualObject = visualObject;
@@ -1597,8 +1612,8 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 	{
 		if (gridPlayers.getSelectionCount() == 0)
 			return;
-		TableItem tableItem = gridPlayers.getSelection()[0];
-		PlayerChar playerChar = (PlayerChar) tableItem.getData();
+		//TableItem tableItem = gridPlayers.getSelection()[0];
+		//PlayerChar playerChar = (PlayerChar) tableItem.getData();
 		//gameEngine.sendAction(playerChar.objId);
 	}
 
@@ -1606,8 +1621,8 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 	{
 		if (gridPlayers.getSelectionCount() == 0)
 			return;
-		TableItem tableItem = gridPlayers.getSelection()[0];
-		PlayerChar playerChar = (PlayerChar) tableItem.getData();
+		//TableItem tableItem = gridPlayers.getSelection()[0];
+		//PlayerChar playerChar = (PlayerChar) tableItem.getData();
 		//gameEngine.requestTrade(playerChar.objId);
 	}
 	
@@ -1981,8 +1996,8 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 		if (gridMobs.getSelectionCount() == 0)
 			return;
 		TableItem tableItem = gridMobs.getSelection()[0];
-		NpcChar npcChar = (NpcChar) tableItem.getData();
-		//gameEngine.sendAction(npcChar.objId);
+		L2NpcInstance npcChar = (L2NpcInstance) tableItem.getData();
+		gameEngine.getGameConnection().sendPacket(new Action(npcChar.getObjectId()));
 	}
 
 	private void gridNpcsMouseDoubleClick(MouseEvent evt)
@@ -1998,22 +2013,22 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 	{
 		if (gridItems.getSelectionCount() == 0)
 			return;
-		TableItem tableItem = gridItems.getSelection()[0];
-		L2Item myItem = (L2Item) tableItem.getData();
+		//TableItem tableItem = gridItems.getSelection()[0];
+		//L2Item myItem = (L2Item) tableItem.getData();
 		//gameEngine.sendAction(myItem.objectId);
 	}
 
 	private void targetAreaMouseDoubleClick(MouseEvent evt)
 	{
 		System.out.println("UserMainArea.targetAreaMouseDoubleClick()");
-		L2Char l2Char = targetArea.getTargetChar();
+		//L2Char l2Char = targetArea.getTargetChar();
 		//if (l2Char != null)
 		//	gameEngine.sendAction(l2Char.objId);
 	}
 
 	private void user_life_areaMouseDoubleClick(MouseEvent evt)
 	{
-		UserChar userChar = user_life_area.getUserChar();
+		//L2Player userChar = user_life_area.getUserChar();
 		//if (userChar != null)
 		//	gameEngine.sendAction(userChar.objId);
 	}

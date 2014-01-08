@@ -1,6 +1,5 @@
 package fw.connection.game.serverpackets;
 
-import fw.connection.game.clientpackets.EnterWorld;
 import fw.connection.game.clientpackets.RequestManorList;
 import fw.game.model.L2Player;
 
@@ -13,10 +12,9 @@ public class CharSelected extends L2GameServerPacket{
 	public void read() {
 		name=readS();
 		objectId=readD();
-		L2Player _char = getClient().getGameEngine().getWorld().getOrCreatePlayer(objectId);
-		
+		_char = getClient().getGameEngine().getWorld().getOrCreatePlayer(objectId);		
 		_char.setName(name);
-		
+		readS(); // title
 		readD();//session id		
 		_char.setClanId(readD());
 		
@@ -34,7 +32,7 @@ public class CharSelected extends L2GameServerPacket{
 	@Override
 	public void excecute() {
 		getClient().sendPacket(new RequestManorList());		
-		getClient().getGameEngine().setSelfChar(_char);			
+		//getClient().getGameEngine().setSelfChar(_char);			
 	}
 
 }

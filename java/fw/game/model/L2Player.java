@@ -13,8 +13,10 @@ public final class L2Player extends L2Playable {
 	
 	private int _curWeightPenalty = 0;
 	private boolean _isSitting;
-	private int _sp;
-	private long _exp;
+	private int sp,curLoad,maxLoad;
+	private long exp;
+	
+	private boolean _isMoving = false;
 	
 	public L2Player(int objectId) {
 		super(objectId);
@@ -142,12 +144,44 @@ public final class L2Player extends L2Playable {
 		this.clanId = clanId;
 	}
 
-	public void setSp(int sp) {
-		_sp = 	sp;	
+	public boolean isMoving() {
+		return _isMoving;
+	}
+	
+	public void setMoving(boolean m) {
+		_isMoving = m;
 	}
 
-	public void setExp(long Exp) {		
-		_exp = Exp;
+	public int getSp() {
+		return sp;
+	}
+
+	public void setSp(int sp) {
+		this.sp = sp;
+	}
+
+	public long getExp() {
+		return exp;
+	}
+
+	public void setExp(long exp) {
+		this.exp = exp;
+	}
+
+	public int getCurLoad() {
+		return curLoad;
+	}
+
+	public void setCurLoad(int curLoad) {
+		this.curLoad = curLoad;
+	}
+
+	public int getMaxLoad() {
+		return maxLoad;
+	}
+
+	public void setMaxLoad(int maxLoad) {
+		this.maxLoad = maxLoad;
 	}
 
 }

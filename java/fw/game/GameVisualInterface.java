@@ -1,17 +1,18 @@
 package fw.game;
 
-import fw.game.model.CharSelectInfoPackage;
+import fw.game.model.*;
+import fw.game.model.instances.L2NpcInstance;
 
 public interface GameVisualInterface
 {
-	public void procSetUserChar(final UserChar userChar);
+	public void procSetUserChar(final L2Player userChar);
 	public void putMessage(final String msg, final int msg_type, final boolean bold);
 	public void procLogoutEvent();
 	public void requestPartyDialog(final String requestor,final String partyType);
 	public void requestHtmlDialog(final String htmlMessage);
 	public void requestHeroesListDialog(final CharSelectInfoPackage[] heroesList, int size);
-	public void procPlayerChar(final PlayerChar playerChar);
-	public void procNpcChar(final NpcChar npcChar);
+	public void procPlayerChar(final L2Player playerChar);
+	public void procNpcChar(final L2NpcInstance npcChar);
 	public void procDeleteL2char(final L2Char l2Char);
 	public void procDeleteItem(final L2Item item);
 	public void procPlayerCharClanInfo(final PlayerChar playerChar);

@@ -13,6 +13,7 @@ public class L2NpcInstance extends L2Character {
 	private int _currentRHandId;
 
 	private int _npcId;
+	private boolean _IsAttackable = false;
 	
 	public L2NpcInstance(int objectId) {
 		super(objectId);
@@ -70,5 +71,13 @@ public class L2NpcInstance extends L2Character {
 	public void setNpcId(int id)
 	{
 		_npcId = id;
+	}
+
+	public boolean isAttackable() {
+		return _IsAttackable;
+	}
+
+	public void setIsAttackable(boolean _IsAttackable) {
+		this._IsAttackable = _IsAttackable;
 	}
 }

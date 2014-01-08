@@ -31,6 +31,7 @@ import fw.game.model.instances.*;
  */
 public abstract class L2Object
 {
+	public Object visualObject = null;
 	/** Object identifier */
 	protected int _objectId;
 	protected Long _storedId;
@@ -38,6 +39,10 @@ public abstract class L2Object
 	private int _x;
 	private int _y;
 	private int _z;	
+	
+	private int _tox=0;
+	private int _toy;
+	private int _toz;	
 	/** Object visibility */
 	protected boolean _hidden;
 	
@@ -81,6 +86,20 @@ public abstract class L2Object
 	{
 		return _z;
 	}
+	public int getToX()
+	{
+		return _tox;
+	}
+
+	public int getToY()
+	{
+		return _toy;
+	}
+
+	public int getToZ()
+	{
+		return _toz;
+	}
 
 	/**
 	 * Возвращает позицию (x, y, z, heading)
@@ -89,6 +108,10 @@ public abstract class L2Object
 	public Location getLoc()
 	{
 		return new Location(_x, _y, _z, getHeading());
+	}
+	public Location getToLoc()
+	{
+		return new Location(_tox, _toy, _toz, getHeading());
 	}
 	
 	/**
@@ -105,6 +128,16 @@ public abstract class L2Object
 		_x = x;
 		_y = y;
 		_z = z;
+	}
+	public void setToLoc(Location loc)
+	{
+		setToXYZ(loc.x, loc.y, loc.z);
+	}
+	public void setToXYZ(int x, int y, int z)
+	{
+		_tox = x;
+		_toy = y;
+		_toz = z;
 	}
 	
 	/**
@@ -306,6 +339,14 @@ public abstract class L2Object
 	public boolean isNpc()
 	{
 		return this instanceof L2NpcInstance;
+	}
+	public boolean isChar()
+	{
+		return this instanceof L2Char;
+	}
+	public boolean isDrop()
+	{
+		return this instanceof L2Drop;
 	}
 	
 	@Override

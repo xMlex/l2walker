@@ -13,7 +13,11 @@
 	<classpathentry kind="lib" path="libs/fw/db4o-6.1-java5.jar"/>
 	<classpathentry kind="lib" path="libs/fw/db4o-6.4.14.8131-java5.jar"/>
 	<classpathentry kind="lib" path="libs/fw/swt-grouplayout.jar"/>
-	<classpathentry kind="lib" path="libs/fw/swt.jar"/>
+	<classpathentry kind="lib" path="libs/fw/swt.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://help.eclipse.org/indigo/nftopic/org.eclipse.platform.doc.isv/reference/api/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="libs/objectmanager/lib/db4o-6.1-java1.2.jar"/>
 	<classpathentry kind="lib" path="libs/objectmanager/lib/db4o-6.1-java5.jar"/>
 	<classpathentry kind="lib" path="libs/objectmanager/lib/db4o-sql.jar"/>

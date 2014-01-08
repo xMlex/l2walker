@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import javolution.util.FastMap;
 import fw.game.L2ClassList;
-import fw.game.UserChar;
+import fw.game.model.L2Player;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
@@ -24,35 +24,32 @@ import org.eclipse.swt.widgets.Label;
 import fw.com.swtdesigner.SWTResourceManager;
 
 /**
- * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free
- * for non-commercial use. If Jigloo is being used commercially (ie, by a corporation, company or
- * business for any purpose whatever) then you should purchase a license for each developer using
- * Jigloo. Please visit www.cloudgarden.com for details. Use of Jigloo implies acceptance of these
- * licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS
- * CODE CANNOT BE USED LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+ * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
+ * Builder, which is free for non-commercial use. If Jigloo is being used
+ * commercially (ie, by a corporation, company or business for any purpose
+ * whatever) then you should purchase a license for each developer using Jigloo.
+ * Please visit www.cloudgarden.com for details. Use of Jigloo implies
+ * acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN
+ * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
+ * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
-public class User_life_area extends Canvas
-{
+public class User_life_area extends Canvas {
 	private FastMap<MouseListener, MouseListener> mouseListernes = new FastMap<MouseListener, MouseListener>();
 	private ProgressBar cpBar;
 	private ProgressBar xpBar;
 	private ProgressBar mpBar;
 	private ProgressBar hpBar;
 	private Label lvlBar;
-	private UserChar userChar = null;
+	private L2Player userChar = null;
 	boolean isFocus = false;
 
-
-	public User_life_area(Composite parent, int style)
-	{
+	public User_life_area(Composite parent, int style) {
 		super(parent, style);
 		initGUI();
 	}
 
-	private void initGUI()
-	{
-		try
-		{
+	private void initGUI() {
+		try {
 			GridLayout thisLayout = new GridLayout();
 			thisLayout.makeColumnsEqualWidth = true;
 			thisLayout.marginHeight = 1;
@@ -66,32 +63,25 @@ public class User_life_area extends Canvas
 			this.setLayout(thisLayout);
 			this.setSize(190, 100);
 			this.setForeground(SWTResourceManager.getColor(255, 128, 0));
-			this.addFocusListener(new FocusAdapter()
-			{
+			this.addFocusListener(new FocusAdapter() {
 				@Override
-				public void focusLost(FocusEvent evt)
-				{
+				public void focusLost(FocusEvent evt) {
 					rootFocusLost(evt);
 				}
 
 				@Override
-				public void focusGained(FocusEvent evt)
-				{
+				public void focusGained(FocusEvent evt) {
 					rootFocusGained(evt);
 				}
 			});
-			this.addMouseListener(new MouseAdapter()
-			{
+			this.addMouseListener(new MouseAdapter() {
 				@Override
-				public void mouseDown(MouseEvent evt)
-				{
+				public void mouseDown(MouseEvent evt) {
 					rootMouseDown(evt);
 				}
 			});
-			this.addPaintListener(new PaintListener()
-			{
-				public void paintControl(PaintEvent evt)
-				{
+			this.addPaintListener(new PaintListener() {
+				public void paintControl(PaintEvent evt) {
 					rootPaintControl(evt);
 				}
 			});
@@ -102,7 +92,8 @@ public class User_life_area extends Canvas
 				lvlBarLData.horizontalAlignment = GridData.FILL;
 				lvlBar.setLayoutData(lvlBarLData);
 				lvlBar.setText("Lvl:");
-				lvlBar.setFont(SWTResourceManager.getFont("Arial", 9, 1, false, false));
+				lvlBar.setFont(SWTResourceManager.getFont("Arial", 9, 1, false,
+						false));
 				lvlBar.setAlignment(SWT.CENTER);
 			}
 			{
@@ -117,12 +108,14 @@ public class User_life_area extends Canvas
 				bar1LData.verticalAlignment = GridData.FILL;
 				bar1LData.grabExcessVerticalSpace = true;
 				cpBar.setLayoutData(bar1LData);
-				cpBar.setFont(SWTResourceManager.getFont("Courier New", 8, 0, false, false));
+				cpBar.setFont(SWTResourceManager.getFont("Courier New", 8, 0,
+						false, false));
 				cpBar.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseDoubleClick(MouseEvent evt) {
 						rootMouseDoubleClick(evt);
 					}
+
 					@Override
 					public void mouseDown(MouseEvent evt) {
 						focusOnMouseDown(evt);
@@ -140,12 +133,14 @@ public class User_life_area extends Canvas
 				hpBar.setLayoutData(progressBar1LData);
 				hpBar.setBackground(SWTResourceManager.getColor(128, 128, 128));
 				hpBar.setForeground(SWTResourceManager.getColor(255, 0, 0));
-				hpBar.setFont(SWTResourceManager.getFont("Courier New", 8, 0, false, false));
+				hpBar.setFont(SWTResourceManager.getFont("Courier New", 8, 0,
+						false, false));
 				hpBar.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseDoubleClick(MouseEvent evt) {
 						rootMouseDoubleClick(evt);
 					}
+
 					@Override
 					public void mouseDown(MouseEvent evt) {
 						focusOnMouseDown(evt);
@@ -163,12 +158,14 @@ public class User_life_area extends Canvas
 				mpBar.setLayoutData(progressBar2LData);
 				mpBar.setBackground(SWTResourceManager.getColor(128, 128, 128));
 				mpBar.setForeground(SWTResourceManager.getColor(60, 157, 255));
-				mpBar.setFont(SWTResourceManager.getFont("Courier New", 8, 0, false, false));
+				mpBar.setFont(SWTResourceManager.getFont("Courier New", 8, 0,
+						false, false));
 				mpBar.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseDoubleClick(MouseEvent evt) {
 						rootMouseDoubleClick(evt);
 					}
+
 					@Override
 					public void mouseDown(MouseEvent evt) {
 						focusOnMouseDown(evt);
@@ -186,12 +183,14 @@ public class User_life_area extends Canvas
 				xpBar.setLayoutData(progressBar3LData);
 				xpBar.setBackground(SWTResourceManager.getColor(128, 128, 128));
 				xpBar.setForeground(SWTResourceManager.getColor(221, 221, 221));
-				xpBar.setFont(SWTResourceManager.getFont("Courier New", 8, 0, false, false));
+				xpBar.setFont(SWTResourceManager.getFont("Courier New", 8, 0,
+						false, false));
 				xpBar.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseDoubleClick(MouseEvent evt) {
 						rootMouseDoubleClick(evt);
 					}
+
 					@Override
 					public void mouseDown(MouseEvent evt) {
 						focusOnMouseDown(evt);
@@ -200,30 +199,22 @@ public class User_life_area extends Canvas
 			}
 
 			this.layout();
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-
-
-	public void setUserChartChar(UserChar userChar)
-	{
+	public void setUserChartChar(L2Player userChar) {
 		this.userChar = userChar;
 
 	}
 
-	public void removeUserChar()
-	{
+	public void removeUserChar() {
 		this.userChar = null;
 	}
 
-	private void rootPaintControl(PaintEvent evt)
-	{
-		if (isFocus)
-		{
+	private void rootPaintControl(PaintEvent evt) {
+		if (isFocus) {
 			Point size = getSize();
 			evt.gc.setLineWidth(2);
 			evt.gc.setForeground(getForeground());
@@ -233,64 +224,58 @@ public class User_life_area extends Canvas
 		}
 	}
 
-	private void rootMouseDown(MouseEvent evt)
-	{
+	private void rootMouseDown(MouseEvent evt) {
 		setFocus();
 	}
 
-	private void rootFocusGained(FocusEvent evt)
-	{
+	private void rootFocusGained(FocusEvent evt) {
 		isFocus = true;
 		redraw();
 	}
 
-	private void rootFocusLost(FocusEvent evt)
-	{
+	private void rootFocusLost(FocusEvent evt) {
 		isFocus = false;
 		redraw();
 	}
 
-	private void focusOnMouseDown(MouseEvent evt)
-	{
+	private void focusOnMouseDown(MouseEvent evt) {
 		setFocus();
 	}
 
-	public UserChar getUserChar()
-	{
+	public L2Player getUserChar() {
 		return userChar;
 	}
 
-	public void setUserChar(UserChar userChar)
-	{
+	public void setUserChar(L2Player userChar) {
 		this.userChar = userChar;
 		updateStatus();
 	}
 
-	public void updateStatus()
-	{
-		 cpBar.setValues(userChar.cpMax, userChar.cp);
-		 hpBar.setValues(userChar.hpMax, userChar.hp);
-		 mpBar.setValues(userChar.mpMax, userChar.mp);
-		 xpBar.setValues(L2ClassList.getL2ClassExp(userChar.level+1)-L2ClassList.getL2ClassExp(userChar.level), userChar.xp - L2ClassList.getL2ClassExp(userChar.level));
-		 lvlBar.setText("Lvl:"+userChar.level);
+	public void updateStatus() {
+		if (userChar == null)
+			return;
+		cpBar.setValues(userChar.getMaxCp(), (int)userChar.getCurrentCp());
+		hpBar.setValues(userChar.getMaxHp(), (int)userChar.getCurrentHp());
+		mpBar.setValues(userChar.getMaxMp(),  (int)userChar.getCurrentMp());
+		xpBar.setValues(L2ClassList.getL2ClassExp(userChar.getLevel() + 1)
+				- L2ClassList.getL2ClassExp(userChar.getLevel()), 0/*userChar.getExp()*/
+				- L2ClassList.getL2ClassExp(userChar.getLevel()));
+		lvlBar.setText("Lvl:" + userChar.getLevel());
 	}
 
 	@Override
-	public void addMouseListener(MouseListener mouseListerne)
-	{
+	public void addMouseListener(MouseListener mouseListerne) {
 		mouseListernes.put(mouseListerne, mouseListerne);
 	}
 
 	@Override
-	public void removeMouseListener(MouseListener mouseListerne)
-	{
+	public void removeMouseListener(MouseListener mouseListerne) {
 		mouseListernes.remove(mouseListerne);
 	}
 
-	private void rootMouseDoubleClick(MouseEvent evt)
-	{
-		for (Iterator<MouseListener> iter = mouseListernes.values().iterator(); iter.hasNext();)
-		{
+	private void rootMouseDoubleClick(MouseEvent evt) {
+		for (Iterator<MouseListener> iter = mouseListernes.values().iterator(); iter
+				.hasNext();) {
 			MouseListener element = (MouseListener) iter.next();
 			element.mouseDoubleClick(evt);
 		}

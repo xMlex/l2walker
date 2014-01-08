@@ -1,101 +1,224 @@
 package fw.gui.game_canvas;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 
 import fw.com.swtdesigner.SWTResourceManager;
+import fw.common.ThreadPoolManager;
+import fw.connection.game.clientpackets.MoveBackwardToLocation;
+import fw.game.GameEngine;
+import fw.game.model.L2Character;
+import fw.game.model.L2Object;
+import fw.game.model.instances.L2NpcInstance;
 
-public class GameDraw implements GameCanvasDrawInterface
-{
-	public Color bgColor = SWTResourceManager.getColor(0, 223, 223);
-	public Color fgColor = SWTResourceManager.getColor(0, 0, 0);
-	public Color fgColor2 = SWTResourceManager.getColor(0, 0, 0);
-	public Font font1 = SWTResourceManager.getFont("Tahoma", 20, 1, false, false);
+public class GameDraw implements GameCanvasDrawInterface {
+	public Color bgColor = SWTResourceManager.getColor(0, 0, 0);
+	public Color defColor = SWTResourceManager.getColor(0, 225, 0);
+	public Color fontColor = SWTResourceManager.getColor(200, 255, 50);
+
+	public Color colorNpc = SWTResourceManager.getColor(255, 255, 0);
+	public Color colorMob = SWTResourceManager.getColor(0, 255, 0);
+	public Color colorChar = SWTResourceManager.getColor(100, 200, 0);
+	public Color colorPlayer = SWTResourceManager.getColor(0, 0, 225);
+	public Font baseFont = SWTResourceManager.getFont("Tahoma", 8, 0, false,
+			false);
 	GameCanvas gameCanvas;
+	GameEngine gameEngine;
+
+	private Image _map = null;
+
+	// MAP
+	private L2MapCalc _mapCalc;
+	private int _cur_map_x = 0, _cur_map_y = 0;
+	private int _x = -86089, _y = 241148, _z = -3537;
+	private int char_map_pos_x = 0, char_map_pos_y = 0;
+	private int map_center_x = 0, map_center_y = 0;
+	private int _scale = 1;
+	private long _lastLocUpdate=0;
+
+	private boolean _r_chars = true, _r_drop = true, _r_npc = true,
+			_r_move = true;
 
 	Rectangle bounds = null;
 	int pos = 0;
 	boolean isDisposed = false;
 
-	public GameDraw(GameCanvas gameCanvas)
-	{
+	public GameDraw(GameCanvas gameCanvas, GameEngine ge) {
 		this.gameCanvas = gameCanvas;
-		//new FrameControl(this).start();
+		this.gameEngine = ge;
 	}
 
-	public void dispose()
-	{
+	public void dispose() {
 		isDisposed = true;
 	}
 
-	public void setFrameBounds(Rectangle bounds)
-	{
+	public void setFrameBounds(Rectangle bounds) {
 		this.bounds = bounds;
 	}
 
-	public boolean drawFrame(GC gc)
-	{
-		gc.setBackground(bgColor);
-		gc.fillRectangle(0, 0, bounds.width, bounds.height);
+	public boolean drawFrame(GC gc) {
+		if (gameEngine.getSelfChar() == null)
+			return false;
 
-		gc.setFont(font1);
-		gc.setForeground(fgColor);
-		for (int i = 0; i < 10; i++)
-		{
-			gc.drawText(".::Test::.", pos, 20 * i, true);
+		calculateMap(gc);
+
+		for (Entry<Integer, L2Object> obj : gameEngine.getWorld().getObjects()
+				.entrySet()) {			
+			L2Object _o = obj.getValue();
+			updateMove(_o);
+			if(_o == null) continue;
+			gc.setForeground(defColor);
+			if (_o.isNpc()){
+				gc.setForeground(colorNpc);
+				if( ((L2NpcInstance)_o).isAttackable() )
+					gc.setForeground(colorMob);
+			}
+				
+			if (_o.isPlayer())
+				gc.setForeground(colorPlayer);
+			if (_o.isChar())
+				gc.setForeground(colorChar);
+			gc.drawRectangle(toX(_o.getX()),toY(_o.getY()), 5, 5);
+			gc.setForeground(defColor);
+			if(_o.getToX() != 0)
+			gc.drawLine(toX(_o.getX()),toY(_o.getY()), toX(_o.getToX()),toY(_o.getToY()));
 		}
 
+		gc.setForeground(fontColor);
+		//gc.drawRectangle(map_center_x, map_center_y, 5, 5);
+		gc.drawText("x: " + _x + " y: " + _y, 0, 0, true);
+		_lastLocUpdate = System.currentTimeMillis();
 		return true;
 	}
 
-	class FrameControl extends Thread
-	{
-		GameDraw gameDraw;
+	private int toX(int x){
+		//Round(cx + ((x - zx)/MAPBLOCKSIZEDIV900)/scale);
+		return (int) (map_center_x + ((x-_x)/L2MapCalc.MAPBLOCKSIZEDIV900/_scale));
+	}
+	private int toY(int y){
+		//Round(cx + ((x - zx)/MAPBLOCKSIZEDIV900)/scale);
+		return (int) (map_center_y + ((y-_y)/L2MapCalc.MAPBLOCKSIZEDIV900/_scale));
+	}
+	
+	private void calculateMap(GC gc) {		
+		if(_mapCalc == null)
+			_mapCalc = new L2MapCalc(gameEngine.getSelfChar());
+		
+		_mapCalc.setVpSize(bounds.width, bounds.height);
+		_mapCalc.setMapScale(_scale);
+		
+		
+		_x = gameEngine.getSelfChar().getX();
+		_y = gameEngine.getSelfChar().getY();
+		_z = gameEngine.getSelfChar().getZ();
 
-		public FrameControl(GameDraw gameDraw)
-		{
-			this.gameDraw = gameDraw;
+		_mapCalc.setMapSize(900, 900);
+
+		map_center_x = bounds.width / 2;
+		map_center_y = bounds.height / 2;
+
+		char_map_pos_x = -(L2MapCalc.getXInSmallBlock(_x) - map_center_x);
+		char_map_pos_y = -(L2MapCalc.getYInSmallBlock(_y) - map_center_y);
+
+		gc.setBackground(bgColor);
+		gc.setForeground(defColor);
+		gc.fillRectangle(0, 0, bounds.width, bounds.height);
+		chekMap();
+		if (_map != null) {
+			try{
+			gc.drawImage(_map, char_map_pos_x, char_map_pos_x);
+			}catch(Exception e){e.printStackTrace();}
 		}
+		gc.setAntialias(SWT.ON);
+		gc.setTextAntialias(SWT.ON);
+		gc.setFont(baseFont);
+		gc.drawText("map pos x: " + char_map_pos_x + " y: " + char_map_pos_y, 0, 10, true);
+		gc.drawText("map center x: " + map_center_x + " y: " + map_center_y, 0, 20, true);
+		gc.drawText("pos in small block x: " + L2MapCalc.getXInSmallBlock(_x) + " y: " + L2MapCalc.getYInSmallBlock(_y), 0, 30, true);
+	}
 
-		@Override
-		public void run()
-		{
-			long frameTime = 1000 / 30;
+	private void updateMove(L2Object obj) {
+		if(!(obj instanceof L2Character)) 
+			return;
+		if(true) return;
+		L2Character _o = (L2Character)obj;
+		
+		double dx = _o.getToX()-_o.getX();
+		double dy = _o.getToY()-_o.getY();
+		double dz = _o.getToZ()-_o.getZ();
+		double axy = Math.atan2(dy,dx+0.001); // 0.001 - anti div 0
+		double h = Math.round(axy * 32768 / Math.PI);
+		double rxy = Math.sqrt(dy*dy+dx*dx);
+		double speed = _o.getRunSpeed();
+		double d = (System.currentTimeMillis()-_lastLocUpdate)*1; 
+		speed = speed*d*_o.getMovementSpeedMultiplier();
+		double az = Math.atan2(dz,rxy);
+		
+		if( rxy<speed){
+			_o.setXYZ(_o.getToX(), _o.getToY(), _o.getToZ());
+			_o.setToLoc(_o.getLoc());
+		}else{
+			_o.setXYZ(
+					(int)(_o.getX()+speed*Math.cos(axy)),
+					(int)(_o.getY()+speed*Math.sin(axy)), 
+					(int)(_o.getZ()+speed*Math.tan(az))
+					);
+		}
+		
+	}
 
-			while (!gameDraw.isDisposed)
-			{
-				try
-				{
-					long iniTime = System.currentTimeMillis();
+	private void chekMap() {
 
-					move();
+		if (_cur_map_x != L2MapCalc.getXBlockCorrect(_x)
+				|| _cur_map_y != L2MapCalc.getYBlockCorrect(_y)) {
 
-					long endTime = System.currentTimeMillis();
-
-					long sleepTime = frameTime - (endTime - iniTime);
-
-					if (sleepTime < 0)
-					{
-						//System.out.println("#frame draw time is too long " + (endTime - iniTime));
-					} else
-					{
-						sleep(sleepTime);
-					}
-				}
-				catch (InterruptedException e)
-				{
-				}
+			_cur_map_x = L2MapCalc.getXBlockCorrect(_x);
+			_cur_map_y = L2MapCalc.getYBlockCorrect(_y);
+			if (_cur_map_x <= 0 || _cur_map_y <= 0) {
+				System.out.println("Load map error: block x: " + _cur_map_x
+						+ " y:" + _cur_map_y + " Pos: " + _x + " y: " + _y);
+				return;
 			}
-		}
 
-		private void move()
-		{
-			gameDraw.pos++;
-			if (gameDraw.pos >= gameDraw.bounds.width)
-				pos = 0;
+			if (_map != null)
+				_map.dispose();
+			System.out.println("Load map file: data/maps/" + _cur_map_x + "_"
+					+ _cur_map_y + ".jpg");
+			_map = SWTResourceManager.getImage("data/maps/" + _cur_map_x + "_"
+					+ _cur_map_y + ".jpg");
 		}
+	}
+
+	public void onMouseUp(MouseEvent evt) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void onMouseDown(MouseEvent evt) {
+		if (gameEngine.getSelfChar() == null)
+			return;
+		gameEngine.getGameConnection().sendPacket(
+				new MoveBackwardToLocation(_mapCalc.getMapXToReal(evt.x),
+						_mapCalc.getMapYToReal(evt.y), _z));
+	}
+
+	public void onMouseDoubleClick(MouseEvent evt) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void onMouseMove(MouseEvent evt) {
 
 	}
 

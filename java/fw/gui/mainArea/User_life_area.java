@@ -257,9 +257,10 @@ public class User_life_area extends Canvas {
 		cpBar.setValues(userChar.getMaxCp(), (int)userChar.getCurrentCp());
 		hpBar.setValues(userChar.getMaxHp(), (int)userChar.getCurrentHp());
 		mpBar.setValues(userChar.getMaxMp(),  (int)userChar.getCurrentMp());
-		xpBar.setValues(L2ClassList.getL2ClassExp(userChar.getLevel() + 1)
-				- L2ClassList.getL2ClassExp(userChar.getLevel()), 0/*userChar.getExp()*/
-				- L2ClassList.getL2ClassExp(userChar.getLevel()));
+		xpBar.setValues(
+				L2ClassList.getL2ClassExp(userChar.getLevel()+1),
+				(int)userChar.getExp()								
+				);
 		lvlBar.setText("Lvl:" + userChar.getLevel());
 	}
 

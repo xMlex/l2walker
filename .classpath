@@ -24,5 +24,7 @@
 	<classpathentry kind="lib" path="libs/objectmanager/lib/forms-1.0.7.jar"/>
 	<classpathentry kind="lib" path="libs/objectmanager/lib/looks-2.0.4.jar"/>
 	<classpathentry kind="lib" path="libs/objectmanager/lib/objectmanager-api.jar"/>
+	<classpathentry kind="lib" path="libs/sqlite-jdbc-3.7.2.jar"/>
+	<classpathentry kind="lib" path="libs/mysql-connector-java-5.1.28.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

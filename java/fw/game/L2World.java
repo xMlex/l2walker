@@ -7,6 +7,7 @@ import fw.dbClasses.DbObjects;
 import fw.extensions.util.Location;
 import fw.game.model.*;
 import fw.game.model.L2Char;
+import fw.game.model.L2Item;
 import fw.game.model.instances.*;
 
 public class L2World {
@@ -63,7 +64,17 @@ public class L2World {
 			_objects.put(objectId, _obj);
 			return _obj;
 		}
+	}
+	public L2Item getOrCreateItem(int objectId) {
+		synchronized (_objects) {
+			L2Item _obj = (L2Item) _objects.get(objectId);
+			if (_obj != null)
+				return _obj;
+			_obj = new L2Item(objectId);
 
+			_objects.put(objectId, _obj);
+			return _obj;
+		}
 	}
 
 	public void remove(int objectId) {
@@ -130,7 +141,7 @@ public class L2World {
 		return null;
 	}
 
-	/** <b>Read-only</b> Get all objects for iterate */
+	/** <b>NOT SYNCHRONIZED</b> Get all object list */
 	public FastMap<Integer, L2Object> getObjects() {
 		return _objects;
 	}

@@ -46,6 +46,7 @@ public class LoginConnection implements ISocketClientListener, Runnable{
 	}
 
 	public void start(){
+		_startConnection=System.currentTimeMillis();
 		_socket.connect();
 	}
 	
@@ -150,7 +151,7 @@ public class LoginConnection implements ISocketClientListener, Runnable{
 	}
 
 	public void onDisconnected() {
-		_listener.LoginConnectionOnDisconnect();	
+		_listener.LoginConnectionOnDisconnect();		
 	}
 
 	public void onDataRead(ByteBuffer buf) {	
@@ -223,7 +224,7 @@ public class LoginConnection implements ISocketClientListener, Runnable{
 	public void run() {
 		if(_startConnection == -1) return;
 		
-		if( (System.currentTimeMillis() - _startConnection) > 5*1000 ){
+		if( (System.currentTimeMillis() - _startConnection) > 7*1000 ){
 			getSocket().disconnect();
 			onErrorConnect("Timeout connect");			
 			_startConnection = -1;

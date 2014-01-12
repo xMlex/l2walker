@@ -54,11 +54,11 @@ public class L2MapCalc {
 	
 	public int getMapXToReal(int pos){
 		//Result:= self.myRealX + Round((x - Self.mapWidth / 2)* Self.mapScale * MAPBLOCKSIZEDIV900);
-		return _char.getToX()+((pos-map_img_width/2)*MAPBLOCKSIZEDIV900);
+		return _char.getX()+((pos-map_img_width/2)*MAPBLOCKSIZEDIV900);
 	}
 	public int getMapYToReal(int pos){
 		//Result:= self.myRealY + Round((y - Self.mapHeight / 2)* Self.mapScale * MAPBLOCKSIZEDIV900);
-		return _char.getToY()+((pos-map_img_height/2)*MAPBLOCKSIZEDIV900);
+		return _char.getY()+((pos-map_img_height/2)*MAPBLOCKSIZEDIV900);
 	}
 	
 	/** Вычисляем номер блока */

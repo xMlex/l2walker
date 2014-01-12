@@ -5,6 +5,7 @@ import fw.extensions.util.Location;
 public class L2Object {
 	
 	public static final double HEADINGS_IN_PI = 10430.378350470452724949566316381;
+	protected int _reflection = Integer.MIN_VALUE;
 	
 	public int getHeading() {
 		// TODO Auto-generated method stub
@@ -35,5 +36,11 @@ public class L2Object {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public int getReflection()
+	{
+		return _reflection;
+	}
+	
 
 }

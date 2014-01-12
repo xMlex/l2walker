@@ -19,8 +19,8 @@ public class dbManager {
 	
 	public dbManager(){		
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			_con = DriverManager.getConnection("jdbc:sqlite:data/db/db.sqlite");
+			//Class.forName("com.mysql.jdbc.Driver");
+			//_con = DriverManager.getConnection("jdbc:sqlite:sample.db");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
@@ -30,14 +30,34 @@ public class dbManager {
 	public dbItem getItem(int id){
 		dbItem _obj = _items.get(id);
 		if(_obj == null){
-			_obj = new dbItem();
-			
+			_obj = new dbItem();			
+			/*try {
+				ResultSet rs = exSQL("select * from etcitem WHERE item_id = "+id+" LIMIT 1;");
+				if(rs != null && rs.next()){
+					_obj.setName(rs.getString("name"));
+					_obj.setPrice(rs.getInt("price"));
+					_obj.setType(rs.getString("item_type"));
+					System.out.println(_obj);
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
 		}
 		return _obj;
-	}s
+	}
 	
 	private ResultSet exSQL(String q){
-		
+		ResultSet rs = null;
+		Statement stmt;
+		try {
+			stmt = _con.createStatement();
+			rs = stmt.executeQuery(q);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		return rs;
 	}
 	
 
@@ -46,6 +66,9 @@ public class dbManager {
 		Class.forName("org.sqlite.JDBC");
 		Class.forName("com.mysql.jdbc.Driver");
 
+		dbManager.getInstance().getItem(57);
+		if(true) return;
+		
 		Connection _sqlFile = null;
 		Connection _sqlServer = null;
 		String _q = "";

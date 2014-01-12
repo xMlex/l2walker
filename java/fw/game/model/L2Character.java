@@ -52,34 +52,28 @@ public abstract class L2Character extends L2Object
 	
 	protected double _currentCp = 0;
 	protected double _currentHp = 1;
-	protected double _currentMp = 1, _MovementSpeedMultiplier = 1.2;
+	protected double _currentMp = 1, 
+			_MovementSpeedMultiplier = 1.2;
 	
 	private int _heading;
 	protected String _name;
 	protected String _title;
 
 	private int _mAtkSpd;
-
 	private int _max_cp;
-
 	private int _max_hp;
-
-	private int _max_mp;
-	
+	private int _max_mp;	
 	private int _cur_matk;
-
 	private int _cur_mdef;
-
 	private int _cur_patk;
-
 	private int _cur_pdef;
-
 	private int _cur_runspd;
-
 	private L2Object _target;
 
 	private boolean _running, HasHideout,HasCastle,flags,Sweepable,Access,isDead;
-	private boolean _isTeleporting;
+	private boolean _isTeleporting,_isMove = false;
+	
+	
 	
 	public L2Character(Integer objectId) {
 		super(objectId);
@@ -252,7 +246,10 @@ public abstract class L2Character extends L2Object
 
 	public int getRunSpeed()
 	{
-		return _cur_runspd;
+		if(_cur_runspd > 0)
+			return _cur_runspd;
+		else
+			return 50;
 	}
 	public L2Object getTarget()
 	{
@@ -459,5 +456,14 @@ public abstract class L2Character extends L2Object
 
 	public void setDead(boolean isDead) {
 		this.isDead = isDead;
+	}
+
+	public boolean isMove() {
+		return _isMove;
+	}
+
+	public void setMove(boolean _isMove) {
+		_log.info("Move: "+_isMove);
+		this._isMove = _isMove;
 	}
 }

@@ -348,6 +348,21 @@ public abstract class L2Object
 	{
 		return this instanceof L2Drop;
 	}
+	public boolean isLive()
+	{
+		boolean res = false;
+		if(isChar())
+			res = true;
+		if(isCharacter())
+			res = true;
+		if(isNpc())
+			res = true;
+		if(isPlayable())
+			res = true;
+		if(isPlayer())
+			res = true;
+		return res;
+	}
 	
 	@Override
 	public String toString()

@@ -139,6 +139,7 @@ public class UserInfo extends L2GameServerPacket {
 
 	@Override
 	public void excecute() {
+		_char.setGameEngine(getClient().getGameEngine());
 		getClient().getGameEngine().setSelfChar(_char);	
 		getClient().getVisualInterface().procSetUserChar(_char);
 	}

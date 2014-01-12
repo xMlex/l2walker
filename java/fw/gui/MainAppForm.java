@@ -84,7 +84,7 @@ public class MainAppForm extends org.eclipse.swt.widgets.Composite
 	{
 		try
 		{
-			this.setSize(800, 600);
+			this.setSize(850, 600);
 			this.setBackground(SWTResourceManager.getColor(192, 192, 192));
 			FillLayout thisLayout = new FillLayout(org.eclipse.swt.SWT.HORIZONTAL);
 			this.setLayout(thisLayout);

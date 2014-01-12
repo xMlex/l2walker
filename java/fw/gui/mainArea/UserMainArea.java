@@ -105,6 +105,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 	private CTabItem parentTabItem = null;
 	private SashForm cpInformations;
 	private Composite cpGame;
+	private Button btnEnableDisbale;
 	public RequestTradeDialog myTradeDialog;
 	Colors colors = new Colors();
 	FastMap<String, ServerConfig> mapServersConfig = null;
@@ -133,7 +134,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 				GridLayout thisLayout = new GridLayout();
 				thisLayout.makeColumnsEqualWidth = true;
 				this.setLayout(thisLayout);
-				this.setSize(881, 501);
+				this.setSize(857, 501);
 				{
 					cpHeader = new Composite(this, SWT.BORDER);
 					cpHeader.setLayout(null);
@@ -214,10 +215,9 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 						cLabel4.setFont(SWTResourceManager.getFont("Tahoma", 8, 1, false, false));
 						cLabel4.setText("PWD:");
 						cLabel4.setBounds(436, 4, 40, 19);
-						cLabel4.setAlignment(SWT.RIGHT);
 					}
 					{
-						btnLogin = new Button(cpHeader, SWT.PUSH | SWT.CENTER);
+						btnLogin = new Button(cpHeader, SWT.FLAT | SWT.CENTER);
 						btnLogin.setText("Login");
 						btnLogin.setBounds(583, 1, 72, 24);
 						btnLogin.setAlignment(SWT.UP);
@@ -235,6 +235,16 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 						btnLogout.setBounds(660, 1, 72, 24);
 						btnLogout.setEnabled(false);
 						btnLogout.setImage(SWTResourceManager.getImage("res_images/disconnect16_h.png"));
+						
+						btnEnableDisbale = new Button(cpHeader, SWT.NONE);
+						btnEnableDisbale.addSelectionListener(new SelectionAdapter() {
+							@Override
+							public void widgetSelected(SelectionEvent evt) {
+								btnEnableDisbaleSelected();								
+							}
+						});
+						btnEnableDisbale.setBounds(735, 1, 75, 25);
+						btnEnableDisbale.setText("Disabled");
 						btnLogout.addSelectionListener(new SelectionAdapter()
 						{
 							public void widgetSelected(SelectionEvent evt)
@@ -293,6 +303,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 									}
 								});
 							}
+							new Label(cpGameTop, SWT.NONE);
 							{
 								GridData targetAreaLData = new GridData();
 								targetAreaLData.horizontalAlignment = GridData.END;
@@ -350,7 +361,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 								textChat = new StyledText(cpMessages, SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
 								textChat.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 								final GridData gd_textChat = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1);
-								gd_textChat.widthHint = 186;
+								gd_textChat.widthHint = 191;
 								textChat.setLayoutData(gd_textChat);
 								textChat.setFont(SWTResourceManager.getFont("Arial", 8, 0, false, false));
 								textChat.setEditable(false);
@@ -397,12 +408,11 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 								cbChatTarget.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW));
 								cbChatTarget.setVisible(false);
 							}
-							new Label(cpMessages, SWT.NONE);
 							{
 								edChatSend = new Text(cpMessages, SWT.WRAP | SWT.BORDER);
 								edChatSend.setFont(SWTResourceManager.getFont("Arial Unicode MS", 9, SWT.NONE));
-								final GridData gd_edChatSend = new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1);
-								gd_edChatSend.widthHint = 304;
+								final GridData gd_edChatSend = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
+								gd_edChatSend.widthHint = 254;
 								edChatSend.setLayoutData(gd_edChatSend);
 								edChatSend.setTextLimit(255);
 								edChatSend.addKeyListener(new KeyAdapter()
@@ -1149,9 +1159,16 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 
 	private void btnLogoutWidgetSelected(SelectionEvent evt)
 	{
-		//btnLogout.setEnabled(false);
-		//gameEngine.setLogout();
  		gameEngine.logOut();
+	}
+	
+	public void btnEnableDisbaleSelected(){
+		gameEngine.setEnabled(!gameEngine.isEnabled());
+		if(gameEngine.isEnabled()){
+			btnEnableDisbale.setText("Enabled");									
+		}else{
+			btnEnableDisbale.setText("Disabled");
+		}
 	}
 
 	public CTabItem getParentTabItem()
@@ -2041,5 +2058,4 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 			return;
 		}
 	}
-
 }

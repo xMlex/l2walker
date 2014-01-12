@@ -3,6 +3,9 @@ package fw.extensions.util;
 import fw.clientbase.model.L2Object;
 //import fw.clientbase.model.L2World;
 
+import fw.extensions.geodata.GeoEngine;
+import fw.extensions.geodata.L2World;
+
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
@@ -211,9 +214,9 @@ public class Location implements Serializable
 			z = pos.z;
 			if(max_geo_checks <= 0)
 				break;
-			//z = GeoEngine.getHeight(x, y, z, obj.getReflection().getGeoIndex());
-			//if(Math.abs(pos.z - z) < 256 && GeoEngine.getNSWE(x, y, z, obj.getReflection().getGeoIndex()) == 15)
-			//	break;
+			z = GeoEngine.getHeight(x, y, z, obj.getReflection());
+			if(Math.abs(pos.z - z) < 256 && GeoEngine.getNSWE(x, y, z, obj.getReflection()) == 15)
+				break;
 			max_geo_checks--;
 		}
 
@@ -225,16 +228,16 @@ public class Location implements Serializable
 
 	public Location world2geo()
 	{
-		//x = x - L2World.MAP_MIN_X >> 4;
-		//y = y - L2World.MAP_MIN_Y >> 4;
+		x = x - L2World.MAP_MIN_X >> 4;
+		y = y - L2World.MAP_MIN_Y >> 4;
 		return this;
 	}
 
 	public Location geo2world()
 	{
 		// размер одного блока 16*16 точек, +8*+8 это его средина
-		//x = (x << 4) + L2World.MAP_MIN_X + 8;
-		//y = (y << 4) + L2World.MAP_MIN_Y + 8;
+		x = (x << 4) + L2World.MAP_MIN_X + 8;
+		y = (y << 4) + L2World.MAP_MIN_Y + 8;
 		return this;
 	}
 

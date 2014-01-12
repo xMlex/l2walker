@@ -72,7 +72,9 @@ public class GameDraw implements GameCanvasDrawInterface {
 			return false;
 
 		calculateMap(gc);
-
+		synchronized (gameEngine.getWorld().getObjects()) {
+			
+		
 		for (Entry<Integer, L2Object> obj : gameEngine.getWorld().getObjects()
 				.entrySet()) {			
 			L2Object _o = obj.getValue();
@@ -94,11 +96,12 @@ public class GameDraw implements GameCanvasDrawInterface {
 			if(_o.getToX() != 0)
 			gc.drawLine(toX(_o.getX()),toY(_o.getY()), toX(_o.getToX()),toY(_o.getToY()));
 		}
+		}
 
 		gc.setForeground(fontColor);
-		//gc.drawRectangle(map_center_x, map_center_y, 5, 5);
-		gc.drawText("x: " + _x + " y: " + _y, 0, 0, true);
+		//gc.drawRectangle(map_center_x, map_center_y, 5, 5);		
 		_lastLocUpdate = System.currentTimeMillis();
+		gc.drawText("x: " + _x + " y: " + _y+" Time: "+_lastLocUpdate, 0, 0, true);
 		return true;
 	}
 
@@ -211,6 +214,7 @@ public class GameDraw implements GameCanvasDrawInterface {
 		gameEngine.getGameConnection().sendPacket(
 				new MoveBackwardToLocation(_mapCalc.getMapXToReal(evt.x),
 						_mapCalc.getMapYToReal(evt.y), _z));
+		System.out.println("MoveTo: x "+_mapCalc.getMapXToReal(evt.x)+" y: "+_mapCalc.getMapYToReal(evt.y));
 	}
 
 	public void onMouseDoubleClick(MouseEvent evt) {

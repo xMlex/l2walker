@@ -14,6 +14,10 @@ public class L2NpcInstance extends L2Character {
 
 	private int _npcId;
 	private boolean _IsAttackable = false;
+
+	public int pathfindCount = 0;
+
+	public double pathfindTime = 0;
 	
 	public L2NpcInstance(int objectId) {
 		super(objectId);

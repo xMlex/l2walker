@@ -22,4 +22,8 @@ public class dbItem {
 	public void setPrice(int price) {
 		this.price = price;
 	}
+	
+	public String toString(){
+		return "Item "+ getName()+" price: "+getPrice()+" type: "+getType();		
+	}
 }

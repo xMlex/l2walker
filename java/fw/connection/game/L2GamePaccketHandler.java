@@ -10,8 +10,7 @@ import fw.connection.game.serverpackets.*;
 
 public class L2GamePaccketHandler implements IPacketHandler<GameConnection> {
 
-	private static final Logger _log = Logger
-			.getLogger(L2GamePaccketHandler.class.getName());
+	private static final Logger _log = Logger.getLogger(L2GamePaccketHandler.class.getName());
 
 	public BaseReceivablePacket<GameConnection> handlePacket(ByteBuffer buf,
 			GameConnection client) {
@@ -46,7 +45,7 @@ public class L2GamePaccketHandler implements IPacketHandler<GameConnection> {
 					msg = new ExSendManorList();
 					break;
 				default:
-					System.out.println("Read uncknow sub packet(0xFE): 0x"
+					_log.info("[R] uncknow sub packet(0xFE): 0x"
 							+ Integer.toHexString(subid));
 					break;
 				}
@@ -73,13 +72,30 @@ public class L2GamePaccketHandler implements IPacketHandler<GameConnection> {
 			case 0x16:
 				msg = new NpcInfo();
 				break;
+			case 0x1B:
+				msg = new ItemList();
+				break;
 			case 0x0E:
 				msg = new StatusUpdate();
 				break;
 			case 0x0C:
 				msg = new DropItem();
 				break;
-			
+			case 0x2A:
+				msg = new TargetUnselected();
+				break;
+			case 0x29:
+				msg = new TargetSelected();
+				break;
+			case 0x2F:
+				msg = new ChangeWaitType();
+				break;
+			case 0x58:
+				msg = new SkillList();
+				break;
+			case 0x39:
+				msg = new AskJoinParty();
+				break;
 				
 			default:
 				//System.out.println("Uncknow packet(IN_GAME): 0x"+ Integer.toHexString(id));

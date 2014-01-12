@@ -1,6 +1,7 @@
 package fw.game;
 
 import fw.game.clientpackets.*;
+import fw.game.model.L2MoveTask;
 import fw.game.model.L2Object;
 import fw.game.model.L2Player;
 
@@ -48,14 +49,18 @@ public class GameEngine implements IGameConnectionLitener,ILoginConnectionListen
 	private int _loginPort,_loginServerId,_protocolVersion,_charNum;
 	
 	// GAME
+	private boolean _enabled = false;
 	private L2World _world = new L2World();
 	private L2Player _selfChar;
 	private final CombatEngine _combatengine;
+	private final L2MoveTask _moveTask;
 	
 	public GameEngine(GameVisualInterface visualInterface) {
 		_combatengine = new CombatEngine(this);
+		_moveTask = new L2MoveTask(this);
 		this.visualInterface = visualInterface;
 		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(this, 1000, 1000);
+		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(_moveTask, 1000, 500);
 	}
 
 	public void setLogout() {
@@ -319,5 +324,13 @@ public class GameEngine implements IGameConnectionLitener,ILoginConnectionListen
 	public void setDbObjects(DbObjects dbObjects)
 	{
 		this.dbObjects = dbObjects;
+	}
+
+	public boolean isEnabled() {
+		return _enabled;
+	}
+
+	public void setEnabled(boolean _enabled) {
+		this._enabled = _enabled;
 	}
 }

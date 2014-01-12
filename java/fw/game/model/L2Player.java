@@ -1,5 +1,12 @@
 package fw.game.model;
 
+import java.util.Iterator;
+
+import fw.connection.game.clientpackets.L2GameClientPacket;
+import fw.connection.game.clientpackets.RequestMagicSkillUse;
+import fw.extensions.util.GCArray;
+import fw.game.GameEngine;
+
 public final class L2Player extends L2Playable {
 
 	private String _accountName;
@@ -12,19 +19,50 @@ public final class L2Player extends L2Playable {
 	private int _lvl = 1;
 	
 	private int _curWeightPenalty = 0;
-	private boolean _isSitting;
+	
 	private int sp,curLoad,maxLoad;
 	private long exp;
 	
-	private boolean _isMoving = false;
+	private GameEngine _GameEngine = null;
+	
+	private L2PlayerInventory _inventory = new L2PlayerInventory();
+	private GCArray<L2Skill> _skills = null;
+	
 	
 	public L2Player(int objectId) {
 		super(objectId);
+	}	
+
+	public GameEngine getGameEngine() {
+		return _GameEngine;
+	}
+
+	public void setGameEngine(GameEngine _GameEngine) {
+		this._GameEngine = _GameEngine;
+	}
+	
+	@Override
+	public void sendPacket(L2GameClientPacket... mov){
+		if(getGameEngine() == null) 
+			return;
+		for (int i = 0; i < mov.length; i++) 		
+			getGameEngine().getGameConnection().sendPacket(mov[i]);
+	}
+	
+	public void useSkill(int id){
+		if(_skills == null)
+			return;
+		for (Iterator<L2Skill> el = _skills.iterator(); el.hasNext();) {
+			L2Skill _el = el.next();
+			if(_el.getSkill_id() == id){
+				sendPacket(new RequestMagicSkillUse(id));
+				return;
+			}			
+		}
 	}
 
 	@Override
 	public byte getLevel() {
-		// TODO Auto-generated method stub
 		return (byte)_lvl;
 	}
 	public final void setLevel(final int lvl)
@@ -127,29 +165,12 @@ public final class L2Player extends L2Playable {
 	{
 		return _ClassId;
 	}
-	//@Override
-	public boolean isSitting()
-	{
-		return _isSitting;
-	}
-	public void setSitting(boolean val)
-	{
-		_isSitting = val;
-	}
 	public int getClanId() {
 		return clanId;
 	}
 
 	public void setClanId(int clanId) {
 		this.clanId = clanId;
-	}
-
-	public boolean isMoving() {
-		return _isMoving;
-	}
-	
-	public void setMoving(boolean m) {
-		_isMoving = m;
 	}
 
 	public int getSp() {
@@ -182,6 +203,20 @@ public final class L2Player extends L2Playable {
 
 	public void setMaxLoad(int maxLoad) {
 		this.maxLoad = maxLoad;
+	}
+
+	public L2PlayerInventory getInventory() {
+		if(_inventory == null)
+			_inventory = new L2PlayerInventory();
+		return _inventory;
+	}
+
+	public GCArray<L2Skill> getSkills() {
+		return _skills;
+	}
+
+	public void setSkills(GCArray<L2Skill> _skills) {
+		this._skills = _skills;
 	}
 
 }

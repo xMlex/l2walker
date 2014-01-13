@@ -5,23 +5,10 @@ import java.util.logging.Logger;
 
 import fw.extensions.util.GArray;
 import fw.extensions.util.Location;
+import fw.extensions.util.Rnd;
+import fw.extensions.util.Util;
 import fw.game.model.L2Character;
 import fw.game.model.L2Object;
-
-/*import l2p.common.ThreadPoolManager;
-import l2p.extensions.listeners.MethodCollection;
-import l2p.extensions.listeners.engine.DefaultListenerEngine;
-import l2p.extensions.listeners.engine.ListenerEngine;
-import l2p.extensions.listeners.events.L2Zone.L2ZoneEnterLeaveEvent;
-import l2p.extensions.scripts.Functions;
-import l2p.gameserver.serverpackets.SystemMessage;
-import l2p.gameserver.skills.Stats;
-import l2p.gameserver.skills.funcs.FuncAdd;
-import l2p.gameserver.tables.SkillTable;
-import l2p.util.GArray;
-import l2p.util.Location;
-import l2p.util.Rnd;
-import l2p.util.Util;*/
 
 public class L2Zone
 {
@@ -284,7 +271,6 @@ public class L2Zone
 		if(!isActive())
 			return;
 
-		onZoneEnter(object);
 	}
 
 	/**
@@ -304,204 +290,9 @@ public class L2Zone
 
 		if(!isActive())
 			return;
-
-		if(notify)
-			onZoneLeave(object);
 	}
 
-	/**
-	 * Обработка входа в зону
-	 * @param object кто входит
-	 */
-	private void onZoneEnter(L2Object object)
-	{
-		if(object.inObserverMode())
-			return;
-
-		object.addZone(this);
-
-		getListenerEngine().fireMethodInvoked(new L2ZoneEnterLeaveEvent(MethodCollection.L2ZoneObjectEnter, this, new L2Object[] { object }));
-
-		checkEffects(object, true);
-
-		addZoneStats((L2Character) object);
-
-		if(object.isPlayer())
-			((L2Player) object).doZoneCheck(_entering_message_no);
-	}
-
-	/**
-	 * Обработка выхода из зоны
-	 * @param object кто выходит
-	 */
-	private void onZoneLeave(L2Object object)
-	{
-		if(object.inObserverMode())
-			return;
-
-		object.removeZone(this);
-
-		getListenerEngine().fireMethodInvoked(new L2ZoneEnterLeaveEvent(MethodCollection.L2ZoneObjectLeave, this, new L2Object[] { object }));
-
-		checkEffects(object, false);
-
-		removeZoneStats((L2Character) object);
-
-		if(object.isPlayer())
-			((L2Player) object).doZoneCheck(_leaving_message_no);
-	}
-
-	/**
-	 * Добавляет статы зоне
-	 * @param object обьект которому добавляется
-	 */
-	private void addZoneStats(L2Character object)
-	{
-		// Проверка цели
-		if(_target != null)
-			if(!checkTarget(object))
-				return;
-
-		// Скорость движения накладывается только на L2Playable
-		// affectRace в базе не указан, если надо будет влияние, то поправим
-		if(getMoveBonus() != 0)
-			if(object.isPlayable())
-			{
-				object.addStatFunc(new FuncAdd(Stats.RUN_SPEED, ZONE_STATS_ORDER, this, getMoveBonus()));
-				object.sendChanges();
-			}
-
-		// Если раса указана, то это уже не NPC
-		if(affectRace != null && !object.isPlayer())
-			return;
-
-		// Если у нас раса не "all"
-		if(affectRace != null && !affectRace.equalsIgnoreCase("all"))
-		{
-			L2Player player = object.getPlayer();
-
-			// если раса не подходит
-			if(!player.getRace().toString().equalsIgnoreCase(affectRace))
-				return;
-		}
-
-		// Если у нас есть что регенить
-		if(getRegenBonusHP() != 0)
-			object.addStatFunc(new FuncAdd(Stats.REGENERATE_HP_RATE, ZONE_STATS_ORDER, this, getRegenBonusHP()));
-
-		// Если у нас есть что регенить
-		if(getRegenBonusMP() != 0)
-			object.addStatFunc(new FuncAdd(Stats.REGENERATE_MP_RATE, ZONE_STATS_ORDER, this, getRegenBonusMP()));
-	}
-
-	/**
-	 * Убирает добавленые зоной статы
-	 * @param object обьект у которого убирается
-	 */
-	private void removeZoneStats(L2Character object)
-	{
-		if(getRegenBonusHP() == 0 && getRegenBonusMP() == 0 && getMoveBonus() == 0)
-			return;
-
-		object.removeStatsOwner(this);
-
-		if(getMoveBonus() > 0)
-			object.sendChanges();
-	}
-
-	/**
-	 * Применяет эффекты при входе/выходе из(в) зону
-	 * @param object обьект
-	 * @param enter вошел или вышел
-	 */
-	private void checkEffects(L2Object object, boolean enter)
-	{
-		if(_event != null && _event.startsWith("script"))
-		{
-			String[] param = _event.split(";");
-			Functions.callScripts(param[1], param[2], new Object[] { this, object, enter });
-		}
-
-		if(_skill == null || _target == null)
-			return;
-
-		// Проверяет тип цели.
-		// affectRace ну указан.
-		if(!checkTarget(object))
-			return;
-
-		L2Character p = (L2Character) object;
-		ZoneSkillTimer rem = _skillTimers.remove(p);
-		if(rem != null)
-			rem.setCanceled(true);
-
-		if(enter)
-		{
-			ZoneSkillTimer t = new ZoneSkillTimer(p, _skill, _skillProb, _unitTick);
-			_skillTimers.put(p, t);
-			if(_initialDelay > 0)
-				ThreadPoolManager.getInstance().scheduleGeneral(t, _initialDelay);
-			else
-				t.run();
-		}
-	}
-
-	/**
-	 * Проверяет подходит ли обьект для вызвавшего действия
-	 * @param object обьект
-	 * @return подошел ли
-	 */
-	private boolean checkTarget(L2Object object)
-	{
-		switch(_target)
-		{
-			case pc:
-				return object.isPlayable();
-			case only_pc:
-				return object.isPlayer();
-			case npc:
-				return object.isNpc();
-		}
-		return false;
-	}
-
-	public L2Object[] getObjects()
-	{
-		synchronized (_objects)
-		{
-			return _objects.toArray(new L2Object[_objects.size()]);
-		}
-	}
-
-	public GArray<L2Object> getInsideObjectsIncludeZ()
-	{
-		L2Object[] all_objects = getObjects();
-		GArray<L2Object> result = new GArray<L2Object>();
-		for(L2Object obj : all_objects)
-			if(obj != null && _loc.isInside(obj))
-				result.add(obj);
-		return result;
-	}
-
-	public GArray<L2Player> getInsidePlayers()
-	{
-		L2Object[] all_objects = getObjects();
-		GArray<L2Player> result = new GArray<L2Player>();
-		for(L2Object obj : all_objects)
-			if(obj != null && obj.isPlayer())
-				result.add((L2Player) obj);
-		return result;
-	}
-
-	public GArray<L2Player> getInsidePlayersIncludeZ()
-	{
-		L2Object[] all_objects = getObjects();
-		GArray<L2Player> result = new GArray<L2Player>();
-		for(L2Object obj : all_objects)
-			if(obj != null && obj.isPlayer() && _loc.isInside(obj))
-				result.add((L2Player) obj);
-		return result;
-	}
+	
 
 	/**
 	 * Установка активности зоны
@@ -516,11 +307,6 @@ public class L2Zone
 		{
 			_active = value;
 
-			for(L2Object obj : _objects)
-				if(_active)
-					onZoneEnter(obj);
-				else
-					onZoneLeave(obj);
 		}
 
 		setDamageTaskActive(value);
@@ -599,12 +385,6 @@ public class L2Zone
 		if(skill == null || skill.equalsIgnoreCase("null"))
 			return;
 		String[] sk = skill.split(";");
-		setSkill(SkillTable.getInstance().getInfo(Short.parseShort(sk[0]), Short.parseShort(sk[1])));
-	}
-
-	public void setSkill(L2Skill skill)
-	{
-		_skill = skill;
 	}
 
 	public void setSkillProb(String chance)
@@ -643,27 +423,20 @@ public class L2Zone
 	{
 		private boolean canceled = false;
 		private L2Character _target;
-		private L2Skill _skill;
 		private int _skillProb;
 		private long _unitTick;
 
-		public ZoneSkillTimer(L2Character target, L2Skill skill, int skillProb, long unitTick)
+		public ZoneSkillTimer(L2Character target, int skillProb, long unitTick)
 		{
 			_target = target;
-			_skill = skill;
+
 			_skillProb = skillProb;
 			_unitTick = unitTick;
 		}
 
 		public void run()
 		{
-			if(canceled)
-				return;
 
-			if(Rnd.chance(_skillProb) && !_target.isDead())
-				_skill.getEffects(_target, _target, false, false);
-
-			ThreadPoolManager.getInstance().scheduleGeneral(this, _unitTick);
 		}
 
 		public void setCanceled(boolean val)
@@ -916,8 +689,7 @@ public class L2Zone
 			{
 				for(L2Object object : _objects)
 				{
-					if(_target != null && !checkTarget(object)) // Если явно указана цель
-						continue;
+				
 
 					if(_target == null && !object.isPlayable()) // Если цель не указана, то валим только игроков
 						continue;
@@ -930,21 +702,15 @@ public class L2Zone
 
 					if(hp > 0)
 					{
-						target.reduceCurrentHp(hp, null, null, true, true, true, false);
-						if(message > 0)
-							target.sendPacket(new SystemMessage(message).addNumber(hp));
+						
 					}
 
 					if(mp > 0)
 					{
-						target.reduceCurrentMp(mp, null);
-						if(message > 0)
-							target.sendPacket(new SystemMessage(message).addNumber(mp));
+						
 					}
 				}
 			}
-
-			ThreadPoolManager.getInstance().scheduleGeneral(this, 1000);
 		}
 
 		/**
@@ -959,8 +725,6 @@ public class L2Zone
 				run();
 				return;
 			}
-
-			ThreadPoolManager.getInstance().scheduleGeneral(this, _initialDelay);
 		}
 	}
 

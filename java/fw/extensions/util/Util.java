@@ -941,4 +941,30 @@ public class Util
         }
         return false;
     }
+    
+    
+    public static String getOs() {
+		String s = System.getProperty("os.name").toLowerCase();
+		if (s.contains("win")) {
+			return "windows";
+		}
+		if (s.contains("mac")) {
+			return "macos";
+		}
+		if (s.contains("solaris")) {
+			return "solaris";
+		}
+		if (s.contains("sunos")) {
+			return "solaris";
+		}
+		if (s.contains("linux")) {
+			return "linux";
+		}
+		if (s.contains("unix")) {
+			return "linux";
+		} else {
+			return "unknown: "+s;
+		}
+	}
+    
 }

@@ -29,7 +29,7 @@ public class ThreadPoolManager
 
 	private ThreadPoolManager()
 	{
-		_generalScheduledThreadPool = new ScheduledThreadPoolExecutor(1, new PriorityThreadFactory("GerenalSTPool", Thread.NORM_PRIORITY + 1));
+		_generalScheduledThreadPool = new ScheduledThreadPoolExecutor(4, new PriorityThreadFactory("GerenalSTPool", Thread.NORM_PRIORITY + 1));
 		_generalScheduledThreadPool.setKeepAliveTime(1, TimeUnit.SECONDS);
 		_generalScheduledThreadPool.allowCoreThreadTimeOut(true);
 

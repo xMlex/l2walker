@@ -84,7 +84,7 @@ public class RequestTradeDialog extends org.eclipse.swt.widgets.Dialog {
 							Display display = Display.getDefault();
 							Shell shell = new Shell(display, SWT.ON_TOP | SWT.TITLE);
 
-							shell.setText("["+mainArea.gameEngine.getUserChar().realName+"] - Trade");
+							shell.setText("["+mainArea.gameEngine.getSelfChar().getName()+"] - Trade");
 
 							shell.setBounds(171, 100, 834, 608);
 							shell.addShellListener(new ShellAdapter()
@@ -224,7 +224,7 @@ public class RequestTradeDialog extends org.eclipse.swt.widgets.Dialog {
 					btnOk.setText("Ok");
 				    btnOk.addListener(SWT.Selection, new Listener() {
 				        public void handleEvent(Event event) {
-				        	mainArea.gameEngine.sendTradeDone(1);
+				        	//mainArea.gameEngine.sendTradeDone(1);
 				        }
 				    });
 				}
@@ -239,7 +239,7 @@ public class RequestTradeDialog extends org.eclipse.swt.widgets.Dialog {
 					btnCancel.setText("Cancel");
 					btnCancel.addListener(SWT.Selection, new Listener() {
 					        public void handleEvent(Event event) {
-					        	mainArea.gameEngine.sendTradeDone(0);
+					        	//mainArea.gameEngine.sendTradeDone(0);
 					        }
 					});
 				}
@@ -390,10 +390,10 @@ public class RequestTradeDialog extends org.eclipse.swt.widgets.Dialog {
 					if(tradeItem.itemCount > 1)
 					{
 						if(count <= tradeItem.itemCount){
-							mainArea.gameEngine.sendAddTradeItem(tradeItem,count);
+							//mainArea.gameEngine.sendAddTradeItem(tradeItem,count);
 						}
 					}else{
-						mainArea.gameEngine.sendAddTradeItem(tradeItem,1);
+						//mainArea.gameEngine.sendAddTradeItem(tradeItem,1);
 					}
 				}
 				catch (Exception e)

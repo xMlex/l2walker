@@ -13,7 +13,7 @@
 	<classpathentry kind="lib" path="libs/fw/db4o-6.1-java5.jar"/>
 	<classpathentry kind="lib" path="libs/fw/db4o-6.4.14.8131-java5.jar"/>
 	<classpathentry kind="lib" path="libs/fw/swt-grouplayout.jar"/>
-	<classpathentry kind="lib" path="libs/fw/swt.jar">
+	<classpathentry kind="lib" path="libs/fw/swt.jar" sourcepath="libs/jfreechart-1.0.13-swt-src.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://help.eclipse.org/indigo/nftopic/org.eclipse.platform.doc.isv/reference/api/"/>
 		</attributes>
@@ -26,5 +26,20 @@
 	<classpathentry kind="lib" path="libs/objectmanager/lib/objectmanager-api.jar"/>
 	<classpathentry kind="lib" path="libs/sqlite-jdbc-3.7.2.jar"/>
 	<classpathentry kind="lib" path="libs/mysql-connector-java-5.1.28.jar"/>
+	<classpathentry kind="lib" path="libs/slik2d/ibxm.jar"/>
+	<classpathentry kind="lib" path="libs/slik2d/jinput.jar"/>
+	<classpathentry kind="lib" path="libs/slik2d/jnlp.jar"/>
+	<classpathentry kind="lib" path="libs/slik2d/jogg-0.0.7.jar"/>
+	<classpathentry kind="lib" path="libs/slik2d/jorbis-0.0.15.jar"/>
+	<classpathentry kind="lib" path="libs/slik2d/lwjgl_util_applet.jar"/>
+	<classpathentry kind="lib" path="libs/slik2d/lwjgl_util.jar"/>
+	<classpathentry kind="lib" path="libs/slik2d/lwjgl.jar"/>
+	<classpathentry kind="lib" path="libs/slik2d/natives-linux.jar"/>
+	<classpathentry kind="lib" path="libs/slik2d/natives-mac.jar"/>
+	<classpathentry kind="lib" path="libs/slik2d/natives-windows.jar"/>
+	<classpathentry kind="lib" path="libs/slik2d/slick-examples.jar"/>
+	<classpathentry kind="lib" path="libs/slik2d/slick.jar" sourcepath="tmp/slik2d/src"/>
+	<classpathentry kind="lib" path="libs/slik2d/tinylinepp.jar"/>
+	<classpathentry kind="lib" path="libs/slik2d/slick-util.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

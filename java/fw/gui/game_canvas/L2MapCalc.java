@@ -49,6 +49,16 @@ public class L2MapCalc {
 		//return a/b;		
 	}
 	
+	public static int getBlockX(int x){
+		//return (x + MAPBLOCKSIZE * 18) / MAPBLOCKSIZE;
+		return (x+MAP_CORRECT_X) / MAPBLOCKSIZE;
+	}
+	public static int getBlockY(int y){
+		//return (y + L2MapCalc.MAPBLOCKSIZE * 20) / L2MapCalc.MAPBLOCKSIZE;
+		return (y+MAP_CORRECT_Y) / MAPBLOCKSIZE;
+	}
+	
+	
 	
 	// BASE CALC 
 	
@@ -81,14 +91,14 @@ public class L2MapCalc {
 	public static int getXInSmallBlock(int xPos){
 		int xBlock = getXBlock(xPos);
 		int xBlockPos = getXInBlock(xPos);
-		return  ((xPos+MAP_CORRECT_X) - (xBlock+xBlockPos)*MAPBLOCKSIZEDIV3) / MAPBLOCKSIZEDIV900;
+		return  ((xPos+MAP_CORRECT_X) - (xBlock+xBlockPos)*MAPBLOCKSIZEDIV3) / MAPBLOCKSIZEDIV900 - 300;
 	}
 	
 	/** Вычисляем смешение внутри маленького блока */
 	public  int getXInSmallBlockMap(int xPos){
 		int xBlock = getXBlock(xPos);
 		int xBlockPos = getXInBlock(xPos);
-		return  ((xPos+MAP_CORRECT_X) - (xBlock+xBlockPos)*MAPBLOCKSIZEDIV3) / MAPBLOCKSIZEDIV900;
+		return  ((xPos+MAP_CORRECT_X) - (xBlock+xBlockPos)*MAPBLOCKSIZEDIV3) / MAPBLOCKSIZEDIV900 - 300;
 	}
 	
 	
@@ -123,6 +133,14 @@ public class L2MapCalc {
 		_log.info("Map y: "+getYBlockCorrect(y));
 		_log.info("Map y small block: "+getYInSmallBlock(y));
 		_log.info("Good div 10/3: "+GoodDiv(10, 3));
+	}	
+	
+	class L2Block{
+		public int x=0,y=0;
+		public L2Block(int _x, int _y){
+			x=_x; y=_y;
+		}
+		public L2Block(){}		
 	}	
 	
 }

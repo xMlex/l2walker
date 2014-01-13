@@ -66,7 +66,7 @@ public class RequestPartyDaialog extends org.eclipse.swt.widgets.Dialog
 							Display display = Display.getDefault();
 							Shell shell = new Shell(display, SWT.ON_TOP | SWT.TITLE);
 
-							shell.setText("["+mainArea.gameEngine.getUserChar().realName+"]");
+							shell.setText("["+mainArea.gameEngine.getSelfChar().getName()+"]");
 
 							shell.setBounds(171, 100, 834, 608);
 							shell.addShellListener(new ShellAdapter()

@@ -21,9 +21,7 @@ public class CombatEngine implements Runnable {
 	
 	public CombatEngine(GameEngine ge) {
 		_ge = ge;
-		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(this, 1000, 3000);
-		PathFindBuffers.initBuffers("8x100;8x128;8x192;4x256;2x320;2x384;1x500");
-		GeoEngine.loadGeo();
+		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(this, 1000, 3000);		
 	}
 	
 	public void run() {		

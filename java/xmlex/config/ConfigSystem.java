@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import fw.extensions.util.Util;
+
 /**
  * @author : Ragnarok
  * @date : 19.12.10 10:53
@@ -24,6 +26,9 @@ public class ConfigSystem {
 			loadLogConfig();
 			parseFiles(files.listFiles());
 		}
+		Util.getOs();
+		//System.setProperty("org.lwjgl.librarypath","/lib/");
+		System.setProperty( "org.lwjgl.librarypath", System.getProperty("user.dir")+"/libs/slik2d" );
 	}
 
 	public static void loadLogConfig() {

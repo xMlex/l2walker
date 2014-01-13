@@ -43,7 +43,7 @@ public class DbObjects
 			return dbL2Item;
 		}
 
-		{
+		/*{
 			List<DbL2Item> listResult = db.query(new Predicate<DbL2Item>()
 			{
 				private static final long serialVersionUID = 1L;
@@ -61,9 +61,9 @@ public class DbObjects
 				dbL2ItemCache.put(item_id, dbL2Item);
 				return dbL2Item;
 			}
-		}
+		}*/
 
-		{
+		/*{
 			List<DbL2Weapon> listResult = db.query(new Predicate<DbL2Weapon>()
 			{
 				private static final long serialVersionUID = 1L;
@@ -81,9 +81,9 @@ public class DbObjects
 				dbL2ItemCache.put(item_id, dbL2Item);
 				return dbL2Item;
 			}
-		}
+		}*/
 
-		{
+		/*{
 			List<DbL2Armor> listResult = db.query(new Predicate<DbL2Armor>()
 			{
 				private static final long serialVersionUID = 1L;
@@ -101,7 +101,7 @@ public class DbObjects
 				dbL2ItemCache.put(item_id, dbL2Item);
 				return dbL2Item;
 			}
-		}
+		}*/
 
 		dbL2Item = new DbL2ItemBase();
 		dbL2Item.item_id = item_id;
@@ -119,7 +119,7 @@ public class DbObjects
 		{
 			return dbL2Npc;
 		}
-
+/*
 		List<DbL2Npc> listNpcs = db.query(new Predicate<DbL2Npc>()
 		{
 			private static final long serialVersionUID = 1L;
@@ -141,7 +141,7 @@ public class DbObjects
 
 		dbL2Npc = new DbL2Npc();
 		dbL2Npc.idTemplate = idTemplate;
-		dbL2NpcCache.put(idTemplate, dbL2Npc);
+		dbL2NpcCache.put(idTemplate, dbL2Npc);*/
 		return dbL2Npc;
 	}
 
@@ -153,7 +153,7 @@ public class DbObjects
 		{
 			return dbL2Skill;
 		}
-
+/*
 		List<DbL2Skill> listSkills = db.query(new Predicate<DbL2Skill>()
 		{
 			private static final long serialVersionUID = 1L;
@@ -174,7 +174,7 @@ public class DbObjects
 
 		dbL2Skill = new DbL2Skill();
 		dbL2Skill.skill_id = skill_id;
-		dbL2SkillCache.put(skill_id, dbL2Skill);
+		dbL2SkillCache.put(skill_id, dbL2Skill);*/
 		return dbL2Skill;
 	}
 

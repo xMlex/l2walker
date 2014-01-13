@@ -151,8 +151,8 @@ public class GeoEngine
 		if(target == null)
 			return false;
 		// Костыль конечно, но решает кучу проблем с дверьми
-		if(target instanceof GeoControl || actor.equals(target))
-			return true;
+		//if(target instanceof GeoControl || actor.equals(target))
+		//	return true;
 		return canSeeCoord(actor, target.getX(), target.getY(), target.getZ() + /*(int) target.getColHeight()*/ + 64/*, actor.isPlayer*/, air);
 	}
 
@@ -1699,7 +1699,7 @@ public class GeoEngine
 		return false;
 	}
 
-	public static void returnGeoAtControl(GeoControl control)
+	/*public static void returnGeoAtControl(GeoControl control)
 	{
 		L2Territory pos = control.getGeoPos();
 		HashMap<Long, Byte> around = control.getGeoAround();
@@ -2043,7 +2043,7 @@ public class GeoEngine
 			around_keys = null;
 		}
 	}
-
+*/
 	public static long makeLong(int nLo, int nHi)
 	{
 		return (long) nHi << 32 | nLo & 0x00000000ffffffffL;

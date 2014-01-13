@@ -35,6 +35,8 @@ import xmlex.config.ConfigSystem;
 import fw.com.swtdesigner.SWTResourceManager;
 import fw.common.ThreadPoolManager;
 import fw.dbClasses.DbObjects;
+import fw.extensions.geodata.GeoEngine;
+import fw.extensions.geodata.PathFindBuffers;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free
@@ -143,7 +145,7 @@ public class MainAppForm extends org.eclipse.swt.widgets.Composite
 						{
 							menuNewTab = new MenuItem(menu2, SWT.PUSH);
 							menuNewTab.setText("New Tab");
-							menuNewTab.setImage(SWTResourceManager.getImage("res_images/new_wiz.png"));
+							menuNewTab.setImage(SWTResourceManager.getImage("data/res/images/new_wiz.png"));
 							menuNewTab.addSelectionListener(new SelectionAdapter()
 							{
 								@Override
@@ -186,9 +188,9 @@ public class MainAppForm extends org.eclipse.swt.widgets.Composite
 		ConfigSystem.load();
 		Display display = Display.getDefault();
 		final Shell shell = new Shell(display);
-		shell.setText("FoxWalker");
+		shell.setText("L2Walker");
 		shell.setMaximized(false);
-		shell.setImage(SWTResourceManager.getImage("res_images/fox.jpg"));
+		shell.setImage(SWTResourceManager.getImage("data/res/images/fox.jpg"));
 
 		shell.addShellListener(new ShellListener()
 		{
@@ -201,6 +203,8 @@ public class MainAppForm extends org.eclipse.swt.widgets.Composite
 			public void shellClosed(ShellEvent arg0)
 			{
 				arg0.doit = instance.exitWalker();
+				if(arg0.doit)
+					System.exit(0);
 			}
 
 			public void shellDeactivated(ShellEvent arg0)
@@ -241,6 +245,10 @@ public class MainAppForm extends org.eclipse.swt.widgets.Composite
 			if (!display.readAndDispatch())
 				display.sleep();
 		}
+		// Init components
+		PathFindBuffers.initBuffers("8x100;8x128;8x192;4x256;2x320;2x384;1x500");
+		GeoEngine.loadGeo();
+		
 	}
 
 	private void menuNewTabWidgetSelected(SelectionEvent evt)
@@ -270,7 +278,7 @@ public class MainAppForm extends org.eclipse.swt.widgets.Composite
 			if (messageBox.open() == SWT.OK)
 			{
 				tray.dispose();
-				dbObjects.close();
+				dbObjects.close();				
 				System.exit(0);
 				return true;
 			}
@@ -352,7 +360,7 @@ public class MainAppForm extends org.eclipse.swt.widgets.Composite
 
 		if (tray != null) {
 			TrayItem item = new TrayItem(tray, SWT.NONE);
-			item.setImage(SWTResourceManager.getImage("res_images/fox.jpg"));
+			item.setImage(SWTResourceManager.getImage("data/res/images/fox.jpg"));
 			item.setToolTipText("FoxWalker");
 			item.setVisible(true);
 			final Menu menu = new Menu(getShell(), SWT.POP_UP);

@@ -1,10 +1,7 @@
 package fw.gui.game_canvas;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
+import java.awt.Polygon;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
@@ -13,10 +10,11 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Display;
 
 import fw.com.swtdesigner.SWTResourceManager;
-import fw.common.ThreadPoolManager;
 import fw.connection.game.clientpackets.MoveBackwardToLocation;
+import fw.extensions.util.Location;
 import fw.game.GameEngine;
 import fw.game.model.L2Character;
 import fw.game.model.L2Object;
@@ -53,11 +51,33 @@ public class GameDraw implements GameCanvasDrawInterface {
 	Rectangle bounds = null;
 	int pos = 0;
 	boolean isDisposed = false;
+	
+	// new map
+	private Location MapCachePos = new Location(),
+			mapImagePos = new Location(),MeLoc,
+					mapStartLocation = new Location();
+	
+	private Image mapImage = null,bmpBuf = null;
+	private int mapWidth=900, mapHeight=900,fViewStretch=1,
+			fViewRectLeft=0,fViewRectTop=0;
+	private int Scale = 1;
+	private final double cWorldParameter = 0.0625;
+	
+	private Polygon _pol = new Polygon();
 
 	public GameDraw(GameCanvas gameCanvas, GameEngine ge) {
 		this.gameCanvas = gameCanvas;
 		this.gameEngine = ge;
+		
+		bmpBuf = new Image(Display.getCurrent(), mapWidth, mapHeight);
+		_pol.addPoint(10, 10);
+		_pol.addPoint(50, 40);
+		_pol.addPoint(100, 90);
+		_pol.addPoint(15, 15);
+		//_pol.addPoint(15, 15);
 	}
+		
+	// eend
 
 	public void dispose() {
 		isDisposed = true;
@@ -65,6 +85,8 @@ public class GameDraw implements GameCanvasDrawInterface {
 
 	public void setFrameBounds(Rectangle bounds) {
 		this.bounds = bounds;
+		MapCachePos.x = bounds.width / 2;
+		MapCachePos.y = bounds.height / 2;
 	}
 
 	public boolean drawFrame(GC gc) {
@@ -131,23 +153,26 @@ public class GameDraw implements GameCanvasDrawInterface {
 		map_center_x = bounds.width / 2;
 		map_center_y = bounds.height / 2;
 
-		char_map_pos_x = -(L2MapCalc.getXInSmallBlock(_x) - map_center_x);
-		char_map_pos_y = -(L2MapCalc.getYInSmallBlock(_y) - map_center_y);
-
+		char_map_pos_x = (-L2MapCalc.getXInSmallBlock(_x))+map_center_x;
+		char_map_pos_y = (-L2MapCalc.getYInSmallBlock(_y))+map_center_y;
+		
 		gc.setBackground(bgColor);
 		gc.setForeground(defColor);
 		gc.fillRectangle(0, 0, bounds.width, bounds.height);
 		chekMap();
 		if (_map != null) {
 			try{
-			gc.drawImage(_map, char_map_pos_x, char_map_pos_x);
+			gc.drawImage(_map, char_map_pos_x, char_map_pos_y);
 			}catch(Exception e){e.printStackTrace();}
 		}
 		gc.setAntialias(SWT.ON);
 		gc.setTextAntialias(SWT.ON);
 		gc.setFont(baseFont);
+		
+		drawPolugon(gc, _pol);
+		
 		gc.drawText("map pos x: " + char_map_pos_x + " y: " + char_map_pos_y, 0, 10, true);
-		gc.drawText("map center x: " + map_center_x + " y: " + map_center_y, 0, 20, true);
+		gc.drawText("pos char x: " + _x + " y: " + _y+" z: "+_z, 0, 20, true);
 		gc.drawText("pos in small block x: " + L2MapCalc.getXInSmallBlock(_x) + " y: " + L2MapCalc.getYInSmallBlock(_y), 0, 30, true);
 	}
 
@@ -211,10 +236,15 @@ public class GameDraw implements GameCanvasDrawInterface {
 	public void onMouseDown(MouseEvent evt) {
 		if (gameEngine.getSelfChar() == null)
 			return;
-		gameEngine.getGameConnection().sendPacket(
-				new MoveBackwardToLocation(_mapCalc.getMapXToReal(evt.x),
-						_mapCalc.getMapYToReal(evt.y), _z));
-		System.out.println("MoveTo: x "+_mapCalc.getMapXToReal(evt.x)+" y: "+_mapCalc.getMapYToReal(evt.y));
+		int x = _mapCalc.getMapXToReal(evt.x);
+		int y = _mapCalc.getMapYToReal(evt.y);
+		
+		_pol.addPoint(x, y);
+		//gameEngine.getGameConnection().sendPacket(
+		//		new MoveBackwardToLocation(_mapCalc.getMapXToReal(evt.x),
+		//				_mapCalc.getMapYToReal(evt.y), _z));		
+		
+		System.out.println("MoveTo: x "+x+" y: "+y+" Dist: "+gameEngine.getSelfChar().getLoc().distance(x, y));
 	}
 
 	public void onMouseDoubleClick(MouseEvent evt) {
@@ -224,6 +254,21 @@ public class GameDraw implements GameCanvasDrawInterface {
 
 	public void onMouseMove(MouseEvent evt) {
 
+	}
+	
+	public void drawPolugonx(GC gc, Polygon pol){
+	
+		Polygon _p = new Polygon();
+		
+		for (int i = 0; i < pol.npoints; i++) 
+			_p.addPoint(toX(pol.xpoints[i]), toY(pol.ypoints[i]));
+				
+		gc.drawPolygon(_p.xpoints);
+		gc.drawPolygon(_p.ypoints);
+	}
+	public void drawPolugon(GC gc, Polygon _p){				
+		gc.drawPolygon(_p.xpoints);
+		gc.drawPolygon(_p.ypoints);
 	}
 
 }

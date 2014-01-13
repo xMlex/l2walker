@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
+import fw.com.swtdesigner.SWTResourceManager;
 import fw.game.GameEngine;
 
 /**
@@ -46,6 +47,7 @@ public class GameCanvas extends Canvas implements MouseListener,MouseMoveListene
 
 	public GameCanvas(Composite parent, int style) {
 		super(parent, SWT.DOUBLE_BUFFERED);
+		this.setBackground(SWTResourceManager.getColor(0, 0, 0));
 		this.addMouseMoveListener(this);
 		this.addMouseListener(this);
 		this.addControlListener(new ControlAdapter() {
@@ -96,7 +98,7 @@ public class GameCanvas extends Canvas implements MouseListener,MouseMoveListene
 		try {
 			Rectangle bounds = getBounds();
 			offScreenImg = new Image(getDisplay(), bounds);
-
+			offScreenImg.setBackground(SWTResourceManager.getColor(0, 0, 0));
 			if (drawInterface != null)
 				drawInterface.setFrameBounds(bounds);
 		} catch (Exception e) {

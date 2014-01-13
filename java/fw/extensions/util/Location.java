@@ -109,13 +109,13 @@ public class Location implements Serializable
 
 	public Location correctGeoZ()
 	{
-		//z = GeoEngine.getHeight(x, y, z, 0);
+		z = GeoEngine.getHeight(x, y, z, 0);
 		return this;
 	}
 
 	public Location correctGeoZ(int refIndex)
 	{
-		//z = GeoEngine.getHeight(x, y, z, refIndex);
+		z = GeoEngine.getHeight(x, y, z, refIndex);
 		return this;
 	}
 

@@ -1,4 +1,4 @@
-package l2p.gameserver.geodata;
+package fw.extensions.geodata;
 
 /**
  * @Author: Diamond

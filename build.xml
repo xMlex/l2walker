@@ -1,0 +1,176 @@
+<project name="Server" default="dist" basedir=".">
+	<description> Russia Smolensk Mlex dev </description>
+
+	<property name="src" location="java" />
+	<property name="lib" location="libs" />
+	<property name="build" location="build" />
+	<property name="build.classes" location="${build}/classes" />
+	<property name="build.scripts" location="${build}/scripts" />
+	<property name="build.dist" location="${build}/distr" />
+	<property name="data" value="data" />	
+	<property name="build.revision" value="1.0" />	
+	<property name="jar_name" location="l2walker.jar" />
+	<property name="jar_path" location="${build}/l2walker.jar" />
+
+	<path id="classpath">
+		<fileset dir="${lib}"><include name="*.jar" /></fileset>
+		<fileset dir="${lib}\slik2d"><include name="*.jar" /></fileset>
+		<fileset dir="${lib}\objectmanager\lib"><include name="*.jar" /></fileset>
+		<fileset dir="${lib}\fw"><include name="*.jar" /></fileset>
+	</path>
+
+	<target name="clean" description="Remove the output directories">
+		<delete dir="${build.dist}" />
+	</target>
+
+	<target name="cleanclasses" description="Remove the classes directories">
+		<delete dir="${build.classes}" />
+	</target>
+
+	<target name="cc" description="Remove the classes directories">
+		<delete dir="${build}/classes" />
+	</target>
+
+	<target name="init" description="Create the output directories.">
+		<!--<mkdir dir="${build}"/>-->
+		<mkdir dir="${build.classes}" />
+		<mkdir dir="${build.dist}" />
+	</target>
+
+	<target name="compile" depends="init" description="Compile the source.">
+
+		<javac destdir="${build.classes}" optimize="on" source="1.7" target="1.7" encoding="UTF-8" includeantruntime="true" nowarn="on">
+			<compilerarg value="-Xlint:all">
+			</compilerarg>
+			<src path="${src}" />
+			<classpath refid="classpath" />
+		</javac>
+
+	</target>
+
+	<target name="compile_scripts" depends="jar" description="Compile the source.">
+
+		<copy todir="${lib}">
+			<fileset dir="${build}">
+				<include name="${jar_name}" />
+			</fileset>
+		</copy>
+
+		<mkdir dir="${build.scripts}" />
+		<javac destdir="${build.scripts}" optimize="on" debug="on" source="1.7" target="1.7" encoding="UTF-8" includeantruntime="false" nowarn="off">
+			<compilerarg value="-Xlint:all">
+			</compilerarg>
+			<src path="data" />
+			<classpath refid="classpath" />
+		</javac>
+
+	</target>
+
+	<target name="jar" depends="clean,compile" description="Create the jar file">
+
+		<tstamp>
+			<format property="build.tstamp" pattern="yyyy.MM.dd HH:mm" />
+		</tstamp>
+
+		<concat destfile="${build.dist}/data/config/xmlex-version.properties">
+			version=${xmlex.revision}
+			builddate=${build.tstamp}
+		</concat>
+
+		<concat destfile="${build}/classes/xmlex/xmlex-version.properties">
+			version=${xmlex.revision}
+			builddate=${build.tstamp}
+			user=${user.name} ${user.dir} ${user.timezone}
+			os=${os.name} ${os.version} ${os.arch}
+			java=${java.version} ${java.vendor}
+			vm=${java.vm.name} ${java.vm.version}
+		</concat>
+
+		<jar destfile="${jar_path}" level="9">
+			<fileset dir="${build.classes}" />
+			<manifest>
+				<attribute name="Main-Class" value="fw.gui.MainAppForm" />
+				<attribute name="Class-Path" value="./libs " />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="jar_update" depends="cleanclasses, compile" description="Create the jar file">
+
+		<tstamp>
+			<format property="build.tstamp" pattern="yyyy.MM.dd HH:mm" />
+		</tstamp>
+
+		<concat destfile="${build.dist.game}/data/config/xmlex-version.properties">
+			version=${build.revision}
+			builddate=${build.tstamp}
+			user=${user.name} ${user.dir} ${user.timezone}
+			os=${os.name} ${os.version} ${os.arch}
+			java=${java.version} ${java.vendor}
+			vm=${java.vm.name} ${java.vm.version}
+		</concat>
+
+		<concat destfile="${build}/classes/config/xmlex-version.properties">
+			version=${build.revision}
+			builddate=${build.tstamp}
+			user=${user.name} ${user.dir} ${user.timezone}
+			os=${os.name} ${os.version} ${os.arch}
+			java=${java.version} ${java.vendor}
+			vm=${java.vm.name} ${java.vm.version}
+		</concat>
+
+		<jar destfile="${build}/${jar_name}" level="9">
+			<fileset dir="${build.classes}" />
+			<manifest>
+				<attribute name="Main-Class" value="fw.gui.MainAppForm" />
+				<attribute name="Class-Path" value="./libs" />
+			</manifest>
+		</jar>
+
+		<copy todir="${build.dist}" preservelastmodified="true">
+			<fileset dir="${build}">
+				<include name="${jar_name}" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="dist_common" depends="jar">
+
+		<copy todir="${build.dist}" preservelastmodified="true">
+			<fileset dir="${data}/config">
+				<include name="*.sh" />
+				<include name="*.bat" />
+			</fileset>
+		</copy>
+		<!-- <mkdir dir="${build.dist}/backup" /> -->
+		<mkdir dir="${build.dist}/log" />
+
+		<mkdir dir="${build.dist}/libs" />
+		<copy todir="${build.dist}/libs" preservelastmodified="true">
+			<fileset dir="${lib}"><include name="*.jar" /></fileset>
+			<fileset dir="${lib}\objectmanager\lib"><include name="*.jar" /></fileset>
+			<fileset dir="${lib}\fw"><include name="*.jar" /></fileset>
+		</copy>
+		<mkdir dir="${build.dist}/libs/slik2d" />
+		<copy todir="${build.dist}/libs/slik2d" preservelastmodified="true">
+			<fileset dir="${lib}/slik2d"><include name="*.*" /></fileset>
+		</copy>
+		
+		<copyfile dest="${build.dist}/libs/LAST-BUILD.jar" src="${jar_path}" />
+		<mkdir dir="${build.dist}/data" />
+		<copy todir="${build.dist}/data" preservelastmodified="true">
+			<fileset dir="data">
+				<include name="**/*.*" />
+				<!-- <exclude name="scripts/**/*.java"/> -->
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="dist" depends="dist_common">
+		<copy todir="${build.dist}/data" preservelastmodified="true">
+			<fileset dir="data">
+				<include name="scripts/**/*.java" />
+			</fileset>
+		</copy>
+	</target>
+</project>

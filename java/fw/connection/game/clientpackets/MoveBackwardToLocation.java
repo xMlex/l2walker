@@ -22,6 +22,7 @@ public class MoveBackwardToLocation extends L2GameClientPacket{
 		writeC(0x01);
 		writeD(_to.x);
 		writeD(_to.y);
+		_to.correctGeoZ();		
 		writeD(_to.z);
 		
 		if(_from == null)

@@ -9,6 +9,7 @@ import fw.gui.ServerConfig;
 import fw.gui.dialogs.*;
 import fw.gui.game_canvas.GameCanvas;
 import fw.gui.game_canvas.GameDraw;
+import fw.gui.l2map.L2MapOpenGL;
 import fw.gui.mainArea.efects.VisualEfectsTimer;
 
 import java.util.Iterator;
@@ -79,6 +80,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 	private Composite cpSkills;
 	private CTabItem tbi_skills;
 	private GameCanvas gameCanvas;
+	private L2MapOpenGL gameCanvasGL;
 	private Composite cpParty;
 	private Composite cpHeader;
 	private SashForm cpArea1;
@@ -221,7 +223,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 						btnLogin.setText("Login");
 						btnLogin.setBounds(583, 1, 72, 24);
 						btnLogin.setAlignment(SWT.UP);
-						btnLogin.setImage(SWTResourceManager.getImage("res_images/connect16_h.png"));
+						btnLogin.setImage(SWTResourceManager.getImage("data/res/images/connect16_h.png"));
 						btnLogin.addSelectionListener(new SelectionAdapter() {
 							public void widgetSelected(SelectionEvent evt)
 							{
@@ -234,7 +236,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 						btnLogout.setText("Logout");
 						btnLogout.setBounds(660, 1, 72, 24);
 						btnLogout.setEnabled(false);
-						btnLogout.setImage(SWTResourceManager.getImage("res_images/disconnect16_h.png"));
+						btnLogout.setImage(SWTResourceManager.getImage("data/res/images/disconnect16_h.png"));
 						
 						btnEnableDisbale = new Button(cpHeader, SWT.NONE);
 						btnEnableDisbale.addSelectionListener(new SelectionAdapter() {
@@ -335,12 +337,18 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 							gameCanvasLData.horizontalAlignment = GridData.FILL;
 							gameCanvasLData.verticalAlignment = GridData.FILL;
 							gameCanvasLData.grabExcessHorizontalSpace = true;
-							gameCanvasLData.grabExcessVerticalSpace = true;
+							gameCanvasLData.grabExcessVerticalSpace = true;						
 							
-							gameCanvas = new GameCanvas(cpGame, SWT.BORDER);
+							
+							/*gameCanvas = new GameCanvas(cpGame, SWT.BORDER);
 							gameCanvas.setLayoutData(gameCanvasLData);
 							gameCanvas.setBackground(SWTResourceManager.getColor(0, 0, 0));
-							gameCanvas.setDrawInterface(new GameDraw(gameCanvas,gameEngine));
+							gameCanvas.setDrawInterface(new GameDraw(gameCanvas,gameEngine));*/
+							
+							gameCanvasGL = new L2MapOpenGL(cpGame, SWT.BORDER);
+							//gameCanvasGL.setLayoutData(gameCanvasLData);
+							//gameCanvasGL.setBackground(SWTResourceManager.getColor(0, 0, 0));
+							gameCanvasGL.setGameEngine(gameEngine);
 							
 							/*l2mapcanvas = new L2MapCanvas(cpGame, SWT.BORDER);
 							l2mapcanvas.setLayoutData(gameCanvasLData);*/
@@ -439,7 +447,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 							{
 								tbiPlayer = new CTabItem(tab_informations, SWT.NONE);
 								tbiPlayer.setText("Player");
-								tbiPlayer.setImage(SWTResourceManager.getImage("res_images/player.png"));
+								tbiPlayer.setImage(SWTResourceManager.getImage("data/res/images/player.png"));
 								{
 									composite1 = new Composite(tab_informations, SWT.NONE);
 									FormLayout composite1Layout = new FormLayout();
@@ -478,7 +486,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 								tbi_inventory.setText("Inventory");
 								tbi_inventory.setFont(SWTResourceManager
 									.getFont("Tahoma", 8, 1, false, false));
-								tbi_inventory.setImage(SWTResourceManager.getImage("res_images/inventory.png"));
+								tbi_inventory.setImage(SWTResourceManager.getImage("data/res/images/inventory.png"));
 
 								{
 									tab_inventory = new CTabFolder(
@@ -518,7 +526,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 									1,
 									false,
 									false));
-								tbi_party.setImage(SWTResourceManager.getImage("res_images/party.png"));
+								tbi_party.setImage(SWTResourceManager.getImage("data/res/images/party.png"));
 								{
 									cpParty = new Composite(
 										tab_informations,
@@ -623,7 +631,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 									1,
 									false,
 									false));
-								tbi_skills.setImage(SWTResourceManager.getImage("res_images/skills.png"));
+								tbi_skills.setImage(SWTResourceManager.getImage("data/res/images/skills.png"));
 								{
 									cpSkills = new Composite(
 										tab_informations,
@@ -716,7 +724,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 							{
 								tbi_mobs = new CTabItem(envTab, SWT.NONE);
 								tbi_mobs.setText("Mons");
-								tbi_mobs.setImage(SWTResourceManager.getImage("res_images/mons.png"));
+								tbi_mobs.setImage(SWTResourceManager.getImage("data/res/images/mons.png"));
 								{
 									cpMobs = new Composite(envTab, SWT.NONE);
 									tbi_mobs.setControl(cpMobs);
@@ -759,7 +767,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 							{
 								tbi_items = new CTabItem(envTab, SWT.NONE);
 								tbi_items.setText("Items");
-								tbi_items.setImage(SWTResourceManager.getImage("res_images/items.png"));
+								tbi_items.setImage(SWTResourceManager.getImage("data/res/images/items.png"));
 								{
 									cpItems = new Composite(envTab, SWT.NONE);
 									FillLayout cpItemsLayout = new FillLayout(
@@ -801,7 +809,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 							{
 								tbi_players = new CTabItem(envTab, SWT.NONE);
 								tbi_players.setText("Players");
-								tbi_players.setImage(SWTResourceManager.getImage("res_images/players.png"));
+								tbi_players.setImage(SWTResourceManager.getImage("data/res/images/players.png"));
 								{
 									cpPlayers = new Composite(
 											envTab,
@@ -874,7 +882,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 							{
 								tbi_npcs = new CTabItem(envTab, SWT.NONE);
 								tbi_npcs.setText("NPC");
-								tbi_npcs.setImage(SWTResourceManager.getImage("res_images/Delphi.png"));
+								tbi_npcs.setImage(SWTResourceManager.getImage("data/res/images/Delphi.png"));
 								{
 									cpNpcs = new Composite(envTab, SWT.NONE);
 									tbi_npcs.setControl(cpNpcs);
@@ -1318,7 +1326,6 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		myTradeDialog.addMyItems();

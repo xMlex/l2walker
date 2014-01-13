@@ -89,7 +89,7 @@ public class RequestHtmlDialog extends org.eclipse.swt.widgets.Dialog {
 		try {
 			Shell parent = getParent();
 			dialogShell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-			dialogShell.setText("Npc Dialog - "+"["+mainArea.gameEngine.getUserChar().realName+"]");
+			dialogShell.setText("Npc Dialog - "+"["+mainArea.gameEngine.getSelfChar().getName()+"]");
 			dialogShell.addDisposeListener(new DisposeListener()
 			{
 				public void widgetDisposed(DisposeEvent evt)

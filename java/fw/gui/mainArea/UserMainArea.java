@@ -79,7 +79,7 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 	private TargetArea targetArea;
 	private Composite cpSkills;
 	private CTabItem tbi_skills;
-	private GameCanvas gameCanvas;
+	//private GameCanvas gameCanvas;
 	private L2MapOpenGL gameCanvasGL;
 	private Composite cpParty;
 	private Composite cpHeader;
@@ -343,9 +343,11 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 							/*gameCanvas = new GameCanvas(cpGame, SWT.BORDER);
 							gameCanvas.setLayoutData(gameCanvasLData);
 							gameCanvas.setBackground(SWTResourceManager.getColor(0, 0, 0));
-							gameCanvas.setDrawInterface(new GameDraw(gameCanvas,gameEngine));*/
+							gameCanvas.setDrawInterface(new GameDraw(gameCanvas,gameEngine));*/							
+									
 							
-							gameCanvasGL = new L2MapOpenGL(cpGame, SWT.BORDER);
+							gameCanvasGL = new L2MapOpenGL(cpGame,gameCanvasLData);
+							
 							//gameCanvasGL.setLayoutData(gameCanvasLData);
 							//gameCanvasGL.setBackground(SWTResourceManager.getColor(0, 0, 0));
 							gameCanvasGL.setGameEngine(gameEngine);

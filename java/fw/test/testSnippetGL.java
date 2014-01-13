@@ -22,9 +22,11 @@ public class testSnippetGL {
 		
 		Composite comp = new Composite(shell, SWT.NONE);
 		Composite comp2 = new Composite(shell, SWT.NONE);
+		Composite comp3 = new Composite(shell, SWT.NONE);
 		
-		Main2DElement _m1 = new Main2DElement(comp);
-		Main2DElement _m2 = new Main2DElement(comp2);
+		GLRender _m1 = new GLRender(comp,null);
+		GLRender _m2 = new GLRender(comp2,null);
+		GLRender _m3 = new GLRender(comp3,null);
 		
 		shell.setText("SWT/LWJGL Example");
 		shell.setSize(640, 480);
@@ -32,6 +34,7 @@ public class testSnippetGL {
 		
 		display.asyncExec(_m1);
 		display.asyncExec(_m2);
+		display.asyncExec(_m3);
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch())
 				display.sleep();

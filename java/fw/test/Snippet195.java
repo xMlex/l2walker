@@ -94,10 +94,15 @@ public class Snippet195 implements Runnable {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 
 		canvas2.setCurrent();
+		try {
+			GLContext.useContext(canvas2);
+		} catch (LWJGLException e) {
+			e.printStackTrace();
+		}
 		canvas2.addListener(SWT.Resize, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
-				Rectangle bounds = canvas.getBounds();
+				Rectangle bounds = canvas2.getBounds();
 				float fAspect = (float) bounds.width / (float) bounds.height;
 				canvas2.setCurrent();
 				try {
@@ -123,11 +128,7 @@ public class Snippet195 implements Runnable {
 		
 		
 		
-		try {
-			GLContext.useContext(canvas2);
-		} catch (LWJGLException e) {
-			e.printStackTrace();
-		}
+		
 		
 		
 		
@@ -179,10 +180,10 @@ public class Snippet195 implements Runnable {
 
 			@Override
 			public void run() {
-				if (!canvas.isDisposed()) {
-					canvas.setCurrent();
+				if (!canvas2.isDisposed()) {
+					canvas2.setCurrent();
 					try {
-						GLContext.useContext(canvas);
+						GLContext.useContext(canvas2);
 					} catch (LWJGLException e) {
 						e.printStackTrace();
 					}
@@ -199,7 +200,7 @@ public class Snippet195 implements Runnable {
 					GL11.glColor3f(0.9f, 0.9f, 0.9f);
 					drawTorus(1, 1.9f + ((float) Math.sin((0.004f * frot))),
 							15, 15);
-					canvas.swapBuffers();
+					canvas2.swapBuffers();
 					display.asyncExec(this);
 				}
 			}
@@ -212,6 +213,7 @@ public class Snippet195 implements Runnable {
 		});
 		
 		display.asyncExec(run);
+		display.asyncExec(run2);
 
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch())

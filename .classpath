@@ -27,19 +27,30 @@
 	<classpathentry kind="lib" path="libs/sqlite-jdbc-3.7.2.jar"/>
 	<classpathentry kind="lib" path="libs/mysql-connector-java-5.1.28.jar"/>
 	<classpathentry kind="lib" path="libs/slik2d/ibxm.jar"/>
-	<classpathentry kind="lib" path="libs/slik2d/jinput.jar"/>
-	<classpathentry kind="lib" path="libs/slik2d/jnlp.jar"/>
-	<classpathentry kind="lib" path="libs/slik2d/jogg-0.0.7.jar"/>
-	<classpathentry kind="lib" path="libs/slik2d/jorbis-0.0.15.jar"/>
-	<classpathentry kind="lib" path="libs/slik2d/lwjgl_util_applet.jar"/>
-	<classpathentry kind="lib" path="libs/slik2d/lwjgl_util.jar"/>
-	<classpathentry kind="lib" path="libs/slik2d/lwjgl.jar"/>
-	<classpathentry kind="lib" path="libs/slik2d/natives-linux.jar"/>
-	<classpathentry kind="lib" path="libs/slik2d/natives-mac.jar"/>
-	<classpathentry kind="lib" path="libs/slik2d/natives-windows.jar"/>
 	<classpathentry kind="lib" path="libs/slik2d/slick-examples.jar"/>
 	<classpathentry kind="lib" path="libs/slik2d/slick.jar" sourcepath="tmp/slik2d/src"/>
 	<classpathentry kind="lib" path="libs/slik2d/tinylinepp.jar"/>
 	<classpathentry kind="lib" path="libs/slik2d/slick-util.jar"/>
+	<classpathentry kind="lib" path="libs/lwjgl/AppleJavaExtensions.jar"/>
+	<classpathentry kind="lib" path="libs/lwjgl/asm-debug-all.jar"/>
+	<classpathentry kind="lib" path="libs/lwjgl/jinput.jar"/>
+	<classpathentry kind="lib" path="libs/lwjgl/lwjgl_test.jar"/>
+	<classpathentry kind="lib" path="libs/lwjgl/lwjgl_util_applet.jar"/>
+	<classpathentry kind="lib" path="libs/lwjgl/lwjgl_util.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/D:/Projects/l2walker/tmp/docs-lwjgl-2.9.1.zip!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="libs/lwjgl/lwjgl-debug.jar"/>
+	<classpathentry kind="lib" path="libs/lwjgl/lwjgl.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/D:/Projects/l2walker/tmp/docs-lwjgl-2.9.1.zip!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="libs/lwjgl/lzma.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/D:/Projects/l2walker/tmp/docs-lwjgl-2.9.1.zip!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build"/>
 </classpath>

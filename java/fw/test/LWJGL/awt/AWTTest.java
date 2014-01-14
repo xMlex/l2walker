@@ -39,6 +39,7 @@ import java.awt.event.WindowEvent;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.AWTGLCanvas;
 
+import xmlex.config.ConfigSystem;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.*;
 
@@ -135,6 +136,8 @@ public class AWTTest extends Frame {
 	}
 
 	public static void main(String[] args) throws LWJGLException {
+		ConfigSystem.load();
+		
 		new AWTTest();
 	}
 }

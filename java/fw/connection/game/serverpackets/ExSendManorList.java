@@ -11,9 +11,7 @@ public class ExSendManorList extends L2GameServerPacket {
 
 	@Override
 	public void excecute() {
-		getClient().sendPacket(new EnterWorld());
-		getClient().sendPacket(new RequestSkillList());
-		getClient().sendPacket(new RequestSkillCoolTime());
+		getClient().sendPacket(new EnterWorld());		
 	}
 
 }

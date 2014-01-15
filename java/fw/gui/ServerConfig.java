@@ -8,4 +8,8 @@ public class ServerConfig
 	public int protocol;
 	public String gameServers[];
 	public String token;
+	@Override
+	public String toString() {
+		return name;
+	}
 }

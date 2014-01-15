@@ -80,6 +80,8 @@ public class GameEngine implements IGameConnectionLitener,ILoginConnectionListen
 		_charNum = charNum;
 		_loginServerId = serverNum;
 		
+		_log.info("L: "+_login+" P: "+_password);
+		
 		loginConnection = new LoginConnection(this);
 
 		visualInterface.putMessage("LOGIN HOST " + host + " PORT " + port,

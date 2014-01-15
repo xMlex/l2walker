@@ -51,6 +51,7 @@ public class GameConnection implements ISocketClientListener {
 	}
 
 	public void onConnected() {
+		_crypt = new GameCryptInterlude();		
 		_state = CLIENT_STATE.CONNECTED;
 		_listener.GameConnectionOnConnect();
 		sendPacket(new ProtocolVersion());
@@ -72,7 +73,8 @@ public class GameConnection implements ISocketClientListener {
 		}
 	}
 
-	public void onDataWrite(ByteBuffer buf) {		
+	public void onDataWrite(ByteBuffer buf) {	
+		//_log.info("[W] Packet 0x"+Integer.toHexString(buf.array()[0]));
 		_crypt.encrypt(buf.array(),0,buf.array().length);
 		//_log.info(Printer.printData(buf.array(), buf.array().length, "[W] Packet"));
 	}

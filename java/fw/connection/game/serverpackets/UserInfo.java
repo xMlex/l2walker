@@ -1,5 +1,7 @@
 package fw.connection.game.serverpackets;
 
+import fw.connection.game.clientpackets.RequestSkillCoolTime;
+import fw.connection.game.clientpackets.RequestSkillList;
 import fw.extensions.util.Location;
 import fw.game.model.L2Player;
 
@@ -142,6 +144,9 @@ public class UserInfo extends L2GameServerPacket {
 		_char.setGameEngine(getClient().getGameEngine());
 		getClient().getGameEngine().setSelfChar(_char);	
 		getClient().getVisualInterface().procSetUserChar(_char);
+		
+		getClient().sendPacket(new RequestSkillList());
+		getClient().sendPacket(new RequestSkillCoolTime());
 	}
 
 }

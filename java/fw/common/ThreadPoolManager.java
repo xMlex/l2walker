@@ -11,12 +11,9 @@ public class ThreadPoolManager
 	private static ThreadPoolManager _instance;
 
 	private final ScheduledThreadPoolExecutor _generalScheduledThreadPool;
-	private ScheduledThreadPoolExecutor _moveScheduledThreadPool, _npcAiScheduledThreadPool,
-			_playerAiScheduledThreadPool;
 
-	private ThreadPoolExecutor _pathfindThreadPool, _ioPacketsThreadPool;
+	private ThreadPoolExecutor _ioPacketsThreadPool;
 	private final ThreadPoolExecutor _LsGsExecutor;
-	public ThreadPoolExecutor _generalPacketsThreadPool;
 
 	private boolean _shutdown;
 
@@ -29,7 +26,7 @@ public class ThreadPoolManager
 
 	private ThreadPoolManager()
 	{
-		_generalScheduledThreadPool = new ScheduledThreadPoolExecutor(4, new PriorityThreadFactory("GerenalSTPool", Thread.NORM_PRIORITY + 1));
+		_generalScheduledThreadPool = new ScheduledThreadPoolExecutor(5, new PriorityThreadFactory("GerenalSTPool", Thread.NORM_PRIORITY + 1));
 		_generalScheduledThreadPool.setKeepAliveTime(1, TimeUnit.SECONDS);
 		_generalScheduledThreadPool.allowCoreThreadTimeOut(true);
 
@@ -57,7 +54,9 @@ public class ThreadPoolManager
 				_generalPacketsThreadPool = new ThreadPoolExecutor(Config.GENERAL_PACKET_THREAD_CORE_SIZE, Config.GENERAL_PACKET_THREAD_CORE_SIZE * 2, 120L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new PriorityThreadFactory("Normal Packet Pool", Thread.NORM_PRIORITY + 3));
 		}*/
 
-		_LsGsExecutor = new ThreadPoolExecutor(1, 5, 5L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new PriorityThreadFactory("LS/GS Communications", Thread.NORM_PRIORITY + 3));
+		_LsGsExecutor = new ThreadPoolExecutor(5, 5, 1L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new PriorityThreadFactory("LS/GS Communications", Thread.NORM_PRIORITY + 3));
+	
+		//_ioPacketsThreadPool = new ThreadPoolExecutor(Config.URGENT_PACKET_THREAD_CORE_SIZE, Integer.MAX_VALUE, 5L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new PriorityThreadFactory("High Packet Pool", Thread.NORM_PRIORITY + 3));
 	}
 
 	public ScheduledFuture<?> scheduleGeneral(Runnable r, long delay)
@@ -73,23 +72,6 @@ public class ThreadPoolManager
 			if(!isShutdown())
 			{
 				_log.warning("GeneralThreadPool: Failed schedule task!");
-				Thread.dumpStack();
-			}
-			return null; /* shutdown, ignore */
-		}
-	}
-
-	public ScheduledFuture<?> scheduleMove(Runnable r, long delay)
-	{
-		try
-		{
-			return _moveScheduledThreadPool.schedule(r, delay > 0 ? delay : 1, TimeUnit.MILLISECONDS);
-		}
-		catch(RejectedExecutionException e)
-		{
-			if(!isShutdown())
-			{
-				_log.warning("MoveThreadPool: Failed schedule task!");
 				Thread.dumpStack();
 			}
 			return null; /* shutdown, ignore */
@@ -115,60 +97,6 @@ public class ThreadPoolManager
 		}
 	}
 
-	public ScheduledFuture<?> scheduleAi(Runnable r, long delay, boolean isPlayer)
-	{
-		try
-		{
-			if(delay < 0)
-				delay = 0;
-			if(isPlayer)
-				return _playerAiScheduledThreadPool.schedule(r, delay, TimeUnit.MILLISECONDS);
-			return _npcAiScheduledThreadPool.schedule(r, delay, TimeUnit.MILLISECONDS);
-		}
-		catch(RejectedExecutionException e)
-		{
-			if(!isShutdown())
-			{
-				_log.warning("AiThreadPool: Failed schedule task!");
-				Thread.dumpStack();
-			}
-			return null; /* shutdown, ignore */
-		}
-	}
-
-	public ScheduledFuture<?> scheduleAiAtFixedRate(Runnable r, long initial, long delay, boolean isPlayer)
-	{
-		try
-		{
-			if(delay < 0)
-				delay = 0;
-			if(initial < 0)
-				initial = 0;
-			if(isPlayer)
-				return _playerAiScheduledThreadPool.scheduleAtFixedRate(r, initial, delay, TimeUnit.MILLISECONDS);
-			return _npcAiScheduledThreadPool.scheduleAtFixedRate(r, initial, delay, TimeUnit.MILLISECONDS);
-		}
-		catch(RejectedExecutionException e)
-		{
-			if(!isShutdown())
-			{
-				_log.warning("AiThreadPool: Failed schedule task at fixed rate!");
-				Thread.dumpStack();
-			}
-			return null; /* shutdown, ignore */
-		}
-	}
-
-	/*public void executePacket(ReceivablePacket<L2GameClient> pkt)
-	{
-		_generalPacketsThreadPool.execute(pkt);
-	}
-
-	public void executeIOPacket(ReceivablePacket<L2GameClient> pkt)
-	{
-		_ioPacketsThreadPool.execute(pkt);
-	}*/
-
 	public void executeLSGSPacket(Runnable r)
 	{
 		_LsGsExecutor.execute(r);
@@ -179,24 +107,6 @@ public class ThreadPoolManager
 		_generalScheduledThreadPool.execute(r);
 	}
 
-	public void executeAi(Runnable r, boolean isPlayer)
-	{
-		if(isPlayer)
-			_playerAiScheduledThreadPool.execute(r);
-		else
-			_npcAiScheduledThreadPool.execute(r);
-	}
-
-	public void executeMove(Runnable r)
-	{
-		_moveScheduledThreadPool.execute(r);
-	}
-
-	public void executePathfind(Runnable r)
-	{
-		_pathfindThreadPool.execute(r);
-	}
-
 	public String[] getStats()
 	{
 		return new String[] {
@@ -205,7 +115,7 @@ public class ThreadPoolManager
 				" │ CorePoolSize:    " + _generalScheduledThreadPool.getCorePoolSize(),
 				" │ CompletedTasks:  " + _generalScheduledThreadPool.getCompletedTaskCount(),
 				" │ ScheduledTasks:  " + (_generalScheduledThreadPool.getTaskCount() - _generalScheduledThreadPool.getCompletedTaskCount()),
-				" ╞══ Move:",
+				/*" ╞══ Move:",
 				" │ ActiveThreads:   " + _moveScheduledThreadPool.getActiveCount(),
 				" │ CorePoolSize:    " + _moveScheduledThreadPool.getCorePoolSize(),
 				" │ CompletedTasks:  " + _moveScheduledThreadPool.getCompletedTaskCount(),
@@ -225,18 +135,18 @@ public class ThreadPoolManager
 				" │ CorePoolSize:    " + _playerAiScheduledThreadPool.getCorePoolSize(),
 				" │ CompletedTasks:  " + _playerAiScheduledThreadPool.getCompletedTaskCount(),
 				" │ ScheduledTasks:  " + (_playerAiScheduledThreadPool.getTaskCount() - _playerAiScheduledThreadPool.getCompletedTaskCount()),
-				/*" ╞══ Interest",
+				" ╞══ Interest",
 				" │ ActiveThreads:   " + MMOConnection.getPool().getActiveCount(),
 				" │ CorePoolSize:    " + MMOConnection.getPool().getCorePoolSize(),
 				" │ CompletedTasks:  " + MMOConnection.getPool().getCompletedTaskCount(),
 				" │ ScheduledTasks:  " + (MMOConnection.getPool().getTaskCount() - MMOConnection.getPool().getCompletedTaskCount()),
-				*/" ╞══ Packets:", " │ ActiveThreads:   " + _generalPacketsThreadPool.getActiveCount(),
+				" ╞══ Packets:", " │ ActiveThreads:   " + _generalPacketsThreadPool.getActiveCount(),
 				" │ CorePoolSize:    " + _generalPacketsThreadPool.getCorePoolSize(),
 				" │ MaximumPoolSize: " + _generalPacketsThreadPool.getMaximumPoolSize(),
 				" │ LargestPoolSize: " + _generalPacketsThreadPool.getLargestPoolSize(),
 				" │ PoolSize:        " + _generalPacketsThreadPool.getPoolSize(),
 				" │ CompletedTasks:  " + _generalPacketsThreadPool.getCompletedTaskCount(),
-				" │ QueuedTasks:     " + _generalPacketsThreadPool.getQueue().size(), " ╞══ IO Packets:",
+				" │ QueuedTasks:     " + _generalPacketsThreadPool.getQueue().size(), " ╞══ IO Packets:",*/
 				" │ ActiveThreads:   " + _ioPacketsThreadPool.getActiveCount(),
 				" │ CorePoolSize:    " + _ioPacketsThreadPool.getCorePoolSize(),
 				" │ LargestPoolSize: " + _ioPacketsThreadPool.getLargestPoolSize(),
@@ -291,36 +201,36 @@ public class ThreadPoolManager
 			// в обратном порядке шатдауним потоки
 			if(_LsGsExecutor != null)
 				_LsGsExecutor.shutdown();
-			if(_npcAiScheduledThreadPool != null)
+			/*if(_npcAiScheduledThreadPool != null)
 				_npcAiScheduledThreadPool.shutdown();
 			if(_playerAiScheduledThreadPool != null)
-				_playerAiScheduledThreadPool.shutdown();
+				_playerAiScheduledThreadPool.shutdown();*/
 			if(_ioPacketsThreadPool != null)
 				_ioPacketsThreadPool.shutdown();
-			if(_generalPacketsThreadPool != null)
+			/*if(_generalPacketsThreadPool != null)
 				_generalPacketsThreadPool.shutdown();
 			if(_pathfindThreadPool != null)
 				_pathfindThreadPool.shutdown();
 			if(_moveScheduledThreadPool != null)
-				_moveScheduledThreadPool.shutdown();
+				_moveScheduledThreadPool.shutdown();*/
 			if(_generalScheduledThreadPool != null)
 				_generalScheduledThreadPool.shutdown();
 
 			// и ждем их завершения
 			if(_LsGsExecutor != null)
 				_LsGsExecutor.awaitTermination(1, TimeUnit.SECONDS);
-			if(_npcAiScheduledThreadPool != null)
+			/*if(_npcAiScheduledThreadPool != null)
 				_npcAiScheduledThreadPool.awaitTermination(1, TimeUnit.SECONDS);
 			if(_playerAiScheduledThreadPool != null)
-				_playerAiScheduledThreadPool.awaitTermination(1, TimeUnit.SECONDS);
+				_playerAiScheduledThreadPool.awaitTermination(1, TimeUnit.SECONDS);*/
 			if(_ioPacketsThreadPool != null)
 				_ioPacketsThreadPool.awaitTermination(1, TimeUnit.SECONDS);
-			if(_generalPacketsThreadPool != null)
+			/*if(_generalPacketsThreadPool != null)
 				_generalPacketsThreadPool.awaitTermination(1, TimeUnit.SECONDS);
 			if(_pathfindThreadPool != null)
 				_pathfindThreadPool.awaitTermination(1, TimeUnit.SECONDS);
 			if(_moveScheduledThreadPool != null)
-				_moveScheduledThreadPool.awaitTermination(1, TimeUnit.SECONDS);
+				_moveScheduledThreadPool.awaitTermination(1, TimeUnit.SECONDS);*/
 			if(_generalScheduledThreadPool != null)
 				_generalScheduledThreadPool.awaitTermination(1, TimeUnit.SECONDS);
 
@@ -332,10 +242,10 @@ public class ThreadPoolManager
 		}
 	}
 
-	public String getGPacketStats()
+	/*public String getGPacketStats()
 	{
 		return getThreadPoolStats(_generalPacketsThreadPool, "general packets");
-	}
+	}*/
 
 	public String getIOPacketStats()
 	{
@@ -347,7 +257,7 @@ public class ThreadPoolManager
 		return getThreadPoolStats(_generalScheduledThreadPool, "general");
 	}
 
-	public String getMovePoolStats()
+	/*public String getMovePoolStats()
 	{
 		return getThreadPoolStats(_moveScheduledThreadPool, "move");
 	}
@@ -365,7 +275,7 @@ public class ThreadPoolManager
 	public String getPlayerAIPoolStats()
 	{
 		return getThreadPoolStats(_playerAiScheduledThreadPool, "playerAi");
-	}
+	}*/
 
 	public static String getThreadPoolStats(ThreadPoolExecutor pool, String poolname)
 	{
@@ -404,17 +314,17 @@ public class ThreadPoolManager
 		return _shutdown;
 	}
 
-	public ThreadPoolExecutor getPathfindScheduledThreadPool()
+	/*public ThreadPoolExecutor getPathfindScheduledThreadPool()
 	{
 		return _pathfindThreadPool;
-	}
+	}*/
 
 	public ScheduledThreadPoolExecutor getGeneralScheduledThreadPool()
 	{
 		return _generalScheduledThreadPool;
 	}
 
-	public ScheduledThreadPoolExecutor getMoveScheduledThreadPool()
+	/*public ScheduledThreadPoolExecutor getMoveScheduledThreadPool()
 	{
 		return _moveScheduledThreadPool;
 	}
@@ -427,15 +337,15 @@ public class ThreadPoolManager
 	public ScheduledThreadPoolExecutor getPlayerAiScheduledThreadPool()
 	{
 		return _playerAiScheduledThreadPool;
-	}
+	}*/
 
 	public ThreadPoolExecutor getIoPacketsThreadPool()
 	{
 		return _ioPacketsThreadPool;
 	}
 
-	public ThreadPoolExecutor getGeneralPacketsThreadPool()
+	/*public ThreadPoolExecutor getGeneralPacketsThreadPool()
 	{
 		return _generalPacketsThreadPool;
-	}
+	}*/
 }

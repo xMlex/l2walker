@@ -30,8 +30,15 @@ import fw.test.AWTGLRender;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultCaret;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
 
 public class awtBotFrame extends JPanel implements GameVisualInterface {
 
@@ -66,6 +73,10 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 	private JTextField loginTxt;
 	private JPasswordField passwordField;
 	private JTextField txtMsg;
+	private JProgressBar progressBarCP,progressBarHP,progressBarMp,progressBarLoad;
+	private Style textStyleError,textStyleInfo,textStyleShout,textStyleTrade,textStyleSystem,textStyleHiro;
+	private JTextPane _xChatMain;
+	
 
 	public awtBotFrame(HashMap<String, ServerConfig> srvList,
 			JTabbedPane tabPane, int tind) throws LWJGLException {
@@ -138,9 +149,21 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 		panelFooter.add(panelChatx);
 
 		JTabbedPane tabbedChat = new JTabbedPane(JTabbedPane.TOP);
-		final JTextArea _xChatMain = new JTextArea();
+		
+		_xChatMain = new JTextPane();
+		textStyleError = _xChatMain.addStyle("error", null);
+		textStyleInfo = _xChatMain.addStyle("info", null);
+		textStyleShout = _xChatMain.addStyle("shout", null);
+		textStyleSystem = _xChatMain.addStyle("system", null);
+		
+        StyleConstants.setForeground(textStyleError, Color.red);
+        StyleConstants.setBold(textStyleError, true);
+		
+		
+		JScrollPane jScrollPane=new JScrollPane(_xChatMain,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		((DefaultCaret)_xChatMain.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		_xChatMain.setEditable(false);
-		tabbedChat.addTab("Main", null, _xChatMain,"");
+		tabbedChat.addTab("Main", null, jScrollPane, "");
 
 		JPanel panelChatSend = new JPanel();
 		FlowLayout fl_panelChatSend = (FlowLayout) panelChatSend.getLayout();
@@ -242,6 +265,18 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 		JToggleButton tglbtnEnabled = new JToggleButton("Enabled");
 		tglbtnEnabled.setSelectedIcon(getIcon("status_online"));
 		tglbtnEnabled.setIcon(getIcon("status_offline"));
+		tglbtnEnabled.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent ev) {
+				if (ev.getStateChange() == ItemEvent.SELECTED) {
+					_gameEngine.setEnabled(true);
+				} else if (ev.getStateChange() == ItemEvent.DESELECTED) {
+					_gameEngine.setEnabled(false);
+				}
+			}
+
+		});
 		panelAuth.add(tglbtnEnabled);
 
 		groupLayout.setAutoCreateGaps(true);
@@ -255,9 +290,14 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 		JPanel panelMap = new JPanel();
 
 		JPanel panelUserStatus = new JPanel();
-		panelUserStatus.setBackground(Color.GRAY);
+		FlowLayout flowLayout_1 = (FlowLayout) panelUserStatus.getLayout();
+		flowLayout_1.setHgap(1);
+		flowLayout_1.setVgap(1);
+		flowLayout_1.setAlignment(FlowLayout.LEFT);
+		panelUserStatus.setBackground(SystemColor.control);
 		panelMap.setLayout(new GridLayout(0, 1, 0, 0));
 		_canvas = new AWTGLRender(panelMap);
+		_canvas.setWorld(_gameEngine.getWorld());
 		panelMap.add(_canvas);
 		JTabbedPane tabUserInfo = new JTabbedPane();
 		tabUserInfo.setTabPlacement(JTabbedPane.BOTTOM);
@@ -332,6 +372,8 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 		panelMapTools.add(chckbxRealMap);
 
 		JSlider sliderMapZoom = new JSlider();
+		sliderMapZoom.setToolTipText("Map Zoom");
+		sliderMapZoom.setValue(1);
 		sliderMapZoom.setMinimum(1);
 		panelMapTools.add(sliderMapZoom);
 
@@ -417,6 +459,43 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 								.addComponent(panelMapTools,
 										GroupLayout.PREFERRED_SIZE, 56,
 										GroupLayout.PREFERRED_SIZE).addGap(23)));
+		
+		JPanel panelUserHeals = new JPanel();
+		panelUserHeals.setBackground(new Color(255, 255, 255));
+		panelUserStatus.add(panelUserHeals);
+		panelUserHeals.setLayout(new GridLayout(5, 1, 2, 0));
+		
+		JLabel lblNewLabel = new JLabel("LVL: 1");
+		lblNewLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblNewLabel.setToolTipText("LVL Char");
+		panelUserHeals.add(lblNewLabel);
+		
+		progressBarCP = new JProgressBar();
+		progressBarCP.setToolTipText("CP");
+		progressBarCP.setFont(new Font("Dialog", Font.BOLD, 9));
+		progressBarCP.setForeground(new Color(204, 204, 51));
+		progressBarCP.setValue(50);
+		panelUserHeals.add(progressBarCP);
+		
+		progressBarHP = new JProgressBar();
+		progressBarHP.setToolTipText("HP");
+		progressBarHP.setForeground(new Color(255, 0, 0));
+		progressBarHP.setValue(50);
+		panelUserHeals.add(progressBarHP);
+		
+		progressBarMp = new JProgressBar();
+		progressBarMp.setForeground(new Color(0, 0, 255));
+		progressBarMp.setValue(50);
+		progressBarMp.setToolTipText("MP");
+		panelUserHeals.add(progressBarMp);
+		
+		progressBarLoad = new JProgressBar();
+		progressBarLoad.setToolTipText("Load");
+		progressBarLoad.setValue(20);
+		progressBarLoad.setBackground(new Color(0, 0, 0));
+		progressBarLoad.setForeground(new Color(102, 0, 153));
+		
+		panelUserHeals.add(progressBarLoad);
 		panelMapContainer.setLayout(gl_panelMapContainer);
 		centerBlock.setLayout(gl_centerBlock);
 		setLayout(groupLayout);
@@ -431,12 +510,30 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 	@Override
 	public void procSetUserChar(L2Player userChar) {
 		_tabPane.setTitleAt(_tabPaneIndex, userChar.getName());
+		progressBarCP.setValue((int) userChar.getCurrentCpPercents());
+		progressBarHP.setValue((int) userChar.getCurrentHpPercents());
+		progressBarMp.setValue((int) userChar.getCurrentMpPercents());
+		//progressBarCP.setValue((int) userChar.getCurrentCpPercents());
 
 	}
 
 	@Override
 	public void putMessage(String msg, int msg_type, boolean bold) {
 		System.out.println("MSG: " + msg + " Type: " + msg_type);
+		Style tstyle = textStyleError;
+		switch (msg_type) {
+		case 1:
+			
+			break;
+
+		default:
+			break;
+		}
+		try {
+			_xChatMain.getStyledDocument().insertString(_xChatMain.getStyledDocument().getLength(), msg+"\n", tstyle);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}	
 	}
 
 	@Override

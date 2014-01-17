@@ -80,7 +80,7 @@ public class MainSwingForm extends Frame {
 		ConfigSystem.load();	
 		
 		_instance = new MainSwingForm();
-		_instance.setSize(900, 600);
+		_instance.setSize(1024, 768);
 		_instance.setVisible(true);		
 		_instance.setLocationRelativeTo(null);
 		

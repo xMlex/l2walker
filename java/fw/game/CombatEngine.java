@@ -21,7 +21,7 @@ public class CombatEngine implements Runnable {
 	
 	public CombatEngine(GameEngine ge) {
 		_ge = ge;
-		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(this, 1000, 3000);		
+		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(this, 1000, 1000);		
 	}
 	
 	public void run() {		
@@ -30,7 +30,7 @@ public class CombatEngine implements Runnable {
 			return;
 		}		
 		_self = _ge.getSelfChar();
-		Location me = _self.getLoc();
+		/*Location me = _self.getLoc();
 		Location end = new Location(-96708, 238316, -3376);
 		ArrayList<Location> _path = GeoMove.findPath(_self.getX(), _self.getY(), _self.getZ(), end, null, false, 0);
 		
@@ -39,7 +39,7 @@ public class CombatEngine implements Runnable {
 		System.out.println("Move to: "+_path.get(1)+" Distace: "+end.distance3D(me));
 		_tmp++;
 		
-		if(true) return;
+		if(true) return;*/
 		
 		
 		

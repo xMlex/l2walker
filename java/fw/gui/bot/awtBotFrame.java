@@ -81,6 +81,7 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 	public awtBotFrame(HashMap<String, ServerConfig> srvList,
 			JTabbedPane tabPane, int tind) throws LWJGLException {
 		super();
+		setSize(1000,700);
 		setBackground(Color.WHITE);
 		_tabPane = tabPane;
 		_tabPaneIndex = tind;
@@ -117,32 +118,21 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 		JPanel panelFooter = new JPanel();
 		panelFooter.setBackground(Color.ORANGE);
 		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(groupLayout
-				.createParallelGroup(Alignment.LEADING)
-				.addComponent(panelAuth, GroupLayout.DEFAULT_SIZE, 1105,
-						Short.MAX_VALUE)
-				.addComponent(panelFooter, Alignment.TRAILING,
-						GroupLayout.DEFAULT_SIZE, 1105, Short.MAX_VALUE)
-				.addGroup(
-						groupLayout
-								.createSequentialGroup()
-								.addComponent(panelMapInfo,
-										GroupLayout.PREFERRED_SIZE, 851,
-										GroupLayout.PREFERRED_SIZE)
-								.addContainerGap(244, Short.MAX_VALUE)));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(
-				Alignment.LEADING).addGroup(
-				groupLayout
-						.createSequentialGroup()
-						.addComponent(panelAuth, GroupLayout.PREFERRED_SIZE,
-								GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(panelMapInfo, GroupLayout.PREFERRED_SIZE,
-								354, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(panelFooter, GroupLayout.DEFAULT_SIZE,
-								175, Short.MAX_VALUE)));
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addComponent(panelAuth, GroupLayout.DEFAULT_SIZE, 1000, Short.MAX_VALUE)
+				.addComponent(panelFooter, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 1000, Short.MAX_VALUE)
+				.addComponent(panelMapInfo, GroupLayout.DEFAULT_SIZE, 1000, Short.MAX_VALUE)
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addComponent(panelAuth, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(panelMapInfo, GroupLayout.PREFERRED_SIZE, 467, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(panelFooter, GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE))
+		);
 		panelFooter.setLayout(new GridLayout(0, 2, 0, 0));
 
 		JPanel panelChatx = new JPanel();
@@ -262,7 +252,7 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 		btnLogout.setIcon(getIcon("disconnect"));
 		panelAuth.add(btnLogout);
 
-		JToggleButton tglbtnEnabled = new JToggleButton("Enabled");
+		final JToggleButton tglbtnEnabled = new JToggleButton("Enabled");
 		tglbtnEnabled.setSelectedIcon(getIcon("status_online"));
 		tglbtnEnabled.setIcon(getIcon("status_offline"));
 		tglbtnEnabled.addItemListener(new ItemListener() {
@@ -271,8 +261,10 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 			public void itemStateChanged(ItemEvent ev) {
 				if (ev.getStateChange() == ItemEvent.SELECTED) {
 					_gameEngine.setEnabled(true);
+					tglbtnEnabled.setText("Enabled");
 				} else if (ev.getStateChange() == ItemEvent.DESELECTED) {
 					_gameEngine.setEnabled(false);
+					tglbtnEnabled.setText("Disabled");
 				}
 			}
 
@@ -297,7 +289,7 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 		panelUserStatus.setBackground(SystemColor.control);
 		panelMap.setLayout(new GridLayout(0, 1, 0, 0));
 		_canvas = new AWTGLRender(panelMap);
-		_canvas.setWorld(_gameEngine.getWorld());
+		_canvas.setGame(_gameEngine);
 		panelMap.add(_canvas);
 		JTabbedPane tabUserInfo = new JTabbedPane();
 		tabUserInfo.setTabPlacement(JTabbedPane.BOTTOM);
@@ -320,38 +312,21 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 		// splitMapInfo.setResizeWeight(0.3);
 		panelMapInfo.add(centerBlock);
 		GroupLayout gl_centerBlock = new GroupLayout(centerBlock);
-		gl_centerBlock.setHorizontalGroup(gl_centerBlock.createParallelGroup(
-				Alignment.TRAILING).addGroup(
-				Alignment.LEADING,
-				gl_centerBlock
-						.createSequentialGroup()
-						.addComponent(panelMapContainer,
-								GroupLayout.PREFERRED_SIZE, 566,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(tabUserInfo, GroupLayout.DEFAULT_SIZE,
-								261, Short.MAX_VALUE).addContainerGap()));
-		gl_centerBlock
-				.setVerticalGroup(gl_centerBlock
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								gl_centerBlock
-										.createSequentialGroup()
-										.addGroup(
-												gl_centerBlock
-														.createParallelGroup(
-																Alignment.LEADING)
-														.addComponent(
-																panelMapContainer,
-																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE)
-														.addComponent(
-																tabUserInfo,
-																GroupLayout.PREFERRED_SIZE,
-																354,
-																GroupLayout.PREFERRED_SIZE))
-										.addContainerGap()));
+		gl_centerBlock.setHorizontalGroup(
+			gl_centerBlock.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, gl_centerBlock.createSequentialGroup()
+					.addComponent(panelMapContainer, GroupLayout.DEFAULT_SIZE, 689, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(tabUserInfo, GroupLayout.PREFERRED_SIZE, 305, GroupLayout.PREFERRED_SIZE))
+		);
+		gl_centerBlock.setVerticalGroup(
+			gl_centerBlock.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_centerBlock.createSequentialGroup()
+					.addGroup(gl_centerBlock.createParallelGroup(Alignment.LEADING)
+						.addComponent(panelMapContainer, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(tabUserInfo, GroupLayout.PREFERRED_SIZE, 455, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap())
+		);
 
 		// JPanel panelMap = new JPanel();
 
@@ -410,55 +385,22 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 				new Integer(25)));
 		panelMapTools.add(spinner);
 		GroupLayout gl_panelMapContainer = new GroupLayout(panelMapContainer);
-		gl_panelMapContainer
-				.setHorizontalGroup(gl_panelMapContainer
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								gl_panelMapContainer
-										.createSequentialGroup()
-										.addGroup(
-												gl_panelMapContainer
-														.createParallelGroup(
-																Alignment.LEADING)
-														.addGroup(
-																gl_panelMapContainer
-																		.createParallelGroup(
-																				Alignment.TRAILING,
-																				false)
-																		.addComponent(
-																				panelMapTools,
-																				Alignment.LEADING,
-																				0,
-																				0,
-																				Short.MAX_VALUE)
-																		.addComponent(
-																				panelMap,
-																				Alignment.LEADING,
-																				GroupLayout.DEFAULT_SIZE,
-																				566,
-																				Short.MAX_VALUE))
-														.addComponent(
-																panelUserStatus,
-																GroupLayout.DEFAULT_SIZE,
-																583,
-																Short.MAX_VALUE))
-										.addContainerGap()));
-		gl_panelMapContainer
-				.setVerticalGroup(gl_panelMapContainer.createParallelGroup(
-						Alignment.LEADING).addGroup(
-						gl_panelMapContainer
-								.createSequentialGroup()
-								.addComponent(panelUserStatus,
-										GroupLayout.PREFERRED_SIZE, 80,
-										GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(panelMap,
-										GroupLayout.PREFERRED_SIZE, 207,
-										GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(panelMapTools,
-										GroupLayout.PREFERRED_SIZE, 56,
-										GroupLayout.PREFERRED_SIZE).addGap(23)));
+		gl_panelMapContainer.setHorizontalGroup(
+			gl_panelMapContainer.createParallelGroup(Alignment.LEADING)
+				.addComponent(panelUserStatus, GroupLayout.DEFAULT_SIZE, 689, Short.MAX_VALUE)
+				.addComponent(panelMapTools, GroupLayout.PREFERRED_SIZE, 689, Short.MAX_VALUE)
+				.addComponent(panelMap, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+		);
+		gl_panelMapContainer.setVerticalGroup(
+			gl_panelMapContainer.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelMapContainer.createSequentialGroup()
+					.addComponent(panelUserStatus, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(panelMap, GroupLayout.PREFERRED_SIZE, 319, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(panelMapTools, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap())
+		);
 		
 		JPanel panelUserHeals = new JPanel();
 		panelUserHeals.setBackground(new Color(255, 255, 255));
@@ -478,6 +420,7 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 		panelUserHeals.add(progressBarCP);
 		
 		progressBarHP = new JProgressBar();
+		progressBarHP.setStringPainted(true);
 		progressBarHP.setToolTipText("HP");
 		progressBarHP.setForeground(new Color(255, 0, 0));
 		progressBarHP.setValue(50);

@@ -40,7 +40,7 @@ public abstract class L2Object
 	private int _y;
 	private int _z;	
 	
-	private int _tox=0;
+	private int _tox = 0;
 	private int _toy;
 	private int _toz;	
 	/** Object visibility */
@@ -305,7 +305,7 @@ public abstract class L2Object
 
 	public float getMoveSpeed()
 	{
-		return 0;
+		return 1.1f;
 	}
 	public void setHeading(int heading)
 	{}

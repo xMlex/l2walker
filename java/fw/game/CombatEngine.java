@@ -93,7 +93,7 @@ public class CombatEngine implements Runnable {
 			if(!_self.isSitting())
 			_mob =  _ge.getWorld().getMobInRadius(_self.getLoc(), 1500);
 		}
-		if(_mob == null){ log("_mob == null"); return;	}		
+		if(_mob == null){ /*log("_mob == null");*/ return;	}		
 		
 		
 		if(_self.isSitting()){

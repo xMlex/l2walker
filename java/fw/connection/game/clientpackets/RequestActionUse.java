@@ -2,6 +2,8 @@ package fw.connection.game.clientpackets;
 
 public class RequestActionUse extends L2GameClientPacket {
 
+	public static final int SIT_STAND = 0;	
+	
 	private int _id;
 	private boolean _ctr;
 	private boolean _shift;

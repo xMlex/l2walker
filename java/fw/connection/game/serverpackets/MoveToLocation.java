@@ -20,7 +20,7 @@ public class MoveToLocation extends L2GameServerPacket {
 	public void excecute() {
 		L2Object obj = getClient().getGameEngine().getWorld().getObject(objectId);
 		if(obj == null){
-			_log.warning("MoveToLocation: obj = null");
+			//_log.warning("MoveToLocation: obj = null");
 			return;
 		}
 		obj.setLoc(from);
@@ -28,6 +28,7 @@ public class MoveToLocation extends L2GameServerPacket {
 		if(obj.isLive()){
 			//_log.info("((L2Character)obj).setMove(true);");
 			((L2Character)obj).setMove(true);
+			((L2Character)obj).moveToLocation(to.x, to.y, to.z);
 		}
 	}
 

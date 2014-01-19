@@ -64,41 +64,41 @@ public class AWTGLRender extends AWTGLCanvas implements Runnable {
 		super();
 		this.parent = parent;
 		this.addComponentListener(new ComponentListener() {			
-			@Override
+			
 			public void componentShown(ComponentEvent arg0) {
 				setEnabled(true);				
 			}			
-			@Override
+			
 			public void componentResized(ComponentEvent evt) {}			
-			@Override
+			
 			public void componentMoved(ComponentEvent arg0) {}			
-			@Override
+			
 			public void componentHidden(ComponentEvent arg0) {
 				setEnabled(false);					
 			}
 		});
 		this.addMouseListener(new MouseListener() {		
-			@Override
+			
 			public void mouseReleased(MouseEvent evt) {}			
-			@Override
+			
 			public void mousePressed(MouseEvent evt) {}			
-			@Override
+			
 			public void mouseExited(MouseEvent evt) {}			
-			@Override
+			
 			public void mouseEntered(MouseEvent evt) {}			
-			@Override
+			
 			public void mouseClicked(MouseEvent evt) {
-				_log.info("Click: "+evt.getX()+" y: "+evt.getY());
+				//_log.info("Click: "+evt.getX()+" y: "+evt.getY());
 				if(_game.getSelfChar() == null) return;
 				_game.getSelfChar().sendPacket(new MoveBackwardToLocation(
-						_game.getSelfChar().getX()-(map_center_x - evt.getX()), 
-						_game.getSelfChar().getY()-(map_center_y - evt.getY()), 
+						_game.getSelfChar().getX()-(map_center_x - evt.getX())*10, 
+						_game.getSelfChar().getY()-(map_center_y - evt.getY())*10, 
 						_game.getSelfChar().getZ()));
 			}
 		});
 		//this.parent.add
-		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(this, 100,50); 
-	}
+		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(this, 100,200); 
+	} 
 	
 	public void paintGL() {
 		try {
@@ -127,7 +127,7 @@ public class AWTGLRender extends AWTGLCanvas implements Runnable {
 				//glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
 				glEnable(GL_BLEND);
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-				repaint();
+				//repaint();
 				
 			}
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -178,14 +178,9 @@ public class AWTGLRender extends AWTGLCanvas implements Runnable {
 		return (int) (map_center_y + ((y-getMyChar().getY())/L2MapCalc.MAPBLOCKSIZEDIV900/*/_scale*/));
 	}
 	
-	private void calculateMove() {
-		
-	}
-	
 	private void renderL2() {
 		
 		if(_game.getSelfChar() == null) return;
-		calculateMove();
 		calculateMap();
 		cDef.bind();
 		
@@ -208,10 +203,10 @@ public class AWTGLRender extends AWTGLCanvas implements Runnable {
 				
 			
 			_canvas.RectRel(4);//EllipseRel(5);
-			if(obj.getToX() != 0 && obj.getToX() != obj.getX())
+			/*if(obj.getToX() != 0 && obj.getToX() != obj.getX())
 			{
 				_canvas.LineToRel(toX(obj.getToX()), toY(obj.getToY()));
-			}
+			}*/
 		}
 		
 	}
@@ -240,9 +235,6 @@ public class AWTGLRender extends AWTGLCanvas implements Runnable {
 			gc.drawImage(_map, char_map_pos_x, char_map_pos_y);
 			}catch(Exception e){e.printStackTrace();}
 		}*/
-		//gc.drawText("map pos x: " + char_map_pos_x + " y: " + char_map_pos_y, 0, 10, true);
-		//gc.drawText("pos char x: " + _x + " y: " + _y+" z: "+_z, 0, 20, true);
-		//gc.drawText("pos in small block x: " + L2MapCalc.getXInSmallBlock(_x) + " y: " + L2MapCalc.getYInSmallBlock(_y), 0, 30, true);
 	}
 
 	public void run() {

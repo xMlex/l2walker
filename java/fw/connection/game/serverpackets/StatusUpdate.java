@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import fw.game.model.L2Character;
+import fw.game.model.L2PlayerEvent;
 
 public class StatusUpdate extends L2GameServerPacket {
 
@@ -52,8 +53,10 @@ public class StatusUpdate extends L2GameServerPacket {
 				break;
 			}
 		}
-		if(getClient().getGameEngine().getSelfChar().getObjectId() == _o.getObjectId())
+		if(getClient().getGameEngine().getSelfChar().getObjectId() == _o.getObjectId()){
 			getClient().getVisualInterface().procSetUserChar(getClient().getGameEngine().getSelfChar());
+			getPlayer().onEvent(L2PlayerEvent.StatusUpdate);
+		}
 		
 		//getClient().getVisualInterface().procPlayerChar(playerChar);
 	}

@@ -69,7 +69,7 @@ public class SlickSWTTest extends BasicGame
 	public void update(GameContainer container, int delta) 
 		throws SlickException {}
 
-	@Override
+	
 	public void render(GameContainer container, Graphics g) 
 		throws SlickException 
 	{

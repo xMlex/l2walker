@@ -39,6 +39,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
+import javax.swing.table.DefaultTableModel;
 
 public class awtBotFrame extends JPanel implements GameVisualInterface {
 
@@ -60,8 +61,7 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 			// ImageIcon cup = new ImageIcon(f.getPath());
 			iconList.put(f.getName().replaceAll(".png", ""),
 					new ImageIcon(f.getPath()));
-			System.out.println("ICON: " + f.getPath() + " name: "
-					+ f.getName().replaceAll(".png", ""));
+			//System.out.println("ICON: " + f.getPath() + " name: "+ f.getName().replaceAll(".png", ""));
 		}
 	}
 
@@ -73,15 +73,19 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 	private JTextField loginTxt;
 	private JPasswordField passwordField;
 	private JTextField txtMsg;
-	private JProgressBar progressBarCP,progressBarHP,progressBarMp,progressBarLoad;
-	private Style textStyleError,textStyleInfo,textStyleShout,textStyleTrade,textStyleSystem,textStyleHiro;
+	private JLabel lblMyLvl;
+	private JProgressBar progressBarCP, progressBarHP, progressBarMp,
+			progressBarLoad;
+	private Style textStyleError, textStyleInfo, textStyleShout,
+			textStyleTrade, textStyleSystem, textStyleHiro;
 	private JTextPane _xChatMain;
-	
+	private JTable tableInv;
+	private botWindowConfig _cWindow;
 
 	public awtBotFrame(HashMap<String, ServerConfig> srvList,
 			JTabbedPane tabPane, int tind) throws LWJGLException {
 		super();
-		setSize(1000,700);
+		setSize(1000, 700);
 		setBackground(Color.WHITE);
 		_tabPane = tabPane;
 		_tabPaneIndex = tind;
@@ -103,7 +107,7 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 		final JComboBox<ServerConfig> comboHosts = new JComboBox<ServerConfig>();
 		comboHosts.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				comboServers.removeAll();
+				comboServers.removeAllItems();
 				comboServers.addItem(((ServerConfig) comboHosts
 						.getSelectedItem()).gameServers[0]);
 			}
@@ -118,40 +122,48 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 		JPanel panelFooter = new JPanel();
 		panelFooter.setBackground(Color.ORANGE);
 		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addComponent(panelAuth, GroupLayout.DEFAULT_SIZE, 1000, Short.MAX_VALUE)
-				.addComponent(panelFooter, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 1000, Short.MAX_VALUE)
-				.addComponent(panelMapInfo, GroupLayout.DEFAULT_SIZE, 1000, Short.MAX_VALUE)
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addComponent(panelAuth, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(panelMapInfo, GroupLayout.PREFERRED_SIZE, 467, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(panelFooter, GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE))
-		);
+		groupLayout.setHorizontalGroup(groupLayout
+				.createParallelGroup(Alignment.LEADING)
+				.addComponent(panelAuth, GroupLayout.DEFAULT_SIZE, 1000,
+						Short.MAX_VALUE)
+				.addComponent(panelFooter, Alignment.TRAILING,
+						GroupLayout.DEFAULT_SIZE, 1000, Short.MAX_VALUE)
+				.addComponent(panelMapInfo, GroupLayout.DEFAULT_SIZE, 1000,
+						Short.MAX_VALUE));
+		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(
+				Alignment.LEADING).addGroup(
+				groupLayout
+						.createSequentialGroup()
+						.addComponent(panelAuth, GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.UNRELATED)
+						.addComponent(panelMapInfo, GroupLayout.PREFERRED_SIZE,
+								467, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(panelFooter, GroupLayout.DEFAULT_SIZE,
+								235, Short.MAX_VALUE)));
 		panelFooter.setLayout(new GridLayout(0, 2, 0, 0));
 
 		JPanel panelChatx = new JPanel();
 		panelFooter.add(panelChatx);
 
 		JTabbedPane tabbedChat = new JTabbedPane(JTabbedPane.TOP);
-		
+
 		_xChatMain = new JTextPane();
 		textStyleError = _xChatMain.addStyle("error", null);
 		textStyleInfo = _xChatMain.addStyle("info", null);
 		textStyleShout = _xChatMain.addStyle("shout", null);
 		textStyleSystem = _xChatMain.addStyle("system", null);
-		
-        StyleConstants.setForeground(textStyleError, Color.red);
-        StyleConstants.setBold(textStyleError, true);
-		
-		
-		JScrollPane jScrollPane=new JScrollPane(_xChatMain,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		((DefaultCaret)_xChatMain.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+
+		StyleConstants.setForeground(textStyleError, Color.red);
+		StyleConstants.setBold(textStyleError, true);
+
+		JScrollPane jScrollPane = new JScrollPane(_xChatMain,
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		((DefaultCaret) _xChatMain.getCaret())
+				.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		_xChatMain.setEditable(false);
 		tabbedChat.addTab("Main", null, jScrollPane, "");
 
@@ -230,7 +242,7 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 								.toLowerCase(), ((ServerConfig) comboHosts
 								.getSelectedItem()).port,
 						((ServerConfig) comboHosts.getSelectedItem()).protocol, /* serv_num */
-						1, comboCharNum.getSelectedIndex() + 1);
+						Integer.valueOf(((ServerConfig) comboHosts.getSelectedItem()).gameServers[0]), comboCharNum.getSelectedIndex() + 1);
 				btnLogin.setEnabled(false);
 				btnLogout.setEnabled(true);
 			}
@@ -257,7 +269,6 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 		tglbtnEnabled.setIcon(getIcon("status_offline"));
 		tglbtnEnabled.addItemListener(new ItemListener() {
 
-			@Override
 			public void itemStateChanged(ItemEvent ev) {
 				if (ev.getStateChange() == ItemEvent.SELECTED) {
 					_gameEngine.setEnabled(true);
@@ -300,7 +311,20 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 		tabUserInfo.addTab("Party", null, new JPanel(), "");
 		tabUserInfo.setIconAt(1, getIcon("group"));
 
-		tabUserInfo.addTab("Inv", null, new JPanel(), "");
+		JPanel panelInv = new JPanel();
+		tabUserInfo.addTab("Inv", null, panelInv, "");
+		panelInv.setLayout(new GridLayout(0, 1, 0, 0));
+		
+		tableInv = new JTable();
+		tableInv.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null},
+			},
+			new String[] {
+				"Name", "Type", "Count"
+			}
+		));
+		panelInv.add(tableInv);
 		tabUserInfo.setIconAt(2, getIcon("drive_user"));
 
 		tabUserInfo.addTab("Skills", null, new JPanel(), "");
@@ -312,21 +336,37 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 		// splitMapInfo.setResizeWeight(0.3);
 		panelMapInfo.add(centerBlock);
 		GroupLayout gl_centerBlock = new GroupLayout(centerBlock);
-		gl_centerBlock.setHorizontalGroup(
-			gl_centerBlock.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_centerBlock.createSequentialGroup()
-					.addComponent(panelMapContainer, GroupLayout.DEFAULT_SIZE, 689, Short.MAX_VALUE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(tabUserInfo, GroupLayout.PREFERRED_SIZE, 305, GroupLayout.PREFERRED_SIZE))
-		);
-		gl_centerBlock.setVerticalGroup(
-			gl_centerBlock.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_centerBlock.createSequentialGroup()
-					.addGroup(gl_centerBlock.createParallelGroup(Alignment.LEADING)
-						.addComponent(panelMapContainer, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(tabUserInfo, GroupLayout.PREFERRED_SIZE, 455, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap())
-		);
+		gl_centerBlock.setHorizontalGroup(gl_centerBlock.createParallelGroup(
+				Alignment.LEADING).addGroup(
+				Alignment.TRAILING,
+				gl_centerBlock
+						.createSequentialGroup()
+						.addComponent(panelMapContainer,
+								GroupLayout.DEFAULT_SIZE, 689, Short.MAX_VALUE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(tabUserInfo, GroupLayout.PREFERRED_SIZE,
+								305, GroupLayout.PREFERRED_SIZE)));
+		gl_centerBlock
+				.setVerticalGroup(gl_centerBlock
+						.createParallelGroup(Alignment.LEADING)
+						.addGroup(
+								gl_centerBlock
+										.createSequentialGroup()
+										.addGroup(
+												gl_centerBlock
+														.createParallelGroup(
+																Alignment.LEADING)
+														.addComponent(
+																panelMapContainer,
+																GroupLayout.DEFAULT_SIZE,
+																GroupLayout.DEFAULT_SIZE,
+																Short.MAX_VALUE)
+														.addComponent(
+																tabUserInfo,
+																GroupLayout.PREFERRED_SIZE,
+																455,
+																GroupLayout.PREFERRED_SIZE))
+										.addContainerGap()));
 
 		// JPanel panelMap = new JPanel();
 
@@ -385,60 +425,78 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 				new Integer(25)));
 		panelMapTools.add(spinner);
 		GroupLayout gl_panelMapContainer = new GroupLayout(panelMapContainer);
-		gl_panelMapContainer.setHorizontalGroup(
-			gl_panelMapContainer.createParallelGroup(Alignment.LEADING)
-				.addComponent(panelUserStatus, GroupLayout.DEFAULT_SIZE, 689, Short.MAX_VALUE)
-				.addComponent(panelMapTools, GroupLayout.PREFERRED_SIZE, 689, Short.MAX_VALUE)
-				.addComponent(panelMap, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-		);
-		gl_panelMapContainer.setVerticalGroup(
-			gl_panelMapContainer.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelMapContainer.createSequentialGroup()
-					.addComponent(panelUserStatus, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(panelMap, GroupLayout.PREFERRED_SIZE, 319, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(panelMapTools, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap())
-		);
-		
+		gl_panelMapContainer.setHorizontalGroup(gl_panelMapContainer
+				.createParallelGroup(Alignment.LEADING)
+				.addComponent(panelUserStatus, GroupLayout.DEFAULT_SIZE, 689,
+						Short.MAX_VALUE)
+				.addComponent(panelMapTools, GroupLayout.PREFERRED_SIZE, 689,
+						Short.MAX_VALUE)
+				.addComponent(panelMap, GroupLayout.DEFAULT_SIZE,
+						GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+		gl_panelMapContainer.setVerticalGroup(gl_panelMapContainer
+				.createParallelGroup(Alignment.LEADING).addGroup(
+						gl_panelMapContainer
+								.createSequentialGroup()
+								.addComponent(panelUserStatus,
+										GroupLayout.PREFERRED_SIZE, 80,
+										GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(panelMap,
+										GroupLayout.PREFERRED_SIZE, 319,
+										GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(panelMapTools,
+										GroupLayout.PREFERRED_SIZE, 56,
+										GroupLayout.PREFERRED_SIZE)
+								.addContainerGap()));
+
 		JPanel panelUserHeals = new JPanel();
 		panelUserHeals.setBackground(new Color(255, 255, 255));
 		panelUserStatus.add(panelUserHeals);
 		panelUserHeals.setLayout(new GridLayout(5, 1, 2, 0));
-		
-		JLabel lblNewLabel = new JLabel("LVL: 1");
-		lblNewLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-		lblNewLabel.setToolTipText("LVL Char");
-		panelUserHeals.add(lblNewLabel);
-		
+
+		lblMyLvl = new JLabel("LVL: 1");
+		lblMyLvl.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblMyLvl.setToolTipText("LVL Char");
+		panelUserHeals.add(lblMyLvl);
+
 		progressBarCP = new JProgressBar();
 		progressBarCP.setToolTipText("CP");
 		progressBarCP.setFont(new Font("Dialog", Font.BOLD, 9));
 		progressBarCP.setForeground(new Color(204, 204, 51));
 		progressBarCP.setValue(50);
 		panelUserHeals.add(progressBarCP);
-		
+
 		progressBarHP = new JProgressBar();
 		progressBarHP.setStringPainted(true);
 		progressBarHP.setToolTipText("HP");
 		progressBarHP.setForeground(new Color(255, 0, 0));
 		progressBarHP.setValue(50);
 		panelUserHeals.add(progressBarHP);
-		
+
 		progressBarMp = new JProgressBar();
 		progressBarMp.setForeground(new Color(0, 0, 255));
 		progressBarMp.setValue(50);
 		progressBarMp.setToolTipText("MP");
 		panelUserHeals.add(progressBarMp);
-		
+
 		progressBarLoad = new JProgressBar();
 		progressBarLoad.setToolTipText("Load");
 		progressBarLoad.setValue(20);
 		progressBarLoad.setBackground(new Color(0, 0, 0));
 		progressBarLoad.setForeground(new Color(102, 0, 153));
-		
+
 		panelUserHeals.add(progressBarLoad);
+		
+		_cWindow = new botWindowConfig();
+		
+		JButton btnConfig = new JButton("Config");
+		btnConfig.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				_cWindow.setVisible(true);	
+			}
+		});
+		panelUserStatus.add(btnConfig);
 		panelMapContainer.setLayout(gl_panelMapContainer);
 		centerBlock.setLayout(gl_centerBlock);
 		setLayout(groupLayout);
@@ -450,223 +508,192 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 		return null;
 	}
 
-	@Override
 	public void procSetUserChar(L2Player userChar) {
 		_tabPane.setTitleAt(_tabPaneIndex, userChar.getName());
 		progressBarCP.setValue((int) userChar.getCurrentCpPercents());
 		progressBarHP.setValue((int) userChar.getCurrentHpPercents());
 		progressBarMp.setValue((int) userChar.getCurrentMpPercents());
-		//progressBarCP.setValue((int) userChar.getCurrentCpPercents());
+		lblMyLvl.setText("LVL: "+userChar.getLevel());
+		// progressBarCP.setValue((int) userChar.getCurrentCpPercents());
 
 	}
 
-	@Override
 	public void putMessage(String msg, int msg_type, boolean bold) {
 		System.out.println("MSG: " + msg + " Type: " + msg_type);
 		Style tstyle = textStyleError;
 		switch (msg_type) {
 		case 1:
-			
+
 			break;
 
 		default:
 			break;
 		}
 		try {
-			_xChatMain.getStyledDocument().insertString(_xChatMain.getStyledDocument().getLength(), msg+"\n", tstyle);
+			_xChatMain.getStyledDocument().insertString(
+					_xChatMain.getStyledDocument().getLength(), msg + "\n",
+					tstyle);
 		} catch (BadLocationException e) {
 			e.printStackTrace();
-		}	
+		}
 	}
 
-	@Override
 	public void procLogoutEvent() {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void requestPartyDialog(String requestor, String partyType) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void requestHtmlDialog(String htmlMessage) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void requestHeroesListDialog(CharSelectInfoPackage[] heroesList,
 			int size) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procPlayerChar(L2Player playerChar) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procNpcChar(L2NpcInstance npcChar) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procDeleteL2char(L2Char l2Char) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procDeleteItem(L2Item item) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procPlayerCharClanInfo(PlayerChar playerChar) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procMyTargetSelected(L2Char targetChar) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procUpdateTargetcharStatus(L2Char targetChar) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procUpdateUsercharStatus(UserChar userChar) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procMyTargetUnselected() {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procAddSkill(L2Skill l2Skill) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procSelfSkillUse(L2Skill l2Skill, L2SkillUse l2SkillUse) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procRemoveSkill(L2Skill l2Skill) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procAddPartyChars(L2PartyChar[] l2PartyChars) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procUpdatePartyChar(L2PartyChar l2PartyChar) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procDeletePartyChar(L2PartyChar l2PartyChar) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procDeleteAllPartyChars() {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procAddItems(L2Item[] items) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procAddEnvItem(L2Item item) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procUpdateItems(L2Item[] items) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procDeletItems(L2Item[] items) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procTeleportClear() {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void requestTrade(L2Char tradeChar) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void requestTradeDialog(L2Item[] items) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procSendTradeDone() {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procConfirmedTrade() {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procTradeAddOwnItem(L2Item item) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void procTradeAddOtherItem(L2Item item) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public boolean checkTradeDialog() {
 		// TODO Auto-generated method stub
 		return false;

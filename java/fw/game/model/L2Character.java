@@ -28,33 +28,35 @@ import fw.extensions.util.Location;
  * <BR>
  * L2Character :<BR>
  * <BR>
- * <li>L2CastleGuardInstance</li> <li>L2DoorInstance</li> <li>L2NpcInstance</li> <li>L2PlayableInstance</li><BR>
+ * <li>L2CastleGuardInstance</li> <li>L2DoorInstance</li> <li>L2NpcInstance</li>
+ * <li>L2PlayableInstance</li><BR>
  * <BR>
  * <B><U> Concept of L2CharTemplate</U> :</B><BR>
  * <BR>
- * Each L2Character owns generic and static properties (ex : all Keltir have the same number of HP...). All of those
- * properties are stored in a different template for each type of L2Character. Each template is loaded once in the
- * server cache memory (reduce memory use). When a new instance of L2Character is spawned, server just create a link
- * between the instance and the template. This link is stored in <B>_template</B><BR>
+ * Each L2Character owns generic and static properties (ex : all Keltir have the
+ * same number of HP...). All of those properties are stored in a different
+ * template for each type of L2Character. Each template is loaded once in the
+ * server cache memory (reduce memory use). When a new instance of L2Character
+ * is spawned, server just create a link between the instance and the template.
+ * This link is stored in <B>_template</B><BR>
  * <BR>
  * 
  * @version $Revision: 1.5.5 $ $Date: 2009/05/12 19:45:27 $
  * @authors eX1steam, programmos, L2Scoria dev&sword dev
  */
-public abstract class L2Character extends L2Object
-{
+public abstract class L2Character extends L2Object {
 
 	/** The Constant _log. */
-	protected static final Logger _log = Logger.getLogger(L2Character.class.getName());
-	
+	protected static final Logger _log = Logger.getLogger(L2Character.class
+			.getName());
+
 	public static final double HEADINGS_IN_PI = 10430.378350470452724949566316381;
 	public static final int INTERACTION_DISTANCE = 200;
-	
+
 	protected double _currentCp = 0;
 	protected double _currentHp = 1;
-	protected double _currentMp = 1, 
-			_MovementSpeedMultiplier = 1.2;
-	
+	protected double _currentMp = 1, _MovementSpeedMultiplier = 1.2;
+
 	private int _heading;
 	protected String _name;
 	protected String _title;
@@ -62,74 +64,79 @@ public abstract class L2Character extends L2Object
 	private int _mAtkSpd;
 	private int _max_cp;
 	private int _max_hp;
-	private int _max_mp;	
+	private int _max_mp;
 	private int _cur_matk;
 	private int _cur_mdef;
 	private int _cur_patk;
 	private int _cur_pdef;
-	private int _cur_runspd;
+	private int _cur_runspd=10,_cur_walkspd=10;
 	private L2Object _target;
 
-	private boolean _running, HasHideout,HasCastle,flags,Sweepable,Access,isDead;
-	private boolean _isTeleporting,_isMove = false;
-	
+	private boolean _running = false, _infight = false, HasHideout, HasCastle,
+			flags, Sweepable = false, Access, _isDead = false,
+			_isSummoned = false;
+	private boolean _isTeleporting = false, _isMove = false;
+
 	/** Movement data of this L2Character. */
 	protected MoveData _move;
-	
+
 	public L2Character(Integer objectId) {
 		super(objectId);
 	}
-	
 
 	/**
-	 * Update the position of the L2Character during a movement and return True if the movement is finished.<BR>
+	 * Update the position of the L2Character during a movement and return True
+	 * if the movement is finished.<BR>
 	 * <BR>
 	 * <B><U> Concept</U> :</B><BR>
 	 * <BR>
-	 * At the beginning of the move action, all properties of the movement are stored in the MoveData object called
-	 * <B>_move</B> of the L2Character. The position of the start point and of the destination permit to estimated in
+	 * At the beginning of the move action, all properties of the movement are
+	 * stored in the MoveData object called <B>_move</B> of the L2Character. The
+	 * position of the start point and of the destination permit to estimated in
 	 * function of the movement speed the time to achieve the destination.<BR>
 	 * <BR>
-	 * When the movement is started (ex : by MovetoLocation), this method will be called each 0.1 sec to estimate and
-	 * update the L2Character position on the server. Note, that the current server position can differe from the
-	 * current client position even if each movement is straight foward. That's why, client send regularly a
-	 * Client->Server ValidatePosition packet to eventually correct the gap on the server. But, it's always the server
+	 * When the movement is started (ex : by MovetoLocation), this method will
+	 * be called each 0.1 sec to estimate and update the L2Character position on
+	 * the server. Note, that the current server position can differe from the
+	 * current client position even if each movement is straight foward. That's
+	 * why, client send regularly a Client->Server ValidatePosition packet to
+	 * eventually correct the gap on the server. But, it's always the server
 	 * position that is used in range calculation.<BR>
 	 * <BR>
-	 * At the end of the estimated movement time, the L2Character position is automatically set to the destination
-	 * position even if the movement is not finished.<BR>
+	 * At the end of the estimated movement time, the L2Character position is
+	 * automatically set to the destination position even if the movement is not
+	 * finished.<BR>
 	 * <BR>
-	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : The current Z position is obtained FROM THE CLIENT by the Client->Server
-	 * ValidatePosition Packet. But x and y positions must be calculated to avoid that players try to modify their
-	 * movement speed.</B></FONT><BR>
+	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : The current Z position is
+	 * obtained FROM THE CLIENT by the Client->Server ValidatePosition Packet.
+	 * But x and y positions must be calculated to avoid that players try to
+	 * modify their movement speed.</B></FONT><BR>
 	 * <BR>
 	 * 
-	 * @param gameTicks Nb of ticks since the server start
+	 * @param gameTicks
+	 *            Nb of ticks since the server start
 	 * @return True if the movement is finished
 	 */
-	public boolean updatePosition(int gameTicks)
-	{
+	public boolean updatePosition(int gameTicks) {
 		// Get movement data
 		MoveData m = _move;
 
-		if(m == null)
+		if (m == null)
 			return true;
 
-		if(!isVisible())
-		{
+		if (!isVisible()) {
 			_move = null;
 			return true;
 		}
 
-		if(m._moveTimestamp == 0)
-		{
+		if (m._moveTimestamp == 0) {
 			m._moveTimestamp = m._moveStartTime;
 			m._xAccurate = getX();
 			m._yAccurate = getY();
 		}
 
 		// Check if the position has alreday be calculated
-		if(m._moveTimestamp == gameTicks)
+		if (m._moveTimestamp == gameTicks)
 			return false;
 
 		int xPrev = getX();
@@ -137,93 +144,71 @@ public abstract class L2Character extends L2Object
 		int zPrev = getZ();
 
 		double dx, dy, dz, distFraction;
-		if(Config.COORD_SYNCHRONIZE == 1)
-		// the only method that can modify x,y while moving (otherwise _move would/should be set null)
-		{
-			dx = m._xDestination - xPrev;
-			dy = m._yDestination - yPrev;
-		}
-		else
+		// if(Config.COORD_SYNCHRONIZE == 1)
+		// the only method that can modify x,y while moving (otherwise _move
+		// would/should be set null)
+		// {
+		// dx = m._xDestination - xPrev;
+		// dy = m._yDestination - yPrev;
+		// }
+		// else
 		// otherwise we need saved temporary values to avoid rounding errors
-		{
-			dx = m._xDestination - m._xAccurate;
-			dy = m._yDestination - m._yAccurate;
-		}
+		// {
+		dx = m._xDestination - m._xAccurate;
+		dy = m._yDestination - m._yAccurate;
+		// }
 		// Z coordinate will follow geodata or client values
-		if(Config.GEODATA > 0 && Config.COORD_SYNCHRONIZE == 2 && !isFlying() && !isInsideZone(L2Character.ZONE_WATER) && !m.disregardingGeodata && GameTimeController.getGameTicks() % 10 == 0 // once a second to reduce possible cpu load
-			&& !(this instanceof L2BoatInstance))
-		{
-			short geoHeight = GeoData.getInstance().getSpawnHeight(xPrev, yPrev, zPrev - 30, zPrev + 30, getObjectId());
-			dz = m._zDestination - geoHeight;
-			// quite a big difference, compare to validatePosition packet
-			if(this instanceof L2PcInstance && Math.abs(((L2PcInstance) this).getClientZ() - geoHeight) > 200 && Math.abs(((L2PcInstance) this).getClientZ() - geoHeight) < 1500)
-			{
-				dz = m._zDestination - zPrev; // allow diff 
-			}
-			else if(isInCombat() && Math.abs(dz) > 200 && dx * dx + dy * dy < 40000) // allow mob to climb up to pcinstance
-			{
-				dz = m._zDestination - zPrev; // climbing 
-			}
-			else
-			{
-				zPrev = geoHeight;
-			}
-		}
-		else
-		{
-			dz = m._zDestination - zPrev;
-		}
+		/*
+		 * if(Config.GEODATA > 0 && Config.COORD_SYNCHRONIZE == 2 && !isFlying()
+		 * && !isInsideZone(L2Character.ZONE_WATER) && !m.disregardingGeodata &&
+		 * GameTimeController.getGameTicks() % 10 == 0 // once a second to
+		 * reduce possible cpu load && !(this instanceof L2BoatInstance)) {
+		 * short geoHeight = GeoData.getInstance().getSpawnHeight(xPrev, yPrev,
+		 * zPrev - 30, zPrev + 30, getObjectId()); dz = m._zDestination -
+		 * geoHeight; // quite a big difference, compare to validatePosition
+		 * packet if(this instanceof L2PcInstance && Math.abs(((L2PcInstance)
+		 * this).getClientZ() - geoHeight) > 200 && Math.abs(((L2PcInstance)
+		 * this).getClientZ() - geoHeight) < 1500) { dz = m._zDestination -
+		 * zPrev; // allow diff } else if(isInCombat() && Math.abs(dz) > 200 &&
+		 * dx * dx + dy * dy < 40000) // allow mob to climb up to pcinstance {
+		 * dz = m._zDestination - zPrev; // climbing } else { zPrev = geoHeight;
+		 * } } else {
+		 */
+		dz = m._zDestination - zPrev;
+		// }
 
 		float speed;
-		if(this instanceof L2BoatInstance)
-		{
-			speed = ((L2BoatInstance) this).boatSpeed;
-		}
-		else
-		{
-			speed = getMoveSpeed();
-		}
+		speed = getMoveSpeed();
 
-		double distPassed = speed * (gameTicks - m._moveTimestamp) / GameTimeController.TICKS_PER_SECOND;
-		if(dx * dx + dy * dy < 10000 && dz * dz > 2500) // close enough, allows error between client and server geodata if it cannot be avoided
+		double distPassed = speed * (gameTicks - m._moveTimestamp)
+				/ GameTimeController.TICKS_PER_SECOND;
+		if (dx * dx + dy * dy < 10000 && dz * dz > 2500) // close enough, allows
+															// error between
+															// client and server
+															// geodata if it
+															// cannot be avoided
 		{
 			distFraction = distPassed / Math.sqrt(dx * dx + dy * dy);
-		}
-		else
-		{
+		} else {
 			distFraction = distPassed / Math.sqrt(dx * dx + dy * dy + dz * dz);
 		}
 
-		// if (Config.DEVELOPER) _log.warning("Move Ticks:" + (gameTicks - m._moveTimestamp) + ", distPassed:" + distPassed + ", distFraction:" + distFraction);
+		// if (Config.DEVELOPER) _log.warning("Move Ticks:" + (gameTicks -
+		// m._moveTimestamp) + ", distPassed:" + distPassed + ", distFraction:"
+		// + distFraction);
 
-		if(distFraction > 1) // already there
+		if (distFraction > 1) // already there
 		{
 			// Set the position of the L2Character to the destination
-			super.getPosition().setXYZ(m._xDestination, m._yDestination, m._zDestination);
-			if(this instanceof L2BoatInstance)
-			{
-				((L2BoatInstance) this).updatePeopleInTheBoat(m._xDestination, m._yDestination, m._zDestination);
-			}
-			else
-			{
-				revalidateZone();
-			}
-		}
-		else
-		{
+			super.setXYZ(m._xDestination, m._yDestination, m._zDestination);
+		} else {
 			m._xAccurate += dx * distFraction;
 			m._yAccurate += dy * distFraction;
 
-			// Set the position of the L2Character to estimated after parcial move
-			super.getPosition().setXYZ((int) m._xAccurate, (int) m._yAccurate, zPrev + (int) (dz * distFraction + 0.5));
-			if(this instanceof L2BoatInstance)
-			{
-				((L2BoatInstance) this).updatePeopleInTheBoat((int) m._xAccurate, (int) m._yAccurate, zPrev + (int) (dz * distFraction + 0.5));
-			}
-			else
-			{
-				revalidateZone();
-			}
+			// Set the position of the L2Character to estimated after parcial
+			// move
+			super.setXYZ((int) m._xAccurate, (int) m._yAccurate, zPrev
+					+ (int) (dz * distFraction + 0.5));
 		}
 
 		// Set the timer of last position update to now
@@ -231,699 +216,623 @@ public abstract class L2Character extends L2Object
 
 		return distFraction > 1;
 	}
-	
+
 	// called from AIAccessor only
-		/**
-		 * Calculate movement data for a move to location action and add the L2Character to movingObjects of
-		 * GameTimeController (only called by AI Accessor).<BR>
-		 * <BR>
-		 * <B><U> Concept</U> :</B><BR>
-		 * <BR>
-		 * At the beginning of the move action, all properties of the movement are stored in the MoveData object called
-		 * <B>_move</B> of the L2Character. The position of the start point and of the destination permit to estimated in
-		 * function of the movement speed the time to achieve the destination.<BR>
-		 * <BR>
-		 * All L2Character in movement are identified in <B>movingObjects</B> of GameTimeController that will call the
-		 * updatePosition method of those L2Character each 0.1s.<BR>
-		 * <BR>
-		 * <B><U> Actions</U> :</B><BR>
-		 * <BR>
-		 * <li>Get current position of the L2Character</li> <li>Calculate distance (dx,dy) between current position and
-		 * destination including offset</li> <li>Create and Init a MoveData object</li> <li>Set the L2Character _move object
-		 * to MoveData object</li> <li>Add the L2Character to movingObjects of the GameTimeController</li> <li>Create a task
-		 * to notify the AI that L2Character arrives at a check point of the movement</li><BR>
-		 * <BR>
-		 * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T send Server->Client packet
-		 * MoveToPawn/CharMoveToLocation </B></FONT><BR>
-		 * <BR>
-		 * <B><U> Example of use </U> :</B><BR>
-		 * <BR>
-		 * <li>AI : onIntentionMoveTo(L2CharPosition), onIntentionPickUp(L2Object), onIntentionInteract(L2Object)</li> <li>
-		 * FollowTask</li><BR>
-		 * <BR>
+	public void moveToLocation(int x, int y, int z) {
+		moveToLocation(x,y,z,20);
+	}
+	/**
+	 * Calculate movement data for a move to location action and add the
+	 * L2Character to movingObjects of GameTimeController (only called by AI
+	 * Accessor).<BR>
+	 * <BR>
+	 * <B><U> Concept</U> :</B><BR>
+	 * <BR>
+	 * At the beginning of the move action, all properties of the movement are
+	 * stored in the MoveData object called <B>_move</B> of the L2Character. The
+	 * position of the start point and of the destination permit to estimated in
+	 * function of the movement speed the time to achieve the destination.<BR>
+	 * <BR>
+	 * All L2Character in movement are identified in <B>movingObjects</B> of
+	 * GameTimeController that will call the updatePosition method of those
+	 * L2Character each 0.1s.<BR>
+	 * <BR>
+	 * <B><U> Actions</U> :</B><BR>
+	 * <BR>
+	 * <li>Get current position of the L2Character</li> <li>Calculate distance
+	 * (dx,dy) between current position and destination including offset</li>
+	 * <li>Create and Init a MoveData object</li> <li>Set the L2Character _move
+	 * object to MoveData object</li> <li>Add the L2Character to movingObjects
+	 * of the GameTimeController</li> <li>Create a task to notify the AI that
+	 * L2Character arrives at a check point of the movement</li><BR>
+	 * <BR>
+	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T send
+	 * Server->Client packet MoveToPawn/CharMoveToLocation </B></FONT><BR>
+	 * <BR>
+	 * <B><U> Example of use </U> :</B><BR>
+	 * <BR>
+	 * <li>AI : onIntentionMoveTo(L2CharPosition), onIntentionPickUp(L2Object),
+	 * onIntentionInteract(L2Object)</li> <li>
+	 * FollowTask</li><BR>
+	 * <BR>
+	 * 
+	 * @param x
+	 *            The X position of the destination
+	 * @param y
+	 *            The Y position of the destination
+	 * @param z
+	 *            The Y position of the destination
+	 * @param offset
+	 *            The size of the interaction area of the L2Character targeted
+	 */
+	public void moveToLocation(int x, int y, int z, int offset) {
+		/*
+		 * //when start to move again, it has to stop sitdown task if(this
+		 * instanceof L2PcInstance)
+		 * ((L2PcInstance)this).setPosticipateSit(false);
 		 * 
-		 * @param x The X position of the destination
-		 * @param y The Y position of the destination
-		 * @param z The Y position of the destination
-		 * @param offset The size of the interaction area of the L2Character targeted
+		 * // Fix archer bug with movment/hittask if (this instanceof
+		 * L2PcInstance && this.isAttackingNow()) { L2ItemInstance rhand =
+		 * ((L2PcInstance)
+		 * this).getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND); if
+		 * ((rhand != null && rhand.getItemType() == L2WeaponType.BOW)) return;
+		 * }
 		 */
-		protected void moveToLocation(int x, int y, int z, int offset)
-		{	
-			/*//when start to move again, it has to stop sitdown task
-			if(this instanceof L2PcInstance)			
-				((L2PcInstance)this).setPosticipateSit(false);
-			
-			// Fix archer bug with movment/hittask
-			if (this instanceof L2PcInstance && this.isAttackingNow())
-			{
-				L2ItemInstance rhand = ((L2PcInstance) this).getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
-				if ((rhand != null && rhand.getItemType() == L2WeaponType.BOW))
-					return;
-			}*/
-			if(!isLive()) return;
-			
-			// Get the Move Speed of the L2Charcater
-			float speed = getMoveSpeed();
+		if (!isLive())
+			return;
 
-			if(speed <= 0 || isMovementDisabled())
+		// Get the Move Speed of the L2Charcater
+		float speed = getMoveSpeed();
+
+		if (speed <= 0 || isMovementDisabled())
+			return;
+
+		// Get current position of the L2Character
+		final int curX = super.getX();
+		final int curY = super.getY();
+		final int curZ = super.getZ();
+
+		// Calculate distance (dx,dy) between current position and destination
+		//
+		double dx = x - curX;
+		double dy = y - curY;
+		double dz = z - curZ;
+		double distance = Math.sqrt(dx * dx + dy * dy);
+
+		/*
+		 * if(Config.GEODATA > 0 && isInsideZone(ZONE_WATER) && distance > 700)
+		 * { double divider = 700 / distance; x = curX + (int) (divider * dx); y
+		 * = curY + (int) (divider * dy); z = curZ + (int) (divider * dz); dx =
+		 * x - curX; dy = y - curY; dz = z - curZ; distance = Math.sqrt(dx * dx
+		 * + dy * dy); }
+		 */
+
+		/*
+		 * if(Config.DEBUG) { _log.fine("distance to target:" + distance); }
+		 */
+
+		// Define movement angles needed
+		// ^
+		// | X (x,y)
+		// | /
+		// | /distance
+		// | /
+		// |/ angle
+		// X ---------->
+		// (curx,cury)
+
+		double cos;
+		double sin;
+
+		// Check if a movement offset is defined or no distance to go through
+		if (offset > 0 || distance < 1) {
+			// approximation for moving closer when z coordinates are different
+			//
+			offset -= Math.abs(dz);
+
+			if (offset < 5) {
+				offset = 5;
+			}
+
+			// If no distance to go through, the movement is canceled
+			if (distance < 1 || distance - offset <= 0) {
+				sin = 0;
+				cos = 1;
+				distance = 0;
+				x = curX;
+				y = curY;
+
+				/*
+				 * if(Config.DEBUG) {
+				 * _log.fine("already in range, no movement needed."); }
+				 */
+
+				// Notify the AI that the L2Character is arrived at destination
+				// getAI().notifyEvent(CtrlEvent.EVT_ARRIVED, null);
+
 				return;
-
-			// Get current position of the L2Character
-			final int curX = super.getX();
-			final int curY = super.getY();
-			final int curZ = super.getZ();
-
-			// Calculate distance (dx,dy) between current position and destination
-			// 
-			double dx = x - curX;
-			double dy = y - curY;
-			double dz = z - curZ;
-			double distance = Math.sqrt(dx * dx + dy * dy);
-
-			/*if(Config.GEODATA > 0 && isInsideZone(ZONE_WATER) && distance > 700)
-			{
-				double divider = 700 / distance;
-				x = curX + (int) (divider * dx);
-				y = curY + (int) (divider * dy);
-				z = curZ + (int) (divider * dz);
-				dx = x - curX;
-				dy = y - curY;
-				dz = z - curZ;
-				distance = Math.sqrt(dx * dx + dy * dy);
-			}*/
-
-			/*if(Config.DEBUG)
-			{
-				_log.fine("distance to target:" + distance);
-			}*/
-
-			// Define movement angles needed
-			// ^
-			// |     X (x,y)
-			// |   /
-			// |  /distance
-			// | /
-			// |/ angle
-			// X ---------->
-			// (curx,cury)
-
-			double cos;
-			double sin;
-
-			// Check if a movement offset is defined or no distance to go through
-			if(offset > 0 || distance < 1)
-			{
-				// approximation for moving closer when z coordinates are different
-				// 
-				offset -= Math.abs(dz);
-
-				if(offset < 5)
-				{
-					offset = 5;
-				}
-
-				// If no distance to go through, the movement is canceled
-				if(distance < 1 || distance - offset <= 0)
-				{
-					sin = 0;
-					cos = 1;
-					distance = 0;
-					x = curX;
-					y = curY;
-
-					/*if(Config.DEBUG)
-					{
-						_log.fine("already in range, no movement needed.");
-					}*/
-
-					// Notify the AI that the L2Character is arrived at destination
-					//getAI().notifyEvent(CtrlEvent.EVT_ARRIVED, null);
-
-					return;
-				}
-				// Calculate movement angles needed
-				sin = dy / distance;
-				cos = dx / distance;
-
-				distance -= offset - 5; // due to rounding error, we have to move a bit closer to be in range
-
-				// Calculate the new destination with offset included
-				x = curX + (int) (distance * cos);
-				y = curY + (int) (distance * sin);
-
 			}
-			else
-			{
-				// Calculate movement angles needed
-				sin = dy / distance;
-				cos = dx / distance;
-			}
+			// Calculate movement angles needed
+			sin = dy / distance;
+			cos = dx / distance;
 
-			// Create and Init a MoveData object
-			MoveData m = new MoveData();
+			distance -= offset - 5; // due to rounding error, we have to move a
+									// bit closer to be in range
 
-			// GEODATA MOVEMENT CHECKS AND PATHFINDING
+			// Calculate the new destination with offset included
+			x = curX + (int) (distance * cos);
+			y = curY + (int) (distance * sin);
 
-			m.onGeodataPathIndex = -1; // Initialize not on geodata path
-			m.disregardingGeodata = false;
-			
-			/*if(Config.GEODATA > 0 && !isFlying() && (!isInsideZone(ZONE_WATER) || isInsideZone(ZONE_SIEGE)) && !(this instanceof L2NpcWalkerInstance))
-			{
-				double originalDistance = distance;
-				int originalX = x;
-				int originalY = y;
-				int originalZ = z;
-				int gtx = originalX - L2World.MAP_MIN_X >> 4;
-				int gty = originalY - L2World.MAP_MIN_Y >> 4;
-
-				// Movement checks:
-				// when geodata == 2, for all characters except mobs returning home (could be changed later to teleport if pathfinding fails)
-				// when geodata == 1, for l2playableinstance and l2riftinstance only
-				if(Config.GEODATA >0 && !(this instanceof L2Attackable && ((L2Attackable) this).isReturningToSpawnPoint()) || this instanceof L2PcInstance || this instanceof L2Summon && !(getAI().getIntention() == AI_INTENTION_FOLLOW) || this instanceof L2RiftInvaderInstance || isAfraid())
-				{
-					if(isOnGeodataPath())
-					{
-						try
-						{
-							if(gtx == _move.geoPathGtx && gty == _move.geoPathGty)
-								return;
-							_move.onGeodataPathIndex = -1; // Set not on geodata path
-						}
-						catch(NullPointerException e)
-						{
-							e.printStackTrace();
-						}
-					}
-
-					if(curX < L2World.MAP_MIN_X || curX > L2World.MAP_MAX_X || curY < L2World.MAP_MIN_Y || curY > L2World.MAP_MAX_Y)
-					{
-						// Temporary fix for character outside world region errors
-						_log.warning("Character " + getName() + " outside world area, in coordinates x:" + curX + " y:" + curY);
-						getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-						if(this instanceof L2PcInstance)
-						{
-							((L2PcInstance) this).deleteMe();
-						}
-						else
-						{
-							onDecay();
-						}
-
-						return;
-					}
-					Location destiny = GeoData.getInstance().moveCheck(curX, curY, curZ, x, y, z);
-					// location different if destination wasn't reached (or just z coord is different)
-					x = destiny.getX();
-					y = destiny.getY();
-					z = destiny.getZ();
-					distance = Math.sqrt((x - curX) * (x - curX) + (y - curY) * (y - curY));
-
-				}
-				// Pathfinding checks. Only when geodata setting is 2, the LoS check gives shorter result
-				// than the original movement was and the LoS gives a shorter distance than 2000
-				// This way of detecting need for pathfinding could be changed.
-				if( ((this instanceof L2PcInstance) && Config.ALLOW_PLAYERS_PATHNODE || !(this instanceof L2PcInstance)) && Config.GEODATA == 2 && originalDistance - distance > 100 && distance < 2000 && !isAfraid())
-				{
-					// Path calculation
-					// Overrides previous movement check
-					if(this instanceof L2PlayableInstance || isInCombat() || this instanceof L2MinionInstance)
-					{
-						//int gx = (curX - L2World.MAP_MIN_X) >> 4;
-						//int gy = (curY - L2World.MAP_MIN_Y) >> 4;
-
-						m.geoPath = PathFinding.getInstance().findPath(curX, curY, curZ, originalX, originalY, originalZ);
-						if(m.geoPath == null || m.geoPath.length < 2) // No path found
-						{
-							// Even though there's no path found (remember geonodes aren't perfect), 
-							// the mob is attacking and right now we set it so that the mob will go
-							// after target anyway, is dz is small enough. Summons will follow their masters no matter what.
-							if(Config.ALLOW_PLAYERS_PATHNODE && (this instanceof L2PcInstance)/*this instanceof L2PcInstance || 
-									|| (!(this instanceof L2PlayableInstance) && Math.abs(z - curZ) > 140) 
-									|| (this instanceof L2Summon && !((L2Summon) this).getFollowStatus()))
-							{
-								getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-								return;
-							}
-							m.disregardingGeodata = true;
-							x = originalX;
-							y = originalY;
-							z = originalZ;
-							distance = originalDistance;
-						}
-						else
-						{
-							m.onGeodataPathIndex = 0; // on first segment
-							m.geoPathGtx = gtx;
-							m.geoPathGty = gty;
-							m.geoPathAccurateTx = originalX;
-							m.geoPathAccurateTy = originalY;
-
-							x = m.geoPath[m.onGeodataPathIndex].getX();
-							y = m.geoPath[m.onGeodataPathIndex].getY();
-							z = m.geoPath[m.onGeodataPathIndex].getZ();
-
-							// check for doors in the route
-							if(DoorTable.getInstance().checkIfDoorsBetween(curX, curY, curZ, x, y, z))
-							{
-								m.geoPath = null;
-								getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-								return;
-							}
-
-							for(int i = 0; i < m.geoPath.length - 1; i++)
-							{
-								if(DoorTable.getInstance().checkIfDoorsBetween(m.geoPath[i], m.geoPath[i+1]))
-								{
-									m.geoPath = null;
-									getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-									return;
-								}
-							}
-
-							dx = x - curX;
-							dy = y - curY;
-							distance = Math.sqrt(dx * dx + dy * dy);
-							sin = dy / distance;
-							cos = dx / distance;
-						}
-					}
-				}
-				// If no distance to go through, the movement is canceled
-				if(((this instanceof L2PcInstance) && Config.ALLOW_PLAYERS_PATHNODE || !(this instanceof L2PcInstance)) && distance < 1 && (Config.GEODATA == 2 || this instanceof L2PlayableInstance || this instanceof L2RiftInvaderInstance || isAfraid()))
-				{
-					sin = 0;
-					cos = 1;
-					distance = 0;
-					x = curX;
-					y = curY;
-
-					if(this instanceof L2Summon)
-					{
-						((L2Summon) this).setFollowStatus(false);
-					}
-
-					//getAI().notifyEvent(CtrlEvent.EVT_ARRIVED, null);
-					getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-
-					return;
-				}
-			}*/
-
-			// Caclulate the Nb of ticks between the current position and the destination
-			// One tick added for rounding reasons
-			int ticksToMove = 1 + (int) (GameTimeController.TICKS_PER_SECOND * distance / speed);
-
-			// Calculate and set the heading of the L2Character
-			setHeading((int) (Math.atan2(-sin, -cos) * 10430.37835) + 32768);
-
-			/*if(Config.DEBUG)
-			{
-				_log.fine("dist:" + distance + "speed:" + speed + " ttt:" + ticksToMove + " heading:" + getHeading());
-			}*/
-
-			m._xDestination = x;
-			m._yDestination = y;
-			m._zDestination = z; // this is what was requested from client
-			m._heading = 0;
-
-			m._moveStartTime = GameTimeController.getGameTicks();
-
-			/*if(Config.DEBUG)
-			{
-				_log.fine("time to target:" + ticksToMove);
-			}*/
-
-			// Set the L2Character _move object to MoveData object
-			_move = m;
-
-			// Add the L2Character to movingObjects of the GameTimeController
-			// The GameTimeController manage objects movement
-			GameTimeController.getInstance().registerMovingObject(this);
-
-			// Create a task to notify the AI that L2Character arrives at a check point of the movement
-			/*if(ticksToMove * GameTimeController.MILLIS_IN_TICK > 3000)
-			{
-				ThreadPoolManager.getInstance().scheduleAi(new NotifyAITask(CtrlEvent.EVT_ARRIVED_REVALIDATE), 2000);
-			}*/
-
-			// the CtrlEvent.EVT_ARRIVED will be sent when the character will actually arrive
-			// to destination by GameTimeController
-
-			m = null;
+		} else {
+			// Calculate movement angles needed
+			sin = dy / distance;
+			cos = dx / distance;
 		}
-	
-	
-	private boolean isMovementDisabled() {		
-		return false;
+
+		// Create and Init a MoveData object
+		MoveData m = new MoveData();
+
+		// GEODATA MOVEMENT CHECKS AND PATHFINDING
+
+		m.onGeodataPathIndex = -1; // Initialize not on geodata path
+		m.disregardingGeodata = false;
+
+		/*
+		 * if(Config.GEODATA > 0 && !isFlying() && (!isInsideZone(ZONE_WATER) ||
+		 * isInsideZone(ZONE_SIEGE)) && !(this instanceof L2NpcWalkerInstance))
+		 * { double originalDistance = distance; int originalX = x; int
+		 * originalY = y; int originalZ = z; int gtx = originalX -
+		 * L2World.MAP_MIN_X >> 4; int gty = originalY - L2World.MAP_MIN_Y >> 4;
+		 * 
+		 * // Movement checks: // when geodata == 2, for all characters except
+		 * mobs returning home (could be changed later to teleport if
+		 * pathfinding fails) // when geodata == 1, for l2playableinstance and
+		 * l2riftinstance only if(Config.GEODATA >0 && !(this instanceof
+		 * L2Attackable && ((L2Attackable) this).isReturningToSpawnPoint()) ||
+		 * this instanceof L2PcInstance || this instanceof L2Summon &&
+		 * !(getAI().getIntention() == AI_INTENTION_FOLLOW) || this instanceof
+		 * L2RiftInvaderInstance || isAfraid()) { if(isOnGeodataPath()) { try {
+		 * if(gtx == _move.geoPathGtx && gty == _move.geoPathGty) return;
+		 * _move.onGeodataPathIndex = -1; // Set not on geodata path }
+		 * catch(NullPointerException e) { e.printStackTrace(); } }
+		 * 
+		 * if(curX < L2World.MAP_MIN_X || curX > L2World.MAP_MAX_X || curY <
+		 * L2World.MAP_MIN_Y || curY > L2World.MAP_MAX_Y) { // Temporary fix for
+		 * character outside world region errors _log.warning("Character " +
+		 * getName() + " outside world area, in coordinates x:" + curX + " y:" +
+		 * curY); getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE); if(this
+		 * instanceof L2PcInstance) { ((L2PcInstance) this).deleteMe(); } else {
+		 * onDecay(); }
+		 * 
+		 * return; } Location destiny = GeoData.getInstance().moveCheck(curX,
+		 * curY, curZ, x, y, z); // location different if destination wasn't
+		 * reached (or just z coord is different) x = destiny.getX(); y =
+		 * destiny.getY(); z = destiny.getZ(); distance = Math.sqrt((x - curX) *
+		 * (x - curX) + (y - curY) * (y - curY));
+		 * 
+		 * } // Pathfinding checks. Only when geodata setting is 2, the LoS
+		 * check gives shorter result // than the original movement was and the
+		 * LoS gives a shorter distance than 2000 // This way of detecting need
+		 * for pathfinding could be changed. if( ((this instanceof L2PcInstance)
+		 * && Config.ALLOW_PLAYERS_PATHNODE || !(this instanceof L2PcInstance))
+		 * && Config.GEODATA == 2 && originalDistance - distance > 100 &&
+		 * distance < 2000 && !isAfraid()) { // Path calculation // Overrides
+		 * previous movement check if(this instanceof L2PlayableInstance ||
+		 * isInCombat() || this instanceof L2MinionInstance) { //int gx = (curX
+		 * - L2World.MAP_MIN_X) >> 4; //int gy = (curY - L2World.MAP_MIN_Y) >>
+		 * 4;
+		 * 
+		 * m.geoPath = PathFinding.getInstance().findPath(curX, curY, curZ,
+		 * originalX, originalY, originalZ); if(m.geoPath == null ||
+		 * m.geoPath.length < 2) // No path found { // Even though there's no
+		 * path found (remember geonodes aren't perfect), // the mob is
+		 * attacking and right now we set it so that the mob will go // after
+		 * target anyway, is dz is small enough. Summons will follow their
+		 * masters no matter what. if(Config.ALLOW_PLAYERS_PATHNODE && (this
+		 * instanceof L2PcInstance)/*this instanceof L2PcInstance || || (!(this
+		 * instanceof L2PlayableInstance) && Math.abs(z - curZ) > 140) || (this
+		 * instanceof L2Summon && !((L2Summon) this).getFollowStatus())) {
+		 * getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE); return; }
+		 * m.disregardingGeodata = true; x = originalX; y = originalY; z =
+		 * originalZ; distance = originalDistance; } else { m.onGeodataPathIndex
+		 * = 0; // on first segment m.geoPathGtx = gtx; m.geoPathGty = gty;
+		 * m.geoPathAccurateTx = originalX; m.geoPathAccurateTy = originalY;
+		 * 
+		 * x = m.geoPath[m.onGeodataPathIndex].getX(); y =
+		 * m.geoPath[m.onGeodataPathIndex].getY(); z =
+		 * m.geoPath[m.onGeodataPathIndex].getZ();
+		 * 
+		 * // check for doors in the route
+		 * if(DoorTable.getInstance().checkIfDoorsBetween(curX, curY, curZ, x,
+		 * y, z)) { m.geoPath = null;
+		 * getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE); return; }
+		 * 
+		 * for(int i = 0; i < m.geoPath.length - 1; i++) {
+		 * if(DoorTable.getInstance().checkIfDoorsBetween(m.geoPath[i],
+		 * m.geoPath[i+1])) { m.geoPath = null;
+		 * getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE); return; } }
+		 * 
+		 * dx = x - curX; dy = y - curY; distance = Math.sqrt(dx * dx + dy *
+		 * dy); sin = dy / distance; cos = dx / distance; } } } // If no
+		 * distance to go through, the movement is canceled if(((this instanceof
+		 * L2PcInstance) && Config.ALLOW_PLAYERS_PATHNODE || !(this instanceof
+		 * L2PcInstance)) && distance < 1 && (Config.GEODATA == 2 || this
+		 * instanceof L2PlayableInstance || this instanceof
+		 * L2RiftInvaderInstance || isAfraid())) { sin = 0; cos = 1; distance =
+		 * 0; x = curX; y = curY;
+		 * 
+		 * if(this instanceof L2Summon) { ((L2Summon)
+		 * this).setFollowStatus(false); }
+		 * 
+		 * //getAI().notifyEvent(CtrlEvent.EVT_ARRIVED, null);
+		 * getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
+		 * 
+		 * return; } }
+		 */
+
+		// Caclulate the Nb of ticks between the current position and the
+		// destination
+		// One tick added for rounding reasons
+		// int ticksToMove = 1 + (int) (GameTimeController.TICKS_PER_SECOND *
+		// distance / speed);
+
+		// Calculate and set the heading of the L2Character
+		setHeading((int) (Math.atan2(-sin, -cos) * 10430.37835) + 32768);
+
+		/*
+		 * if(Config.DEBUG) { _log.fine("dist:" + distance + "speed:" + speed +
+		 * " ttt:" + ticksToMove + " heading:" + getHeading()); }
+		 */
+
+		m._xDestination = x;
+		m._yDestination = y;
+		m._zDestination = z; // this is what was requested from client
+		m._heading = 0;
+
+		m._moveStartTime = GameTimeController.getGameTicks();
+
+		/*
+		 * if(Config.DEBUG) { _log.fine("time to target:" + ticksToMove); }
+		 */
+
+		// Set the L2Character _move object to MoveData object
+		_move = m;
+
+		// Add the L2Character to movingObjects of the GameTimeController
+		// The GameTimeController manage objects movement
+		GameTimeController.getInstance().registerMovingObject(this);
+
+		// Create a task to notify the AI that L2Character arrives at a check
+		// point of the movement
+		/*
+		 * if(ticksToMove * GameTimeController.MILLIS_IN_TICK > 3000) {
+		 * ThreadPoolManager.getInstance().scheduleAi(new
+		 * NotifyAITask(CtrlEvent.EVT_ARRIVED_REVALIDATE), 2000); }
+		 */
+
+		// the CtrlEvent.EVT_ARRIVED will be sent when the character will
+		// actually arrive
+		// to destination by GameTimeController
+
+		m = null;
 	}
 
+	private boolean isMovementDisabled() {
+		return false;
+	}
 
 	/**
 	 * This class group all mouvement data.<BR>
 	 * <BR>
 	 * <B><U> Data</U> :</B><BR>
 	 * <BR>
-	 * <li>_moveTimestamp : Last time position update</li> <li>_xDestination, _yDestination, _zDestination : Position of
-	 * the destination</li> <li>_xMoveFrom, _yMoveFrom, _zMoveFrom : Position of the origin</li> <li>_moveStartTime :
-	 * Start time of the movement</li> <li>_ticksToMove : Nb of ticks between the start and the destination</li> <li>
+	 * <li>_moveTimestamp : Last time position update</li> <li>_xDestination,
+	 * _yDestination, _zDestination : Position of the destination</li> <li>
+	 * _xMoveFrom, _yMoveFrom, _zMoveFrom : Position of the origin</li> <li>
+	 * _moveStartTime : Start time of the movement</li> <li>_ticksToMove : Nb of
+	 * ticks between the start and the destination</li> <li>
 	 * _xSpeedTicks, _ySpeedTicks : Speed in unit/ticks</li><BR>
 	 * <BR>
 	 */
-	public static class MoveData
-	{
+	public static class MoveData {
 		// when we retrieve x/y/z we use GameTimeControl.getGameTicks()
 		// if we are moving, but move timestamp==gameticks, we don't need
 		// to recalculate position
 		/** The _move start time. */
 		public int _moveStartTime;
-		
+
 		/** The _move timestamp. */
 		public int _moveTimestamp;
 
 		/** The _x destination. */
 		public int _xDestination;
-		
+
 		/** The _y destination. */
 		public int _yDestination;
-		
+
 		/** The _z destination. */
 		public int _zDestination;
-		
+
 		/** The _x accurate. */
 		public double _xAccurate;
-		
+
 		/** The _y accurate. */
 		public double _yAccurate;
-		
+
 		/** The _z accurate. */
 		public double _zAccurate;
-		
+
 		/** The _heading. */
 		public int _heading;
 
 		/** The disregarding geodata. */
 		public boolean disregardingGeodata;
-		
+
 		/** The on geodata path index. */
 		public int onGeodataPathIndex;
-		
+
 		/** The geo path. */
-		//public Node[] geoPath;
-		
+		// public Node[] geoPath;
+
 		/** The geo path accurate tx. */
 		public int geoPathAccurateTx;
-		
+
 		/** The geo path accurate ty. */
 		public int geoPathAccurateTy;
-		
+
 		/** The geo path gtx. */
 		public int geoPathGtx;
-		
+
 		/** The geo path gty. */
 		public int geoPathGty;
 	}
-	
-	
-	public int calcHeading(Location dest)
-	{
-		if(dest == null)
+
+	public int calcHeading(Location dest) {
+		if (dest == null)
 			return 0;
-		if(Math.abs(getX() - dest.x) == 0 && Math.abs(getY() - dest.y) == 0)
+		if (Math.abs(getX() - dest.x) == 0 && Math.abs(getY() - dest.y) == 0)
 			return _heading;
 		return calcHeading(dest.x, dest.y);
 	}
 
-	public int calcHeading(int x_dest, int y_dest)
-	{
+	public int calcHeading(int x_dest, int y_dest) {
 		return (int) (Math.atan2(getY() - y_dest, getX() - x_dest) * HEADINGS_IN_PI) + 32768;
 	}
-	
-	public final L2Character getCharTarget()
-	{
+
+	public final L2Character getCharTarget() {
 		L2Object target = getTarget();
-		if(target == null || !target.isCharacter())
+		if (target == null || !target.isCharacter())
 			return null;
 		return (L2Character) target;
 	}
-	
-	public final double getCurrentCp()
-	{
+
+	public final double getCurrentCp() {
 		return _currentCp;
 	}
 
-	public final double getCurrentCpRatio()
-	{
+	public final double getCurrentCpRatio() {
 		return getCurrentCp() / getMaxCp();
 	}
 
-	public final double getCurrentCpPercents()
-	{
+	public final double getCurrentCpPercents() {
 		return getCurrentCpRatio() * 100f;
 	}
 
-	public final boolean isCurrentCpFull()
-	{
+	public final boolean isCurrentCpFull() {
 		return getCurrentCp() >= getMaxCp();
 	}
 
-	public final boolean isCurrentCpZero()
-	{
+	public final boolean isCurrentCpZero() {
 		return getCurrentCp() < 1;
 	}
 
-	public final double getCurrentHp()
-	{
+	public final double getCurrentHp() {
 		return _currentHp;
 	}
 
-	public final double getCurrentHpRatio()
-	{
+	public final double getCurrentHpRatio() {
 		return getCurrentHp() / getMaxHp();
 	}
 
-	public final double getCurrentHpPercents()
-	{
+	public final double getCurrentHpPercents() {
 		return getCurrentHpRatio() * 100f;
 	}
 
-	public final boolean isCurrentHpFull()
-	{
+	public final boolean isCurrentHpFull() {
 		return getCurrentHp() >= getMaxHp();
 	}
 
-	public final boolean isCurrentHpZero()
-	{
+	public final boolean isCurrentHpZero() {
 		return getCurrentHp() < 1;
 	}
 
-	public final double getCurrentMp()
-	{
+	public final double getCurrentMp() {
 		return _currentMp;
 	}
 
-	public final double getCurrentMpRatio()
-	{
+	public final double getCurrentMpRatio() {
 		return getCurrentMp() / getMaxMp();
 	}
 
-	public final double getCurrentMpPercents()
-	{
+	public final double getCurrentMpPercents() {
 		return getCurrentMpRatio() * 100f;
 	}
 
-	public final boolean isCurrentMpFull()
-	{
+	public final boolean isCurrentMpFull() {
 		return getCurrentMp() >= getMaxMp();
 	}
 
-	public final boolean isCurrentMpZero()
-	{
+	public final boolean isCurrentMpZero() {
 		return getCurrentMp() < 1;
 	}
-	
+
 	/**
-	 * If <b>boolean toChar is true heading calcs this->target, else target->this.
+	 * If <b>boolean toChar is true heading calcs this->target, else
+	 * target->this.
 	 */
-	public int getHeadingTo(L2Object target, boolean toChar)
-	{
-		if(target == null || target == this)
+	public int getHeadingTo(L2Object target, boolean toChar) {
+		if (target == null || target == this)
 			return -1;
 
 		int dx = target.getX() - getX();
 		int dy = target.getY() - getY();
 		int heading = (int) (Math.atan2(-dy, -dx) * HEADINGS_IN_PI + 32768);
 
-		heading = toChar ? target.getHeading() - heading : getHeading() - heading;
+		heading = toChar ? target.getHeading() - heading : getHeading()
+				- heading;
 
-		if(heading < 0)
+		if (heading < 0)
 			heading = heading + 1 + Integer.MAX_VALUE & 0xFFFF;
-		else if(heading > 0xFFFF)
+		else if (heading > 0xFFFF)
 			heading &= 0xFFFF;
 
 		return heading;
 	}
-	
-	public int getMAtkSpd()
-	{
+
+	public int getMAtkSpd() {
 		return _mAtkSpd;
 	}
 
-	public final int getMaxCp()
-	{
+	public final int getMaxCp() {
 		return _max_cp;
 	}
 
-	public int getMaxHp()
-	{
+	public int getMaxHp() {
 		return _max_hp;
 	}
 
-	public int getMaxMp()
-	{
+	public int getMaxMp() {
 		return _max_mp;
 	}
 
-	public int getMDef()
-	{
+	public int getMDef() {
 		return _cur_mdef;
 	}
-	
+
 	@Override
-	public String getName()
-	{
+	public String getName() {
 		return _name;
 	}
-	
-	public int getPAtk()
-	{
+
+	public int getPAtk() {
 		return _cur_patk;
 	}
 
-	public int getPAtkSpd()
-	{
+	public int getPAtkSpd() {
 		return _cur_patk;
 	}
 
-	public int getPDef()
-	{
+	public int getPDef() {
 		return _cur_pdef;
 	}
 
-	public int getRunSpeed()
-	{
-		if(_cur_runspd > 0)
+	public int getRunSpeed() {
+		if (_cur_runspd > 0)
 			return _cur_runspd;
 		else
 			return 50;
 	}
-	public L2Object getTarget()
-	{
+
+	public L2Object getTarget() {
 		return _target;
 	}
-	public boolean isDead()
-	{
-		return ((_currentHp <= 0) || isDead ) ;
+
+	public boolean isDead() {
+		return ((_currentHp <= 0) || _isDead);
 	}
-	public final boolean isRunning()
-	{
-		return _running;
+
+	public final void setCurrentHp(double newHp) {
+		_currentHp = newHp;
 	}
-	
-	public final void setCurrentHp(double newHp)
-	{
-		_currentHp=newHp;
+
+	public final void setCurrentMp(double newMp) {
+		_currentMp = newMp;
 	}
-	public final void setCurrentMp(double newMp)
-	{
-		_currentMp=newMp;
-	}
-	public final void setCurrentCp(double newCp)
-	{
-		if(!isPlayer())
+
+	public final void setCurrentCp(double newCp) {
+		if (!isPlayer())
 			return;
 		_currentCp = newCp;
 	}
+
 	@Override
-	public final int getHeading()
-	{
+	public final int getHeading() {
 		return _heading;
 	}
+
 	@Override
-	public void setHeading(int heading)
-	{
+	public void setHeading(int heading) {
 		_heading = heading;
 	}
-	public final void setIsTeleporting(boolean value)
-	{
+
+	public final void setIsTeleporting(boolean value) {
 		setTeleporting(value);
 	}
-	public final void setName(String name)
-	{
+
+	public final void setName(String name) {
 		_name = name;
 	}
-	public void setTarget(L2Object object)
-	{
-		_target=object;
+
+	public void setTarget(L2Object object) {
+		_target = object;
 	}
-	public void setTitle(String title)
-	{
+
+	public void setTitle(String title) {
 		_title = title;
 	}
-	//implements
-	public int getKarma()
-	{
-		return 0;
-	}
-	public int getNpcId()
-	{
-		return 0;
-	}
-	public int getTeam()
-	{
-		return 0;
-	}
-	public boolean isUndead()
-	{
-		return false;
-	}
-	public void sendPacket(L2GameClientPacket... mov)
-	{}
-	
-	public void sitDown()
-	{}
 
-	public void standUp()
-	{}
-	public boolean hasMinions()
-	{
-		return false;
-	}
-	public boolean isCursedWeaponEquipped()
-	{
-		return false;
-	}
-	public boolean isHero()
-	{
-		return false;
-	}
-	public int getClanCrestId()
-	{
+	// implements
+	public int getKarma() {
 		return 0;
 	}
 
-	public int getClanCrestLargeId()
-	{
+	public int getNpcId() {
 		return 0;
 	}
 
-	public int getAllyCrestId()
-	{
+	public int getTeam() {
 		return 0;
 	}
+
+	public boolean isUndead() {
+		return false;
+	}
+
+	public void sendPacket(L2GameClientPacket... mov) {
+	}
+
+	public void sitDown() {
+	}
+
+	public void standUp() {
+	}
+
+	public boolean hasMinions() {
+		return false;
+	}
+
+	public boolean isCursedWeaponEquipped() {
+		return false;
+	}
+
+	public boolean isHero() {
+		return false;
+	}
+
+	public int getClanCrestId() {
+		return 0;
+	}
+
+	public int getClanCrestLargeId() {
+		return 0;
+	}
+
+	public int getAllyCrestId() {
+		return 0;
+	}
+
 	public abstract byte getLevel();
-	
-	
-	
+
 	public void setmAtkSpd(int _mAtkSpd) {
 		this._mAtkSpd = _mAtkSpd;
 	}
@@ -955,7 +864,7 @@ public abstract class L2Character extends L2Object
 	public void setRunspd(int _cur_runspd) {
 		this._cur_runspd = _cur_runspd;
 	}
-	
+
 	public int getMatk() {
 		return _cur_matk;
 	}
@@ -964,10 +873,11 @@ public abstract class L2Character extends L2Object
 		this._cur_matk = _cur_matk;
 	}
 
-	public double getMovementSpeedMultiplier() {		
+	public double getMovementSpeedMultiplier() {
 		return _MovementSpeedMultiplier;
 	}
-	public  void setMovementSpeedMultiplier(double _spd) {		
+
+	public void setMovementSpeedMultiplier(double _spd) {
 		_MovementSpeedMultiplier = _spd;
 	}
 
@@ -1019,17 +929,56 @@ public abstract class L2Character extends L2Object
 		this._isTeleporting = _isTeleporting;
 	}
 
-	public void setDead(boolean isDead) {
-		this.isDead = isDead;
-	}
-
 	public boolean isMove() {
 		return _isMove;
 	}
 
 	public void setMove(boolean _isMove) {
-		_log.info("Move: "+_isMove);
+		// _log.info("Move: "+_isMove);
 		this._isMove = _isMove;
+	}
+
+	public float getMoveSpeed() {
+		if (isRunning())
+			return _cur_runspd;
+		else
+			return _cur_walkspd;
+	}
+
+	public void setRunning(boolean running) {
+		this._running = running;
+	}
+
+	public boolean isRunning() {
+		return this._running;
+	}
+
+	public void setInFight(boolean b) {
+		this._infight = b;
+	}
+
+	public boolean isInFight() {
+		return this._infight;
+	}
+
+	public void setAlikeDead(boolean isDead) {
+		this._isDead = isDead;
+	}
+
+	public void setSummoned(boolean b) {
+		this._isSummoned = b;
+	}
+
+	public boolean isSummoned() {
+		return this._isSummoned;
+	}
+
+	public int getWalkspd() {
+		return _cur_walkspd;
+	}
+
+	public void setWalkspd(int walkspd) {
+		this._cur_walkspd = walkspd;
 	}
 
 }

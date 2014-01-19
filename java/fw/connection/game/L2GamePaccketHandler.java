@@ -96,6 +96,12 @@ public class L2GamePaccketHandler implements IPacketHandler<GameConnection> {
 			case 0x39:
 				msg = new AskJoinParty();
 				break;
+			case 0x60:
+				msg = new MoveToPawn();
+				break;
+			case 0x61:
+				msg = new ValidateLocation();
+				break;
 				
 			default:
 				//System.out.println("Uncknow packet(IN_GAME): 0x"+ Integer.toHexString(id));

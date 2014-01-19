@@ -28,7 +28,7 @@ public class MainSwingForm extends Frame {
 	HashMap<String, ServerConfig> mapServersConfig = new HashMap<String, ServerConfig>();
 		
 	public MainSwingForm() throws LWJGLException {
-		setAlwaysOnTop(true);
+		
 		setFont(new Font("Tahoma", Font.PLAIN, 12));
 		
 		setTitle("L2Walker");

@@ -303,10 +303,6 @@ public abstract class L2Object
 		return 0;
 	}
 
-	public float getMoveSpeed()
-	{
-		return 1.1f;
-	}
 	public void setHeading(int heading)
 	{}
 	

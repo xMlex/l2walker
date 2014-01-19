@@ -81,6 +81,7 @@ public class GameTimeController {
 			return;
 
 		if (!_movingObjects.contains(cha)) {
+			cha.setMove(true);
 			_movingObjects.add(cha);
 		}
 	}
@@ -122,6 +123,7 @@ public class GameTimeController {
 			// If movement is finished, the L2Character is removed from
 			// movingObjects and added to the ArrayList ended
 			if (end) {
+				cha.setMove(false);
 				_movingObjects.remove(cha);
 				if (ended == null) {
 					ended = new FastList<L2Character>();
@@ -209,7 +211,7 @@ public class GameTimeController {
 	}
 
 	class TimerWatcher implements Runnable {
-		@Override
+		
 		public void run() {
 			if (!_timer.isAlive()) {
 				String time = new SimpleDateFormat("HH:mm:ss")
@@ -225,46 +227,4 @@ public class GameTimeController {
 			}
 		}
 	}
-
-	/**
-	 * Update the _knownObject and _knowPlayers of each L2Character that
-	 * finished its movement and of their already known L2Object then notify AI
-	 * with EVT_ARRIVED.<BR>
-	 * <BR>
-	 */
-	/*class MovingObjectArrived implements Runnable {
-		private final List<L2Character> _ended;
-
-		MovingObjectArrived(List<L2Character> ended) {
-			_ended = ended;
-		}
-
-		@Override
-		public void run() {
-			for (L2Character cha : _ended) {
-				try {
-					cha.getKnownList().updateKnownObjects();
-					cha.getAI().notifyEvent(CtrlEvent.EVT_ARRIVED);
-				} catch (NullPointerException e) {
-					if (Config.ENABLE_ALL_EXCEPTIONS)
-						e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	class BroadcastSunState implements Runnable {
-		@Override
-		public void run() {
-			int h = getGameTime() / 60 % 24; // Time in hour
-			boolean tempIsNight = h < 6;
-
-			// If diff day/night state
-			if (tempIsNight != _isNight) {
-				// Set current day/night varible to value of temp varible
-				_isNight = tempIsNight;
-				DayNightSpawnManager.getInstance().notifyChangeMode();
-			}
-		}
-	}*/
 }

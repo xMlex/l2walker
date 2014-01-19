@@ -83,5 +83,5 @@ public class L2NpcInstance extends L2Character {
 
 	public void setIsAttackable(boolean _IsAttackable) {
 		this._IsAttackable = _IsAttackable;
-	}
+	}	
 }

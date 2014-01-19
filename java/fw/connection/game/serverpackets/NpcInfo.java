@@ -18,7 +18,7 @@ public class NpcInfo extends L2GameServerPacket {
 		_npc.setmAtkSpd(readD());
 		readD(); //patk-spd
 		_npc.setRunspd(readD()); //run-spd
-		readD(); //walkSpd: 26 (0x0000001A)
+		_npc.setWalkspd(readD()); //walkSpd: 26 (0x0000001A)
 		readD(); //  swimRSpd: 121 (0x00000079)
 		readD(); //swimWSpd: 26 (0x0000001A)
 		readD(); //flRSpd: 121 (0x00000079)
@@ -33,10 +33,12 @@ public class NpcInfo extends L2GameServerPacket {
 		readD(); //d: 0 (0x00000000)
 		readD(); //LHand: 0
 		readC(); //c  nameabove: 1 (0x01)
-		readC(); //c  isRun: 0 (0x00)
-		readC(); //c  isInFight: 0 (0x00)
-		readC(); //c  isAlikeDead: 0 (0x00)
-		readC(); //c  isSummoned: 0 (0x00)
+		
+		_npc.setRunning( ((readC()==0)?false:true) ); //c  isRun: 0 (0x00)
+		_npc.setInFight(((readC()==0)?false:true)); //c  isInFight: 0 (0x00)
+		_npc.setAlikeDead(((readC()==0)?false:true)); //c  isAlikeDead: 0 (0x00)
+		_npc.setSummoned(((readC()==0)?false:true)); //c  isSummoned: 0 (0x00)
+		
 		_npc.setName(readS()); //s  Name: 
 		_npc.setTitle(readS()); //  Title: 
 		readD(); //d: 0 (0x00000000)

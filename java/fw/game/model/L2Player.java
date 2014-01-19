@@ -1,5 +1,6 @@
 package fw.game.model;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import fw.connection.game.clientpackets.L2GameClientPacket;
@@ -28,6 +29,10 @@ public final class L2Player extends L2Playable {
 	private L2PlayerInventory _inventory = new L2PlayerInventory();
 	private GCArray<L2Skill> _skills = null;
 	
+	// AI
+	private Runnable _curAction = null;
+	private ArrayList<L2PlayerEventListener> _evt_listeners = new ArrayList<L2PlayerEventListener>();
+	
 	
 	public L2Player(int objectId) {
 		super(objectId);
@@ -42,14 +47,14 @@ public final class L2Player extends L2Playable {
 	}
 	
 	@Override
-	public void sendPacket(L2GameClientPacket... mov){
+	public synchronized void sendPacket(L2GameClientPacket... mov){
 		if(getGameEngine() == null) 
 			return;
 		for (int i = 0; i < mov.length; i++) 		
 			getGameEngine().getGameConnection().sendPacket(mov[i]);
 	}
 	
-	public void useSkill(int id){
+	public synchronized void useSkill(int id){
 		if(_skills == null)
 			return;
 		for (Iterator<L2Skill> el = _skills.iterator(); el.hasNext();) {
@@ -59,6 +64,30 @@ public final class L2Player extends L2Playable {
 				return;
 			}			
 		}
+	}
+	
+	public synchronized void onEvent(L2PlayerEvent evt){
+		for (L2PlayerEventListener _l: _evt_listeners)
+			_l.onPlayerEvent(evt);		
+	}
+	public synchronized void onEvent(L2PlayerEvent evt,int objId){
+		for (L2PlayerEventListener _l: _evt_listeners)
+			_l.onPlayerEvent(evt,objId);		
+	}
+	public synchronized void onEvent(L2PlayerEvent evt,L2Object objId){
+		for (L2PlayerEventListener _l: _evt_listeners)
+			_l.onPlayerEvent(evt,objId);		
+	}
+	public synchronized void addListener(L2PlayerEventListener l){
+		if(!_evt_listeners.contains(l))
+			_evt_listeners.add(l);
+	}
+	public synchronized void removeListener(L2PlayerEventListener l){
+		if(_evt_listeners.contains(l))
+			_evt_listeners.remove(l);
+	}
+	public synchronized void clearListeners(){		
+			_evt_listeners.clear();
 	}
 
 	@Override
@@ -217,6 +246,17 @@ public final class L2Player extends L2Playable {
 
 	public void setSkills(GCArray<L2Skill> _skills) {
 		this._skills = _skills;
+	}
+
+	public Runnable getCurAction() {
+		return _curAction;
+	}
+
+	public void setCurAction(Runnable _curAction) {
+		this._curAction = _curAction;
+	}
+	public boolean isCurAction(){
+		return (_curAction != null);
 	}
 
 }

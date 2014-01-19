@@ -67,7 +67,7 @@ public class Snippet195 implements Runnable {
 		
 
 		canvas.addListener(SWT.Resize, new Listener() {
-			@Override
+			
 			public void handleEvent(Event event) {
 				Rectangle bounds = canvas.getBounds();
 				float fAspect = (float) bounds.width / (float) bounds.height;
@@ -100,7 +100,7 @@ public class Snippet195 implements Runnable {
 			e.printStackTrace();
 		}
 		canvas2.addListener(SWT.Resize, new Listener() {
-			@Override
+			
 			public void handleEvent(Event event) {
 				Rectangle bounds = canvas2.getBounds();
 				float fAspect = (float) bounds.width / (float) bounds.height;
@@ -139,7 +139,7 @@ public class Snippet195 implements Runnable {
 		final Runnable run = new Runnable() {
 			int rot = 0;
 
-			@Override
+			
 			public void run() {
 				if (!canvas.isDisposed()) {
 					canvas.setCurrent();
@@ -167,7 +167,7 @@ public class Snippet195 implements Runnable {
 			}
 		};
 		canvas.addListener(SWT.Paint, new Listener() {
-			@Override
+			
 			public void handleEvent(Event event) {
 				run.run();
 			}
@@ -178,7 +178,7 @@ public class Snippet195 implements Runnable {
 		final Runnable run2 = new Runnable() {
 			int rot = 0;
 
-			@Override
+			
 			public void run() {
 				if (!canvas2.isDisposed()) {
 					canvas2.setCurrent();
@@ -206,7 +206,7 @@ public class Snippet195 implements Runnable {
 			}
 		};
 		canvas2.addListener(SWT.Paint, new Listener() {
-			@Override
+			
 			public void handleEvent(Event event) {
 				run2.run();
 			}

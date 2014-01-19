@@ -4,6 +4,7 @@ import fw.connection.game.clientpackets.RequestSkillCoolTime;
 import fw.connection.game.clientpackets.RequestSkillList;
 import fw.extensions.util.Location;
 import fw.game.model.L2Player;
+import fw.game.model.L2PlayerEvent;
 
 public class UserInfo extends L2GameServerPacket {
 
@@ -82,8 +83,8 @@ public class UserInfo extends L2GameServerPacket {
 		readD(); // d  Mdef: 49 (0x00000031)
 		readD(); // d  PvpFlag: 0 (0x00000000)
 		readD(); // d  Karma: 0 (0x00000000)
-		readD(); // d  runSpd: 115 (0x00000073)
-		readD(); // d  walkSpd: 80 (0x00000050)
+		_char.setRunspd(readD()); // d  runSpd: 115 (0x00000073)
+		_char.setWalkspd(readD()); // d  walkSpd: 80 (0x00000050)
 		readD(); // d  swimRSpd: 115 (0x00000073)
 		readD(); // d  swimWSpd: 80 (0x00000050)
 		readD(); // d  flRSpd: 115 (0x00000073)
@@ -132,7 +133,7 @@ public class UserInfo extends L2GameServerPacket {
 		readD(); // d  fishY: 0 (0x00000000)
 		readD(); // d  fishZ: 0 (0x00000000)
 		readD(); // d  NameColor: 16777215
-		readC(); // c  isRun: 1 (0x01)
+		_char.setRunning( ((readC()==0)?false:true) );  // c  isRun: 1 (0x01)
 		readD(); // d  PledgeClass: 0 (0x00000000)
 		readD(); // d  d: 0 (0x00000000)
 		readD(); // d  TitleColor: 16777079
@@ -147,6 +148,7 @@ public class UserInfo extends L2GameServerPacket {
 		
 		getClient().sendPacket(new RequestSkillList());
 		getClient().sendPacket(new RequestSkillCoolTime());
+		getPlayer().onEvent(L2PlayerEvent.UserInfo);
 	}
 
 }

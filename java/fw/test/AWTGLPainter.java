@@ -49,7 +49,7 @@ public class AWTGLPainter {
 
 	public void Rect(int x1, int x2, int y1, int y2) {
 		startPrimitive(GL11.GL_LINE_LOOP);
-		GL11.glVertex2i(x1, y1);
+		GL11.glVertex2i(x1-1, y1-1);
 		GL11.glVertex2i(x2, y1);
 		GL11.glVertex2i(x2, y2);
 		GL11.glVertex2i(x1, y2);

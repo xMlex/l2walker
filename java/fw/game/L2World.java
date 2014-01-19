@@ -1,7 +1,6 @@
 package fw.game;
 
 import java.util.ArrayList;
-import java.util.Map.Entry;
 
 import javolution.util.FastMap;
 import fw.dbClasses.DbObjects;
@@ -23,7 +22,7 @@ public class L2World {
 		_objectList = new ArrayList<L2Object>();
 	}
 
-	public L2Player getOrCreatePlayer(int objectId) {
+	public synchronized L2Player getOrCreatePlayer(int objectId) {
 		/*synchronized (_objects) {
 			L2Player _obj = (L2Player) _objects.get(objectId);
 			if (_obj != null)
@@ -32,18 +31,15 @@ public class L2World {
 			_objects.put(objectId, _obj);
 			return _obj;
 		}*/
-		synchronized (_objectList) {
 			for(L2Object el : _objectList)
 				if(el.getObjectId() == objectId)
 					return (L2Player)el;
 			L2Player _obj = new L2Player(objectId);
 			_objectList.add(_obj);
-			return _obj;
-		}
-		
+			return _obj;		
 	}
 
-	public L2NpcInstance getOrCreateNpc(int objectId) {
+	public synchronized L2NpcInstance getOrCreateNpc(int objectId) {
 		/*synchronized (_objects) {
 			L2NpcInstance _obj = (L2NpcInstance) _objects.get(objectId);
 			if (_obj != null)
@@ -52,17 +48,17 @@ public class L2World {
 			_objects.put(objectId, _obj);
 			return _obj;
 		}*/
-		synchronized (_objectList) {
+		//synchronized (_objectList) {
 			for(L2Object el : _objectList)
 				if(el.getObjectId() == objectId)
 					return (L2NpcInstance)el;
 			L2NpcInstance _obj = new L2NpcInstance(objectId);
 			_objectList.add(_obj);
 			return _obj;
-		}
+		//}
 	}
 
-	public L2Char getOrCreateChar(int objectId) {
+	public synchronized L2Char getOrCreateChar(int objectId) {
 		/*synchronized (_objects) {
 			L2Char _obj = (L2Char) _objects.get(objectId);
 			if (_obj != null)
@@ -72,17 +68,17 @@ public class L2World {
 			_objects.put(objectId, _obj);
 			return _obj;
 		}*/
-		synchronized (_objectList) {
+		//synchronized (_objectList) {
 			for(L2Object el : _objectList)
 				if(el.getObjectId() == objectId)
 					return (L2Char)el;
 			L2Char _obj = new L2Char(objectId);
 			_objectList.add(_obj);
 			return _obj;
-		}
+		//}
 	}
 
-	public L2Drop getOrCreateDrop(int objectId) {
+	public synchronized L2Drop getOrCreateDrop(int objectId) {
 		/*synchronized (_objects) {
 			L2Drop _obj = (L2Drop) _objects.get(objectId);
 			if (_obj != null)
@@ -92,16 +88,16 @@ public class L2World {
 			_objects.put(objectId, _obj);
 			return _obj;
 		}*/
-		synchronized (_objectList) {
+		//synchronized (_objectList) {
 			for(L2Object el : _objectList)
 				if(el.getObjectId() == objectId)
 					return (L2Drop)el;
 			L2Drop _obj = new L2Drop(objectId);
 			_objectList.add(_obj);
 			return _obj;
-		}
+		//}
 	}
-	public L2Item getOrCreateItem(int objectId) {
+	public synchronized L2Item getOrCreateItem(int objectId) {
 		/*synchronized (_objects) {
 			L2Item _obj = (L2Item) _objects.get(objectId);
 			if (_obj != null)
@@ -111,69 +107,69 @@ public class L2World {
 			_objects.put(objectId, _obj);
 			return _obj;
 		}*/
-		synchronized (_objectList) {
+		//synchronized (_objectList) {
 			for(L2Object el : _objectList)
 				if(el.getObjectId() == objectId)
 					return (L2Item)el;
 			L2Item _obj = new L2Item(objectId);
 			_objectList.add(_obj);
 			return _obj;
-		}
+		//}
 	}
 
-	public void remove(int objectId) {
+	public synchronized void remove(int objectId) {
 		/*synchronized (_objects) {
 			_objects.remove(objectId);
 		}*/
-		synchronized (_objectList) {
+		//synchronized (_objectList) {
 			for(L2Object el : _objectList)
 				if(el.getObjectId() == objectId){
 					_objectList.remove(el);
 					return;
 				}
-		}
+		//}
 	}
 
-	public void clear() {
-		synchronized (_objects) {
+	public synchronized void clear() {
+		//synchronized (_objects) {
 			_objects.clear();
-		}
-		synchronized (_objectList) {
+		//}
+		//synchronized (_objectList) {
 			_objectList.clear();
-		}
+		//}
 	}
 
-	public L2Object getObject(int objectId) {
+	public synchronized L2Object getObject(int objectId) {
 		/*synchronized (_objects) {
 			if (_objects.containsKey(objectId))
 				return _objects.get(objectId);
 		}*/
-		synchronized (_objectList) {
+		//synchronized (_objectList) {
 			for(L2Object el : _objectList)
 				if(el.getObjectId() == objectId){					
 					return el;
 				}
-		}
+		//}
 		return null;
 	}
 
-	public L2Object getObjectInRadius(Location loc, int radius) {
+	public synchronized L2Object getObjectInRadius(Location loc, int radius) {
 		/*synchronized (_objects) {
 			for (Entry<Integer, L2Object> obj : _objects.entrySet()) {
 				if (obj.getValue().getDistance(loc) <= radius)
 					return obj.getValue();
 			}
 		}*/
-		synchronized (_objectList) {
+		//synchronized (_objectList) {
 			for(L2Object el : _objectList)
 				if(el.getDistance(loc) <= radius){					
 					return el;
 				}
-		}
+		//}
 		return null;
 	}
 
-	public L2NpcInstance getMobInRadius(Location loc, int radius) {
+	public synchronized L2NpcInstance getMobInRadius(Location loc, int radius) {
 		L2NpcInstance _mob = null,_tmp;
 		/*synchronized (_objects) {
 			for (Entry<Integer, L2Object> obj : _objects.entrySet()) {
@@ -190,7 +186,7 @@ public class L2World {
 					}
 			}
 		}*/
-		synchronized (_objectList) {
+		//synchronized (_objectList) {
 			for(L2Object el : _objectList)
 				if(el.getDistance(loc) <= radius){					
 					if(el.isNpc()){
@@ -204,11 +200,11 @@ public class L2World {
 							}					
 					}
 				}
-		}
+		//}
 		return _mob;
 	}
 
-	public L2Drop getDropInRadius(Location loc, int radius) {
+	public synchronized L2Drop getDropInRadius(Location loc, int radius) {
 		L2Drop _drop = null;
 		/*synchronized (_objects) {
 			for (Entry<Integer, L2Object> obj : _objects.entrySet()) {
@@ -217,7 +213,7 @@ public class L2World {
 					return (L2Drop) obj.getValue();
 			}
 		}*/
-		synchronized (_objectList) {
+		//synchronized (_objectList) {
 			for(L2Object el : _objectList){
 				if(el.isDrop())
 				if(el.getDistance(loc) <= radius){					
@@ -229,23 +225,23 @@ public class L2World {
 					}
 				}
 			}
-		}
+		//}
 		return _drop;
 	}
 
 	/** <b>NOT SYNCHRONIZED</b> Get all object list */
-	public ArrayList<L2Object> getObjectList() {
+	public synchronized ArrayList<L2Object> getObjectList() {
 		return new ArrayList<L2Object>(_objectList);
 	}
-	public FastMap<Integer, L2Object> getObjects() {
+	public synchronized FastMap<Integer, L2Object> getObjects() {
 		return _objects;
 	}
 
-	public DbObjects getDbObjects() {
+	public synchronized DbObjects getDbObjects() {
 		return dbObjects;
 	}
 
-	public void setDbObjects(DbObjects dbObjects) {
+	public synchronized void setDbObjects(DbObjects dbObjects) {
 		this.dbObjects = dbObjects;
 	}
 }

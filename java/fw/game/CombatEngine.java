@@ -9,6 +9,7 @@ import fw.extensions.geodata.GeoMove;
 import fw.extensions.geodata.PathFindBuffers;
 import fw.extensions.util.Location;
 import fw.game.model.*;
+import fw.game.model.ai.AIPlayerHeals;
 import fw.game.model.instances.L2NpcInstance;
 
 public class CombatEngine implements Runnable {
@@ -16,12 +17,18 @@ public class CombatEngine implements Runnable {
 	private boolean _started = false;
 	
 	private L2Player _self = null;
+	private AIPlayerHeals _ai_heal;
 	
 	private int _tmp = 0;
 	
 	public CombatEngine(GameEngine ge) {
 		_ge = ge;
+		
 		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(this, 1000, 1000);		
+	}
+	
+	private void log(String str){
+		System.out.println("[CombatEngine]: "+str);
 	}
 	
 	public void run() {		
@@ -29,6 +36,17 @@ public class CombatEngine implements Runnable {
 		if(_ge.getSelfChar() == null){			
 			return;
 		}		
+		if(_ai_heal == null){
+			_ai_heal = new AIPlayerHeals(_ge.getSelfChar());
+			//_ge.getSelfChar().addListener(_ai_heal);
+		}
+		
+		//if(_ge.getSelfChar().isSitting()){
+			//log("Self Sitting");
+		//	return;
+		//}	
+		
+		
 		_self = _ge.getSelfChar();
 		/*Location me = _self.getLoc();
 		Location end = new Location(-96708, 238316, -3376);
@@ -43,11 +61,12 @@ public class CombatEngine implements Runnable {
 		
 		
 		
-		if(_self.isMove()) return;
-		if(_self.isDead()) return;
+		//if(_self.isMove()){ log("Self Move..."); return; }
+		if(_self.isDead()){ log("Self Dead...");  return; }
 		
 		L2Drop _drop = _ge.getWorld().getDropInRadius(_self.getLoc(), 300);
 		if(_drop != null){
+			//log("Self _drop puckup...");
 			_self.sendPacket(new Action(_drop.getObjectId()));
 			return;
 		}
@@ -64,19 +83,21 @@ public class CombatEngine implements Runnable {
 		}
 		
 		if(_mob == null){
-			if(_self.getCurrentHpPercents() < 80){ 
+			_ai_heal.run();
+			/*if(_self.getCurrentHpPercents() < 80){ 
 				if(!_self.isSitting()){
 					_self.sendPacket(new RequestActionUse(0));
 				}
 				return;		
-			}			
+			}	*/	
+			if(!_self.isSitting())
 			_mob =  _ge.getWorld().getMobInRadius(_self.getLoc(), 1500);
 		}
-		if(_mob == null) return;			
+		if(_mob == null){ log("_mob == null"); return;	}		
 		
 		
 		if(_self.isSitting()){
-			_self.sendPacket(new RequestActionUse(0));
+			//_self.sendPacket(new RequestActionUse(0));
 			return;
 		}
 		
@@ -90,9 +111,7 @@ public class CombatEngine implements Runnable {
 		}else{			
 			_self.sendPacket(new MoveBackwardToLocation(_mob.getLoc()));
 			return;
-		}
-		
-		
+		}		
 	}
 	
 	@Override

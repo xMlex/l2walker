@@ -24,6 +24,7 @@ public class StatusUpdate extends L2GameServerPacket {
 	public void excecute() {
 		L2Character _o = (L2Character) getClient().getGameEngine().getWorld()
 				.getObject(objectId);
+		if(_o == null) return;
 		for (Entry<Integer, Integer> el : _attrlist.entrySet()) {
 
 			switch (el.getKey()) {

@@ -2,145 +2,151 @@ package fw.gui.game_canvas;
 
 import java.util.logging.Logger;
 
-import fw.game.model.L2Object;
+import fw.extensions.util.Location;
+import xmlex.config.ConfigSystem;
 
 public class L2MapCalc {
 
-	private static final Logger _log = Logger.getLogger(L2MapCalc.class.getName());
-	
+	private static final Logger _log = Logger.getLogger(L2MapCalc.class
+			.getName());
+
 	/** Размер одного блока */
-	public final static int MAPBLOCKSIZE= 32768;
+	public final static int MAPBLOCKSIZE = 32768;
 	/** Размер одного блока разделенный на 3 */
 	public final static int MAPBLOCKSIZEDIV3 = MAPBLOCKSIZE / 3;
 	public final static int MAPBLOCKSIZEDIV900 = MAPBLOCKSIZE / 900;
 	/** Корректировка координат по X */
-	public final static int MAP_CORRECT_X= 131035;
+	public final static int MAP_CORRECT_X = 131035;
 	/** Корректировка координат по Y */
-	public final static int MAP_CORRECT_Y= 262053;
+	public final static int MAP_CORRECT_Y = 262053;
+
+	public int xBlock, yBlock;
+	/** Основные позиции */
+	private int myX, myY, blockNumber,locX,locY;
+	/** размер изображения карты */
+	private int map_size_x, map_size_y;
+	/** Размер окна через которое смотрим(canvas) */
+	private int vp_x, vp_y, map_center_x, map_center_y,
+	map_vp_pos_x,map_vp_pos_y;
+	private double scale = 1;
+
+	public void setMyLoc(int x, int y) {
+		myX = x;
+		myY = y;
+	}
+
+	public void setMapSize(int w, int h) {
+		map_size_x = w;
+		map_size_y = h;
+	}
+
+	public void setVpSize(int w, int h) {
+		vp_x = w;
+		vp_y = h;
+		map_center_x = GoodDiv(w, 2);
+		map_center_y = GoodDiv(h, 2);
+	}
+
+	public int toMapXf(float x) {
+		return (int)(map_center_x + ((x - myX) / MAPBLOCKSIZEDIV900) * scale);
+	}
+
+	public int toMapYf(float y) {		 
+		return (int)(map_center_y + ((y - myY) / MAPBLOCKSIZEDIV900) * scale);
+	}
+	public int toMapY(int y){
+		return toMapYf(y);
+	}
+	public int toMapX(int x){
+		return toMapXf(x);
+	}
 	
-	private int map_img_width = 900;
-	private int map_img_height = 900,
-			mapVpheight = 0,mapVpwidth = 0,mapScale = 1;
+	public int MapXtoReal(int x)
+	{
+		return (int)( myX + ((x - map_center_x )* MAPBLOCKSIZEDIV900) / scale );
+	}
+	public int MapYtoReal(int y)
+	{
+		return (int)( myY + ((y - map_center_y )* MAPBLOCKSIZEDIV900) /  scale);
+	}
+
+
+	private void mapBlockCalc(int x,int y){
 		
-	private int vMapBlockSizeX,vMapBlockSizeY,m;
+		// Вычисляем номер блока
+		xBlock = GoodDiv(x, MAPBLOCKSIZE);
+		yBlock = GoodDiv(y, MAPBLOCKSIZE);
+		
+		// Вычисляем смешение внутри маленького блока
+		locX = (x - (xBlock*3)*MAPBLOCKSIZEDIV3) / MAPBLOCKSIZEDIV900 ;
+		locY = (y - (yBlock*3)*MAPBLOCKSIZEDIV3) / MAPBLOCKSIZEDIV900 ;
+		
+		// Корректируем смещения в номерах блоков, Корейцы почему то считаеют не от нуля
+		xBlock +=16;
+		yBlock +=10;
+		//_log.info("xBlock: "+xBlock+" yBlock: "+yBlock);		
+	}
+	/** Рассчитываем позицию карты на экране с учетом увеличения */
+	public void mapPosCalc(int x,int y){
+		
+		int _x = x + MAP_CORRECT_X;
+		int _y = y + MAP_CORRECT_Y;	
+		
+		myX = x; myY = y;
+		
+		mapBlockCalc(_x,_y);
+		
+		setMapVpPosX((int) ( GoodDiv(vp_x, 2) - locX*scale));
+		setMapVpPosY((int) ( GoodDiv(vp_y, 2) - locY*scale));
+		
+		//_log.info("MapVpPosX: "+map_vp_pos_x+" MapVpPosY: "+map_vp_pos_y);
+		
+	}	
 	
-	private final L2Object _char;
-	
-	public L2MapCalc(L2Object mychar) {
-		this._char = mychar;
-	}
-	public void setMapSize(int w, int h){
-		map_img_width = w;
-		map_img_height = h;
-	}
-	public void setVpSize(int w, int h){
-		mapVpwidth = w;
-		mapVpheight = h;
-	}
-	public void setMapScale(int scale) {
-		mapScale = scale;
-		m = mapScale*mapScale;
-		vMapBlockSizeX = (mapVpwidth*m) / 200;
-		vMapBlockSizeY = (mapVpheight*m) / 200;
-	}
-	
-	private static int GoodDiv(int a, int b){
+	private static int GoodDiv(int a, int b) {
 		return (a + (a >> 31)) / b - (a >> 31);
-		//return a/b;		
+		// return a/b;
+	}
+
+	public void setScale(int i) {
+		scale = i;		
+	}
+	public void setScale(double i) {
+		scale = i;		
+	}
+
+	public int getMapVpPosX() {
+		return map_vp_pos_x;
+	}
+
+	private void setMapVpPosY(int y) {
+		this.map_vp_pos_y = y;
+	}
+	private void setMapVpPosX(int x) {
+		this.map_vp_pos_x = x;
+	}
+
+	public int getMapVpPosY() {
+		return map_vp_pos_y;
 	}
 	
-	public static int getBlockX(int x){
-		//return (x + MAPBLOCKSIZE * 18) / MAPBLOCKSIZE;
-		return (x+MAP_CORRECT_X) / MAPBLOCKSIZE;
+	public static void main(String[] args){
+		ConfigSystem.load();
+		L2MapCalc _mapCalc = new L2MapCalc();
+		_mapCalc.setVpSize(300, 300);
+		_mapCalc.setScale(10);
+		_mapCalc.setMapSize(900, 900);
+		_mapCalc.mapPosCalc(-86089, 241148);
+		int x = _mapCalc.toMapX(-86089 + 200);
+		int y = _mapCalc.toMapY(241148 + 200);
+		
+		_log.info("map x: "+x+" y: "+y);
+		int xr = _mapCalc.MapXtoReal(x);
+		int yr = _mapCalc.MapYtoReal(y);
+		
+		Location _my = new Location(-86089, 241148, 1000);
+		Location _res = new Location(xr, yr, 1000);
+		
+		_log.info("xr: "+xr+" yr: "+yr+" dist: "+_my.distance(_res));
 	}
-	public static int getBlockY(int y){
-		//return (y + L2MapCalc.MAPBLOCKSIZE * 20) / L2MapCalc.MAPBLOCKSIZE;
-		return (y+MAP_CORRECT_Y) / MAPBLOCKSIZE;
-	}
-	
-	
-	
-	// BASE CALC 
-	
-	public int getMapXToReal(int pos){
-		//Result:= self.myRealX + Round((x - Self.mapWidth / 2)* Self.mapScale * MAPBLOCKSIZEDIV900);
-		return _char.getX()+((pos-map_img_width/2)*MAPBLOCKSIZEDIV900);
-	}
-	public int getMapYToReal(int pos){
-		//Result:= self.myRealY + Round((y - Self.mapHeight / 2)* Self.mapScale * MAPBLOCKSIZEDIV900);
-		return _char.getY()+((pos-map_img_height/2)*MAPBLOCKSIZEDIV900);
-	}
-	
-	/** Вычисляем номер блока */
-	public static int getXBlock(int xPos)
-	{
-		return (xPos+MAP_CORRECT_X) / MAPBLOCKSIZE;
-	}
-	/** Вычисляем номер блока с учетом корректировки(для номера файла)*/
-	public static int getXBlockCorrect(int xPos){
-		return getXBlock(xPos)+16;
-	}
-	/** Вычисляем координату внутри блока */
-	public static int getXInBlock(int xPos){
-		int xBlock = getXBlock(xPos);
-		int xBlockPos = ((xPos+MAP_CORRECT_X) - xBlock*MAPBLOCKSIZE) / MAPBLOCKSIZEDIV3;	
-		//_log.info("Map x in block: "+xBlockPos);
-		return xBlockPos;
-	}
-	/** Вычисляем смешение внутри маленького блока */
-	public static int getXInSmallBlock(int xPos){
-		int xBlock = getXBlock(xPos);
-		int xBlockPos = getXInBlock(xPos);
-		return  ((xPos+MAP_CORRECT_X) - (xBlock+xBlockPos)*MAPBLOCKSIZEDIV3) / MAPBLOCKSIZEDIV900 - 300;
-	}
-	
-	/** Вычисляем смешение внутри маленького блока */
-	public  int getXInSmallBlockMap(int xPos){
-		int xBlock = getXBlock(xPos);
-		int xBlockPos = getXInBlock(xPos);
-		return  ((xPos+MAP_CORRECT_X) - (xBlock+xBlockPos)*MAPBLOCKSIZEDIV3) / MAPBLOCKSIZEDIV900 - 300;
-	}
-	
-	
-	
-	/** Вычисляем номер блока */
-	public static int getYBlock(int yPos){
-		return (yPos+MAP_CORRECT_Y) / MAPBLOCKSIZE;
-	}
-	/** Вычисляем номер блока с учетом корректировки(для номера файла)*/
-	public static int getYBlockCorrect(int yPos){
-		return getYBlock(yPos)+10;
-	}
-	/** Вычисляем координату внутри блока */
-	public static int getYInBlock(int yPos){
-		int yBlock = getYBlock(yPos);
-		int yBlockPos = ((yPos+MAP_CORRECT_Y) - yBlock*MAPBLOCKSIZE) / MAPBLOCKSIZEDIV3;
-		//_log.info("Map y in block: "+yBlockPos);
-		return yBlockPos;
-	}
-	/** Вычисляем смешение внутри маленького блока */
-	public static int getYInSmallBlock(int yPos){
-		int yBlock = getYBlock(yPos);
-		int yBlockPos = getXInBlock(yPos);
-		return  ((yPos+MAP_CORRECT_Y) - (yBlock*3+yBlockPos)*MAPBLOCKSIZEDIV3) / MAPBLOCKSIZEDIV900 + 300;
-	}
-	
-	public static void main(String[] args)
-	{
-		int x = -86089,y=241148,z=-3555;
-		_log.info("Map x: "+getXBlockCorrect(x));
-		_log.info("Map x small block: "+getXInSmallBlock(x));
-		_log.info("Map y: "+getYBlockCorrect(y));
-		_log.info("Map y small block: "+getYInSmallBlock(y));
-		_log.info("Good div 10/3: "+GoodDiv(10, 3));
-	}	
-	
-	class L2Block{
-		public int x=0,y=0;
-		public L2Block(int _x, int _y){
-			x=_x; y=_y;
-		}
-		public L2Block(){}		
-	}	
-	
 }

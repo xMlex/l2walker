@@ -387,9 +387,21 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 		panelMapTools.add(chckbxRealMap);
 
 		JSlider sliderMapZoom = new JSlider();
+		sliderMapZoom.addChangeListener(new ChangeListener() {		
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				  JSlider source = (JSlider)e.getSource();
+				    if (!source.getValueIsAdjusting()) {
+				        int scale = source.getValue();
+				        _canvas.setScale(scale);
+				    }				
+			}
+		});
+		
 		sliderMapZoom.setToolTipText("Map Zoom");
 		sliderMapZoom.setValue(1);
 		sliderMapZoom.setMinimum(1);
+		sliderMapZoom.setMaximum(5);
 		panelMapTools.add(sliderMapZoom);
 
 		JCheckBox chckbxNames = new JCheckBox("Names");

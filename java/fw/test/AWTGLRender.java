@@ -109,19 +109,17 @@ public class AWTGLRender extends AWTGLCanvas implements Runnable {
 				//_log.info("Click: "+evt.getX()+" y: "+evt.getY());
 				if(_game.getSelfChar() == null) return;
 				
-				_combatPoly.addPoint(_mapCalc.MapXtoReal(evt.getX()), _mapCalc.MapYtoReal(evt.getY()));
-				
-				_points.add(new L2Point(_mapCalc.MapXtoReal(evt.getX()), _mapCalc.MapYtoReal(evt.getY())));
+				//_combatPoly.addPoint(_mapCalc.MapXtoReal(evt.getX()), _mapCalc.MapYtoReal(evt.getY()));
 				
 				//_game.getSelfChar().sendPacket(new MoveBackwardToLocation(
 				//		_game.getSelfChar().getX()-(map_center_x - evt.getX())*10, 
 				//		_game.getSelfChar().getY()-(map_center_y - evt.getY())*10, 
 				//		_game.getSelfChar().getZ()));
-				/*_game.getSelfChar().sendPacket(new MoveBackwardToLocation(
+				_game.getSelfChar().sendPacket(new MoveBackwardToLocation(
 						_mapCalc.MapXtoReal(evt.getX()),
 						_mapCalc.MapYtoReal(evt.getY()),
 						_game.getSelfChar().getZ()
-						));*/
+						));
 			}
 		});
 		//this.parent.add
@@ -136,14 +134,12 @@ public class AWTGLRender extends AWTGLCanvas implements Runnable {
 				return;			
 			
 			if (getWidth() != current_width || getHeight() != current_height) {
-				current_width = getWidth();
-				current_height = getHeight();
 				
+				current_width = getWidth();
+				current_height = getHeight();				
 				map_center_x = current_width/2;
 				map_center_y = current_height/2;
 				_mapCalc.setVpSize(current_width, current_height);
-				
-				//_log.info("Resize VP: "+current_width+" "+current_height);
 						
 				glViewport(0, 0, current_width, current_height);		
 				glMatrixMode(GL_PROJECTION);
@@ -205,19 +201,21 @@ public class AWTGLRender extends AWTGLCanvas implements Runnable {
 			
 			if(rend)
 				_canvas.RectRel(2);//EllipseRel(5);
-			//if(obj.getToX() != 0 && obj.getToX() != obj.getX())			
-			//	_canvas.LineToRel(_mapCalc.toMapX(obj.getToX()), _mapCalc.toMapY(obj.getToY()));			
+			//if(obj.getToX() != 0 && obj.getToX() != obj.getX()){	
+			//	_canvas.MoveTo(_mapCalc.toMapX(obj.getX()), _mapCalc.toMapY(obj.getY()));
+			//	_canvas.LineToRel(_mapCalc.toMapX(obj.getToX()), _mapCalc.toMapY(obj.getToY()));
+			//}
 		}
 		cPlayer.bind();
 		_canvas.Ellipse(map_center_x, map_center_y, 4);
 		
-		cCombatLine.bind();
-		rendPolygon(_combatPoly);
-		cCombatPoint.bind();
-		for (L2Point _p:_points) {
+		//cCombatLine.bind();
+		//rendPolygon(_combatPoly);
+		//cCombatPoint.bind();
+		/*for (L2Point _p:_points) {
 			_canvas.MoveTo(_mapCalc.toMapX(_p.x), _mapCalc.toMapY(_p.y));
 			_canvas.FillRectRel(4);
-		}
+		}*/
 		
 	}
 	private void rendPolygon(Polygon p){

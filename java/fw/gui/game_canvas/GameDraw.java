@@ -138,23 +138,21 @@ public class GameDraw implements GameCanvasDrawInterface {
 	
 	private void calculateMap(GC gc) {		
 		if(_mapCalc == null)
-			_mapCalc = new L2MapCalc(gameEngine.getSelfChar());
+			_mapCalc = new L2MapCalc();
 		
 		_mapCalc.setVpSize(bounds.width, bounds.height);
-		_mapCalc.setMapScale(_scale);
-		
+		_mapCalc.setScale(_scale);
+		_mapCalc.setMapSize(900, 900);
 		
 		_x = gameEngine.getSelfChar().getX();
 		_y = gameEngine.getSelfChar().getY();
 		_z = gameEngine.getSelfChar().getZ();
-
-		_mapCalc.setMapSize(900, 900);
+		_mapCalc.setMyLoc(_x, _y);
+		
 
 		map_center_x = bounds.width / 2;
 		map_center_y = bounds.height / 2;
 
-		char_map_pos_x = (-L2MapCalc.getXInSmallBlock(_x))+map_center_x;
-		char_map_pos_y = (-L2MapCalc.getYInSmallBlock(_y))+map_center_y;
 		
 		gc.setBackground(bgColor);
 		gc.setForeground(defColor);
@@ -162,7 +160,7 @@ public class GameDraw implements GameCanvasDrawInterface {
 		chekMap();
 		if (_map != null) {
 			try{
-			gc.drawImage(_map, char_map_pos_x, char_map_pos_y);
+			gc.drawImage(_map, _mapCalc.getMapVpPosX(), _mapCalc.getMapVpPosY());
 			}catch(Exception e){e.printStackTrace();}
 		}
 		gc.setAntialias(SWT.ON);
@@ -173,7 +171,7 @@ public class GameDraw implements GameCanvasDrawInterface {
 		
 		gc.drawText("map pos x: " + char_map_pos_x + " y: " + char_map_pos_y, 0, 10, true);
 		gc.drawText("pos char x: " + _x + " y: " + _y+" z: "+_z, 0, 20, true);
-		gc.drawText("pos in small block x: " + L2MapCalc.getXInSmallBlock(_x) + " y: " + L2MapCalc.getYInSmallBlock(_y), 0, 30, true);
+		//gc.drawText("pos in small block x: " + L2MapCalc.getXInSmallBlock(_x) + " y: " + L2MapCalc.getYInSmallBlock(_y), 0, 30, true);
 	}
 
 	private void updateMove(L2Object obj) {
@@ -208,11 +206,11 @@ public class GameDraw implements GameCanvasDrawInterface {
 
 	private void chekMap() {
 
-		if (_cur_map_x != L2MapCalc.getXBlockCorrect(_x)
-				|| _cur_map_y != L2MapCalc.getYBlockCorrect(_y)) {
+		if (_cur_map_x != _mapCalc.xBlock
+				|| _cur_map_y !=_mapCalc.yBlock) {
 
-			_cur_map_x = L2MapCalc.getXBlockCorrect(_x);
-			_cur_map_y = L2MapCalc.getYBlockCorrect(_y);
+			_cur_map_x = _mapCalc.xBlock;
+			_cur_map_y = _mapCalc.yBlock;
 			if (_cur_map_x <= 0 || _cur_map_y <= 0) {
 				System.out.println("Load map error: block x: " + _cur_map_x
 						+ " y:" + _cur_map_y + " Pos: " + _x + " y: " + _y);
@@ -236,8 +234,8 @@ public class GameDraw implements GameCanvasDrawInterface {
 	public void onMouseDown(MouseEvent evt) {
 		if (gameEngine.getSelfChar() == null)
 			return;
-		int x = _mapCalc.getMapXToReal(evt.x);
-		int y = _mapCalc.getMapYToReal(evt.y);
+		int x = _mapCalc.MapXtoReal(evt.x);
+		int y = _mapCalc.MapYtoReal(evt.y);
 		
 		_pol.addPoint(x, y);
 		//gameEngine.getGameConnection().sendPacket(

@@ -4,7 +4,7 @@ import fw.dbClasses.*;
 
 public class L2Item extends L2Object {
 
-	private int _id,_count=0;
+	private int item_id,_count=0;
 	private dbItem _dbitem;
 	
 	private int itemType1,itemType2,BodyPart,EnchantLevel,CustType1,CustType2,AugId,ShadowTime;
@@ -15,7 +15,7 @@ public class L2Item extends L2Object {
 	}
 	
 	public void setId(int id){
-		_id = id;
+		item_id = id;
 		_dbitem = dbManager.getInstance().getItem(id);
 	}
 	
@@ -31,7 +31,7 @@ public class L2Item extends L2Object {
 	}
 
 	public int getId() {
-		return _id;
+		return item_id;
 	}
 
 	public int getCount() {
@@ -112,5 +112,21 @@ public class L2Item extends L2Object {
 	public void setEquipped(boolean isEquipped) {
 		this.isEquipped = isEquipped;
 	}	
+	
+	public boolean isWeapon(){
+		return _dbitem.isWeapon();
+	}
+	
+	public boolean isArmor(){
+		return _dbitem.isArmor();
+	}
+	
+	@Override
+	public String toString() {
+		return "L2Item id: "+item_id+" Count: "+_count+" Name: "+getName()+" "+super.toString();
+	}
 
+	public String getIcon() {
+		return _dbitem.getIcon();
+	}
 }

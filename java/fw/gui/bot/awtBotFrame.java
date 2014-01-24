@@ -13,6 +13,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 import org.lwjgl.LWJGLException;
 
+import fw.common.ThreadPoolManager;
 import fw.game.GameEngine;
 import fw.game.GameVisualInterface;
 import fw.game.L2Char;
@@ -41,12 +42,14 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.table.DefaultTableModel;
 
-public class awtBotFrame extends JPanel implements GameVisualInterface {
+public class awtBotFrame extends JPanel implements GameVisualInterface, Runnable {
 
 	private static final long serialVersionUID = 1L;
 
 	private final static String iconDir = "./data/res/icons";
+	private final static String gameiconDir = "./data/l2icons/";
 	public final static HashMap<String, ImageIcon> iconList = new HashMap<String, ImageIcon>();
+	public final static HashMap<String, ImageIcon> gameiconList = new HashMap<String, ImageIcon>();
 
 	static {
 		iconList.clear();
@@ -64,6 +67,28 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 			//System.out.println("ICON: " + f.getPath() + " name: "+ f.getName().replaceAll(".png", ""));
 		}
 	}
+	public static synchronized ImageIcon getGameIcon(String name){
+		if(name.startsWith("none") || name == null)
+			name = "noimage";
+		ImageIcon _r = gameiconList.get(name);
+		
+		if(_r == null){
+			String fName = gameiconDir+name+".png";
+			if(new File(fName).exists()){
+				_r = new ImageIcon(fName);
+				gameiconList.put(name, _r);	
+			}else
+			System.out.println("GAME ICON: "+fName+" NOT FOUND!");
+		}
+		/*{
+			_r = gameiconList.get("noimage");
+			if(_r == null){
+				_r = new ImageIcon(gameiconDir+"noimage.png");
+				gameiconList.put("noimage", _r);	
+			}
+		}*/
+		return _r;
+	}
 
 	private GameEngine _gameEngine;
 	private JTabbedPane _tabPane;
@@ -79,8 +104,9 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 	private Style textStyleError, textStyleInfo, textStyleShout,
 			textStyleTrade, textStyleSystem, textStyleHiro;
 	private JTextPane _xChatMain;
-	private JTable tableInv;
+	private GuiInventory tableInv;
 	private botWindowConfig _cWindow;
+	private GuiSkills _skills;
 
 	public awtBotFrame(HashMap<String, ServerConfig> srvList,
 			JTabbedPane tabPane, int tind) throws LWJGLException {
@@ -315,19 +341,12 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 		tabUserInfo.addTab("Inv", null, panelInv, "");
 		panelInv.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		tableInv = new JTable();
-		tableInv.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null},
-			},
-			new String[] {
-				"Name", "Type", "Count"
-			}
-		));
+		tableInv = new GuiInventory();
 		panelInv.add(tableInv);
 		tabUserInfo.setIconAt(2, getIcon("drive_user"));
 
-		tabUserInfo.addTab("Skills", null, new JPanel(), "");
+		_skills = new GuiSkills();
+		tabUserInfo.addTab("Skills", null, _skills, "");
 		tabUserInfo.setIconAt(3, getIcon("skills"));
 
 		tabUserInfo.addTab("Buffs", null, new JPanel(), "");
@@ -512,6 +531,7 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 		panelMapContainer.setLayout(gl_panelMapContainer);
 		centerBlock.setLayout(gl_centerBlock);
 		setLayout(groupLayout);
+		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(this, 5000,2000);
 	}
 
 	public static ImageIcon getIcon(String ic) {
@@ -709,5 +729,15 @@ public class awtBotFrame extends JPanel implements GameVisualInterface {
 	public boolean checkTradeDialog() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void run() {
+		
+		if(_gameEngine.getSelfChar() == null){ return;}
+		//System.out.print("Start inv update...");
+		tableInv.updateInventory(_gameEngine.getSelfChar().getInventory());
+		_skills.updateSkills(_gameEngine.getSelfChar().getSkills());
+		
 	}
 }

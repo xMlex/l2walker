@@ -84,6 +84,9 @@ public class L2GamePaccketHandler implements IPacketHandler<GameConnection> {
 			case 0x2A:
 				msg = new TargetUnselected();
 				break;
+			case 0x27:
+				msg = new InventoryUpdate();
+				break;
 			case 0x29:
 				msg = new TargetSelected();
 				break;

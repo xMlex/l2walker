@@ -62,7 +62,7 @@ public class CombatEngine implements Runnable {
 		
 		
 		//if(_self.isMove()){ log("Self Move..."); return; }
-		if(_self.isDead()){ log("Self Dead...");  return; }
+		if(_self.isDead()){ /*log("Self Dead...");*/  return; }
 		
 		L2Drop _drop = _ge.getWorld().getDropInRadius(_self.getLoc(), 300);
 		if(_drop != null){

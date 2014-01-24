@@ -1,10 +1,14 @@
 package fw.game.model;
 
+import fw.dbClasses.dbManager;
+import fw.dbClasses.dbSkill;
+
 public class L2Skill {
 
 	private int skill_id;
 	private boolean isPassive=false;
 	private int level=1;	
+	private dbSkill _dbskill;
 	
 	private long initReuseDelayTime=0;
 	private long endReuseDelayTime=0;
@@ -16,6 +20,7 @@ public class L2Skill {
 	}
 	public void setSkill_id(int skill_id) {
 		this.skill_id = skill_id;
+		_dbskill = dbManager.getInstance().getSkill(skill_id);
 	}
 	public boolean isPassive() {
 		return isPassive;
@@ -29,6 +34,13 @@ public class L2Skill {
 	public void setLevel(int level) {
 		this.level = level;
 	}
+	public String getName() {
+		return _dbskill.getName();
+	}
+	public String getIcon() {
+		return _dbskill.getIcon();
+	}
+	
 	public long getInitReuseDelayTime() {
 		return initReuseDelayTime;
 	}

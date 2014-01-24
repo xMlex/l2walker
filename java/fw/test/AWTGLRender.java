@@ -124,7 +124,7 @@ public class AWTGLRender extends AWTGLCanvas implements Runnable {
 		});
 		//this.parent.add
 		_mapCalc = new L2MapCalc();		
-		
+		_mapCalc.setMapSize(900, 900);
 		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(this, 100,200); 
 	} 
 	
@@ -232,8 +232,7 @@ public class AWTGLRender extends AWTGLCanvas implements Runnable {
 
 	private void calculateMap() {		
 
-		_mapCalc.setScale(scale);
-		_mapCalc.setMapSize(900, 900);		
+		_mapCalc.setScale(scale);			
 		
 		_x = _game.getSelfChar().getX();
 		_y = _game.getSelfChar().getY();

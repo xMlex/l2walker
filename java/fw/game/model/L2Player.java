@@ -27,7 +27,7 @@ public final class L2Player extends L2Playable {
 	private GameEngine _GameEngine = null;
 	
 	private L2PlayerInventory _inventory = new L2PlayerInventory();
-	private GCArray<L2Skill> _skills = null;
+	private ArrayList<L2Skill> _skills = null;
 	
 	// AI
 	private Runnable _curAction = null;
@@ -240,11 +240,11 @@ public final class L2Player extends L2Playable {
 		return _inventory;
 	}
 
-	public GCArray<L2Skill> getSkills() {
+	public ArrayList<L2Skill> getSkills() {
 		return _skills;
 	}
 
-	public void setSkills(GCArray<L2Skill> _skills) {
+	public void setSkills(ArrayList<L2Skill> _skills) {
 		this._skills = _skills;
 	}
 

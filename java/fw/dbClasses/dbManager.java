@@ -71,18 +71,7 @@ public class dbManager {
 						+ id + " LIMIT 1;");
 				if (rs != null && rs.next()) {
 					_obj.setName(rs.getString("name"));
-					//_obj.setType(rs.getString("item_type"));
-					//_obj.setPrice(rs.getInt("price"));
-
-					//_obj.setDestroyable(rs.getBoolean("destroyable"));
-					// _obj.setSellable(rs.getBoolean("sellable "));
-					//_obj.setDropable(rs.getBoolean("dropable"));
-					//_obj.setTradeable(rs.getBoolean("tradeable"));
-
 					_obj.setIcon(rs.getString("icon"));
-					//_obj.setBodypart(rs.getString("bodypart"));
-
-					System.out.println(_obj);
 					_skills.put(id, _obj);
 				}
 			} catch (SQLException e) {

@@ -65,4 +65,9 @@ public class L2Skill {
 	public void setEndCastTime(long endCastTime) {
 		this.endCastTime = endCastTime;
 	}	
+	
+	@Override
+	public String toString() {
+		return "L2Skill id: "+getSkill_id()+" Name: "+getName()+" Icon: "+getIcon();
+	}
 }

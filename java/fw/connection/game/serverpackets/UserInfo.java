@@ -147,7 +147,6 @@ public class UserInfo extends L2GameServerPacket {
 		getClient().getVisualInterface().procSetUserChar(_char);
 		
 		getClient().sendPacket(new RequestSkillList());
-		getClient().sendPacket(new RequestSkillCoolTime());
 		getPlayer().onEvent(L2PlayerEvent.UserInfo);
 	}
 

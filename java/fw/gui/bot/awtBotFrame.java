@@ -342,11 +342,13 @@ public class awtBotFrame extends JPanel implements GameVisualInterface, Runnable
 		panelInv.setLayout(new GridLayout(0, 1, 0, 0));
 		
 		tableInv = new GuiInventory();
-		panelInv.add(tableInv);
+		panelInv.add( new JScrollPane(tableInv, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
 		tabUserInfo.setIconAt(2, getIcon("drive_user"));
 
 		_skills = new GuiSkills();
-		tabUserInfo.addTab("Skills", null, _skills, "");
+		tabUserInfo.addTab("Skills", null,
+				new JScrollPane(_skills, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
+				, "");
 		tabUserInfo.setIconAt(3, getIcon("skills"));
 
 		tabUserInfo.addTab("Buffs", null, new JPanel(), "");
@@ -406,8 +408,7 @@ public class awtBotFrame extends JPanel implements GameVisualInterface, Runnable
 		panelMapTools.add(chckbxRealMap);
 
 		JSlider sliderMapZoom = new JSlider();
-		sliderMapZoom.addChangeListener(new ChangeListener() {		
-			@Override
+		sliderMapZoom.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				  JSlider source = (JSlider)e.getSource();
 				    if (!source.getValueIsAdjusting()) {
@@ -731,7 +732,6 @@ public class awtBotFrame extends JPanel implements GameVisualInterface, Runnable
 		return false;
 	}
 
-	@Override
 	public void run() {
 		
 		if(_gameEngine.getSelfChar() == null){ return;}

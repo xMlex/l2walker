@@ -19,7 +19,7 @@ public class ItemList extends L2GameServerPacket {
 			_item.setCount(readD());
 			_item.setItemType2(readH());
 			_item.setCustType1(readH());
-			_item.setEquipped((readH() == 1) ? true : false);
+			_item.setEquipped(readH(1) );
 			_item.setBodyPart(readD());
 			_item.setEnchantLevel(readH());
 			_item.setCustType2(readH());
@@ -31,6 +31,7 @@ public class ItemList extends L2GameServerPacket {
 
 	@Override
 	public void excecute() {
+		getPlayer().getInventory().updateSlots();
 	}
 
 }

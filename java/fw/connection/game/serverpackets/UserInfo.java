@@ -43,8 +43,8 @@ public class UserInfo extends L2GameServerPacket {
 		readD(); // d  RFinger: 0 (0x00000000)
 		readD(); // d  LFinger: 0 (0x00000000)
 		readD(); // d  Head: 268479993 (0x1000ADF9)
-		readD(); // d  RHand: 268478230 (0x1000A716)
-		readD(); // d  LHand: 0 (0x00000000)
+		readD();//_char.getInventory().setRHand(readD()); // d  RHand: 268478230 (0x1000A716)
+		readD();//_char.getInventory().setLHand(readD()); // d  LHand: 0 (0x00000000)
 		readD(); // d  Gloves: 268479990 (0x1000ADF6)
 		readD(); // d  Chest: 268479992 (0x1000ADF8)
 		readD(); // d  Legs: 268479991 (0x1000ADF7)
@@ -82,7 +82,7 @@ public class UserInfo extends L2GameServerPacket {
 		readD(); // d  Paspd: 413 (0x0000019D)
 		readD(); // d  Mdef: 49 (0x00000031)
 		readD(); // d  PvpFlag: 0 (0x00000000)
-		readD(); // d  Karma: 0 (0x00000000)
+		_char.setKarma(readD()); // d  Karma: 0 (0x00000000)
 		_char.setRunspd(readD()); // d  runSpd: 115 (0x00000073)
 		_char.setWalkspd(readD()); // d  walkSpd: 80 (0x00000050)
 		readD(); // d  swimRSpd: 115 (0x00000073)
@@ -121,8 +121,8 @@ public class UserInfo extends L2GameServerPacket {
 		readH(); // h  InventLimit: 100 (0x0064)
 		readD(); // d  classId: Dwarven Fighter (Ïîäìàñòåðüå) ID:53 (0x0035)
 		readD(); // d  sEff: 0 (0x00000000)
-		readD(); // d  maxCP: 139 (0x0000008B)
-		readD(); // d  curCP: 139 (0x0000008B)
+		_char.setMax_cp(readD()); // d  maxCP: 139 (0x0000008B)
+		_char.setCurrentCp(readD()); // d  curCP: 139 (0x0000008B)
 		readC(); // c  Mount: 0 (0x00)
 		readC(); // c  Team: 0 (0x00)
 		readD(); // d  clanBigCrestId: 0 (0x00000000)
@@ -133,7 +133,7 @@ public class UserInfo extends L2GameServerPacket {
 		readD(); // d  fishY: 0 (0x00000000)
 		readD(); // d  fishZ: 0 (0x00000000)
 		readD(); // d  NameColor: 16777215
-		_char.setRunning( ((readC()==0)?false:true) );  // c  isRun: 1 (0x01)
+		_char.setRunning( readC(1) );  // c  isRun: 1 (0x01)
 		readD(); // d  PledgeClass: 0 (0x00000000)
 		readD(); // d  d: 0 (0x00000000)
 		readD(); // d  TitleColor: 16777079
@@ -144,10 +144,12 @@ public class UserInfo extends L2GameServerPacket {
 	public void excecute() {
 		_char.setGameEngine(getClient().getGameEngine());
 		getClient().getGameEngine().setSelfChar(_char);	
+		getPlayer().getInventory().updateSlots();
 		getClient().getVisualInterface().procSetUserChar(_char);
 		
 		getClient().sendPacket(new RequestSkillList());
 		getPlayer().onEvent(L2PlayerEvent.UserInfo);
+		
 	}
 
 }

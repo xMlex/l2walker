@@ -70,6 +70,9 @@ public class GameDraw implements GameCanvasDrawInterface {
 		this.gameEngine = ge;
 		
 		bmpBuf = new Image(Display.getCurrent(), mapWidth, mapHeight);
+		
+		_mapCalc = new L2MapCalc();
+		
 		_pol.addPoint(10, 10);
 		_pol.addPoint(50, 40);
 		_pol.addPoint(100, 90);
@@ -77,8 +80,6 @@ public class GameDraw implements GameCanvasDrawInterface {
 		//_pol.addPoint(15, 15);
 	}
 		
-	// eend
-
 	public void dispose() {
 		isDisposed = true;
 	}
@@ -136,9 +137,7 @@ public class GameDraw implements GameCanvasDrawInterface {
 		return (int) (map_center_y + ((y-_y)/L2MapCalc.MAPBLOCKSIZEDIV900/_scale));
 	}
 	
-	private void calculateMap(GC gc) {		
-		if(_mapCalc == null)
-			_mapCalc = new L2MapCalc();
+	private void calculateMap(GC gc) {			
 		
 		_mapCalc.setVpSize(bounds.width, bounds.height);
 		_mapCalc.setScale(_scale);

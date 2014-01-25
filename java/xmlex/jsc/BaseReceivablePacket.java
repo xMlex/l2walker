@@ -38,9 +38,17 @@ public abstract class BaseReceivablePacket <T extends ISocketClientListener> imp
 	protected int readC() {
 		return getByteBuffer().get() & 0xFF;
 	}
+	protected boolean readC(int c) {
+		int val = getByteBuffer().get() & 0xFF;
+		return (val == c?true:false);
+	}
 
 	protected int readH() {
 		return getByteBuffer().getShort() & 0xFFFF;
+	}
+	protected boolean readH(int c) {
+		int val = getByteBuffer().getShort() & 0xFFFF;
+		return (val == c?true:false);
 	}
 
 	protected int readD() {

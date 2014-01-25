@@ -6,7 +6,7 @@ public class EnterWorld extends L2GameClientPacket{
 
 	@Override
 	public void excecute() {	
-		getClient().setState(CLIENT_STATE.AUTHED);
+		getClient().setState(CLIENT_STATE.IN_GAME);
 		writeC(0x03);
 		writeB(new byte[104]);
 	}

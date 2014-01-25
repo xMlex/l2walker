@@ -28,7 +28,7 @@ public class L2GamePaccketHandler implements IPacketHandler<GameConnection> {
 				msg = new CharSelectInfo();
 				break;
 			default:
-				System.out.println("Read uncknow packet: 0x"
+				System.out.println("[CONNECTED]Read uncknow packet: 0x"
 						+ Integer.toHexString(id) + "State CONNECTED");
 				break;
 			}
@@ -45,12 +45,13 @@ public class L2GamePaccketHandler implements IPacketHandler<GameConnection> {
 					msg = new ExSendManorList();
 					break;
 				default:
-					_log.info("[R] uncknow sub packet(0xFE): 0x"
+					_log.info("[AUTHED] uncknow sub packet(0xFE): 0x"
 							+ Integer.toHexString(subid));
 					break;
 				}
+				}
 			}
-			}
+			break;
 		case IN_GAME:
 			switch (id) {
 			
@@ -105,7 +106,23 @@ public class L2GamePaccketHandler implements IPacketHandler<GameConnection> {
 			case 0x61:
 				msg = new ValidateLocation();
 				break;
-				
+			case 0xFE:
+				int subid = buf.getShort() & 0xFFFF;				
+				switch (subid) {
+				case 0x14:
+					msg = new ExFishingEnd();
+					break;
+				case 0x15:
+					msg = new ExFishingStartCombat();
+					break;
+				case 0x16:
+					msg = new ExFishingHpRegen();
+					break;
+				default:
+					//System.out.println("Uncknow subpacket(IN_GAME[0xFE]): 0x"+ Integer.toHexString(subid));
+					break;
+				}
+				break;
 			default:
 				//System.out.println("Uncknow packet(IN_GAME): 0x"+ Integer.toHexString(id));
 				break;

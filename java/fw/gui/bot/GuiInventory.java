@@ -31,7 +31,7 @@ public class GuiInventory extends JTable {
 		DefaultTableModel model = (DefaultTableModel) getModel();
 		model.setNumRows(0);	
 		for(L2Item _el:list.getObjectList())
-			model.addRow(new Object[]{awtBotFrame.getGameIcon(_el.getIcon()), _el.getName(), _el.getCount()});		
+			model.addRow(new Object[]{awtBotFrame.getGameIcon(_el.getIcon()), "("+_el.getId()+")"+_el.getName(), _el.getCount()});		
 	}
 	
 	public Class<? extends Object> getColumnClass(int column)

@@ -37,7 +37,7 @@ public class GuiSkills extends JTable {
 		model.setNumRows(0);	
 		for (int i = 0; i < _skills.size(); i++) {
 			L2Skill _el = _skills.get(i);
-			model.addRow(new Object[]{awtBotFrame.getGameIcon(_el.getIcon()), _el.getName(), _el.getLevel()});
+			model.addRow(new Object[]{awtBotFrame.getGameIcon(_el.getIcon()), "("+_el.getSkill_id()+")"+ _el.getName(), _el.getLevel()});
 		}		
 	}
 	

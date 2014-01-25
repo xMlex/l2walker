@@ -1,5 +1,6 @@
 package fw.connection.game.serverpackets;
 
+import fw.connection.game.clientpackets.EnterWorld;
 import fw.connection.game.clientpackets.RequestManorList;
 import fw.game.model.L2Player;
 
@@ -31,6 +32,7 @@ public class CharSelected extends L2GameServerPacket{
 
 	@Override
 	public void excecute() {
+		getClient().sendPacket(new EnterWorld());
 		getClient().sendPacket(new RequestManorList());		
 		//getClient().getGameEngine().setSelfChar(_char);			
 	}

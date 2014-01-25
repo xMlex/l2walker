@@ -335,4 +335,8 @@ public class GameEngine implements IGameConnectionLitener,ILoginConnectionListen
 	public void setEnabled(boolean _enabled) {
 		this._enabled = _enabled;
 	}
+	
+	public boolean isReady(){
+		return (this._selfChar != null);
+	}
 }

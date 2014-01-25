@@ -61,11 +61,11 @@ public class dbItem {
 	}
 	
 	public boolean isWeapon(){
-		return bodypart.equals("weapon");
+		return getType().equals("weapon");
 	}
 	
 	public boolean isArmor(){
-		return bodypart.equals("armor");
+		return getType().equals("armor");
 	}
 	
 	@Override

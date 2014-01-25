@@ -30,8 +30,7 @@ public class InventoryUpdate extends L2GameServerPacket {
 
 	@Override
 	public void excecute() {
-		// TODO Auto-generated method stub
-
+		getPlayer().getInventory().updateSlots();
 	}
 
 }

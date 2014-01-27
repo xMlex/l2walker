@@ -1,7 +1,7 @@
 package fw.connection.game.serverpackets;
 
 import fw.game.model.ai.L2FishingInfo;
-
+ 
 public class ExFishingStartCombat extends L2GameServerPacket {
 
 	private L2FishingInfo _info = null;
@@ -17,8 +17,8 @@ public class ExFishingStartCombat extends L2GameServerPacket {
 
 	@Override
 	public void excecute() {
-		if(_info == null) return;
-		_info.setStarted(true);
+		//if(_info == null) return;
+		//_info.setStarted(true);
 	}
 
 }

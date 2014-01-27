@@ -37,16 +37,26 @@ public class FishingEngine extends IEngine implements Runnable,L2FishingListener
 		}
 		
 		_self = _ge.getSelfChar();
+		if(_self.isDead()) return;
+		
 		L2PlayerInventory _inv = _self.getInventory();
+		L2Item _rod = _inv.getById(_rod_id);
+		L2Item _korm = _inv.getById(_korm_id);
 		
-		if(_inv.getCountById(_rod_id) <= 0) { _log.info("paperdol not found: "+_rod_id); return; }
 		
-		if(_inv.getRHand() == null || _inv.getRHand().getId() != _rod_id){
+		if(_rod == null || _rod.getCount() <= 0) { _log.info("paperdol not found: "+_rod_id); return; }
+		if(_korm == null || _korm.getCount() <= 0) { _log.info("korm not found: "+_korm_id); return; }
+		
+		if(!_rod.isEquipped()){
 			_self.useItemId(_rod_id);
+			_log.info("Ser rod in r hand");
+			sleep(1000);
 			return;
 		}
-		if(_inv.getLHand() == null || _inv.getLHand().getId() != _korm_id){
+		if(!_korm.isEquipped()){
 			_self.useItemId(_korm_id);
+			_log.info("Ser korm in L hand");
+			sleep(1000);
 			return;
 		}
 		if(!_started){
@@ -65,6 +75,8 @@ public class FishingEngine extends IEngine implements Runnable,L2FishingListener
 			_lastStart = System.currentTimeMillis();
 		}
 		ThreadPoolManager.getInstance().getGeneralScheduledThreadPool().remove(this);	*/	
+		//_log.info("End");
+		sleep(1000);
 	}
 	
 	private boolean killAround(){
@@ -79,30 +91,37 @@ public class FishingEngine extends IEngine implements Runnable,L2FishingListener
 		}
 		
 		if( _mob == null)
-			_mob =  _ge.getWorld().getMobInRadius(_self.getLoc(), 500);
+			_mob =  _ge.getWorld().getMobInRadius(_self.getLoc(), 300);
 		
 		if(_mob == null){ 
 			_self.sendPacket(new MoveBackwardToLocation(_fishingLoc)); 
-			try { Thread.sleep(2000); } catch (InterruptedException e) {} 
+			//_log.info("To _fich loc");
+			sleep(2000);
+			if(!_self.getFishingInfo().started)
+				_self.useSkill(id_fishing);
 			return false; 
 		}
 		
-		if(_started){
+		if(_self.getFishingInfo().started){
 			_started = false;
 			_self.useSkill(id_fishing);
+			_log.info("снимаем удочку");
 		}
 		
+		if(!_self.getFishingInfo().started)
 		if(_self.getInventory().getRHand() == null || _self.getInventory().getRHand().getId() == _rod_id){
 			for (L2Item _it:_self.getInventory().getObjectList()) {
 				if(_it.isWeapon() && _it.getId() != _rod_id){
 					_self.useItemId(_it.getId());
+					_log.info("Одеваем "+_it);
 					break;
 				}
 			}
 		}
 		
 		_self.sendPacket(new Action(_mob.getObjectId()));
-		try { Thread.sleep(500); } catch (InterruptedException e) {}
+		//_log.info("бьем моба");
+		sleep(1000);
 		return true;
 		
 	}
@@ -112,6 +131,7 @@ public class FishingEngine extends IEngine implements Runnable,L2FishingListener
 		if(!_started) return;
 		if(!_self.getFishingInfo().started)
 			_self.useSkill(id_fishing);
+		sleep(1000);
 	}
 
 	public void FishingHpRegen() {
@@ -119,6 +139,10 @@ public class FishingEngine extends IEngine implements Runnable,L2FishingListener
 			_self.useSkill(id_reling);
 		else
 			_self.useSkill(id_pumping);
+	}
+	
+	private void sleep(int l){
+		try { Thread.sleep(l); } catch (InterruptedException e) {}
 	}
 
 }

@@ -85,6 +85,9 @@ public class L2GamePaccketHandler implements IPacketHandler<GameConnection> {
 			case 0x2A:
 				msg = new TargetUnselected();
 				break;
+			case 0x2E:
+				msg = new ChangeMoveType();
+				break;
 			case 0x27:
 				msg = new InventoryUpdate();
 				break;
@@ -109,6 +112,9 @@ public class L2GamePaccketHandler implements IPacketHandler<GameConnection> {
 			case 0xFE:
 				int subid = buf.getShort() & 0xFFFF;				
 				switch (subid) {
+				case 0x13:
+					msg = new ExFishingStart();
+					break;
 				case 0x14:
 					msg = new ExFishingEnd();
 					break;
@@ -117,7 +123,7 @@ public class L2GamePaccketHandler implements IPacketHandler<GameConnection> {
 					break;
 				case 0x16:
 					msg = new ExFishingHpRegen();
-					break;
+					break;				
 				default:
 					//System.out.println("Uncknow subpacket(IN_GAME[0xFE]): 0x"+ Integer.toHexString(subid));
 					break;

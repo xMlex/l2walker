@@ -7,6 +7,7 @@ import fw.connection.game.clientpackets.L2GameClientPacket;
 import fw.connection.game.clientpackets.RequestMagicSkillUse;
 import fw.connection.game.clientpackets.UseItem;
 import fw.extensions.util.GCArray;
+import fw.game.CombatEngine;
 import fw.game.GameEngine;
 import fw.game.engines.FishingEngine;
 import fw.game.model.ai.L2FishingInfo;
@@ -28,7 +29,7 @@ public final class L2Player extends L2Playable {
 
 	private GameEngine _GameEngine = null;
 
-	private L2PlayerInventory _inventory = new L2PlayerInventory();
+	private L2PlayerInventory _inventory=null;
 	private ArrayList<L2Skill> _skills = new ArrayList<L2Skill>();
 
 	// AI
@@ -37,6 +38,8 @@ public final class L2Player extends L2Playable {
 	//Fishing 
 	private FishingEngine _fishingEngine = null;
 	private L2FishingInfo _fishingInfo = new L2FishingInfo();
+	
+	private CombatEngine _combatengine = null;
 
 	public L2Player(int objectId) {
 		super(objectId);
@@ -48,8 +51,10 @@ public final class L2Player extends L2Playable {
 
 	public void setGameEngine(GameEngine _GameEngine) {
 		this._GameEngine = _GameEngine;
-		if(_fishingEngine == null)
-			_fishingEngine = new FishingEngine(_GameEngine);
+		if(_fishingEngine == null){
+			//_fishingEngine = new FishingEngine(_GameEngine);
+			_combatengine = new CombatEngine(_GameEngine);
+		}
 	}
 
 	@Override
@@ -243,7 +248,7 @@ public final class L2Player extends L2Playable {
 
 	public L2PlayerInventory getInventory() {
 		if (_inventory == null)
-			_inventory = new L2PlayerInventory();
+			_inventory = new L2PlayerInventory(this);
 		return _inventory;
 	}
 

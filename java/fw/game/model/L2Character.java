@@ -83,6 +83,37 @@ public abstract class L2Character extends L2Object {
 	public L2Character(Integer objectId) {
 		super(objectId);
 	}
+	
+	public Location applyOffset(Location point, int offset)
+	{
+		if(offset <= 0)
+			return point;
+
+		long dx = point.x - getX();
+		long dy = point.y - getY();
+		long dz = point.z - getZ();
+
+		double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+		if(distance <= offset)
+		{
+			point.set(getX(), getY(), getZ());
+			return point;
+		}
+
+		if(distance >= 1)
+		{
+			double cut = offset / distance;
+			point.x -= (int) (dx * cut + 0.5f);
+			point.y -= (int) (dy * cut + 0.5f);
+			point.z -= (int) (dz * cut + 0.5f);
+
+			//if(!isFlying() && !isInVehicle() && !isSwimming() && !isVehicle())
+			//	point.correctGeoZ();
+		}
+
+		return point;
+	}
 
 	/**
 	 * Update the position of the L2Character during a movement and return True
@@ -376,99 +407,6 @@ public abstract class L2Character extends L2Object {
 
 		m.onGeodataPathIndex = -1; // Initialize not on geodata path
 		m.disregardingGeodata = false;
-
-		/*
-		 * if(Config.GEODATA > 0 && !isFlying() && (!isInsideZone(ZONE_WATER) ||
-		 * isInsideZone(ZONE_SIEGE)) && !(this instanceof L2NpcWalkerInstance))
-		 * { double originalDistance = distance; int originalX = x; int
-		 * originalY = y; int originalZ = z; int gtx = originalX -
-		 * L2World.MAP_MIN_X >> 4; int gty = originalY - L2World.MAP_MIN_Y >> 4;
-		 * 
-		 * // Movement checks: // when geodata == 2, for all characters except
-		 * mobs returning home (could be changed later to teleport if
-		 * pathfinding fails) // when geodata == 1, for l2playableinstance and
-		 * l2riftinstance only if(Config.GEODATA >0 && !(this instanceof
-		 * L2Attackable && ((L2Attackable) this).isReturningToSpawnPoint()) ||
-		 * this instanceof L2PcInstance || this instanceof L2Summon &&
-		 * !(getAI().getIntention() == AI_INTENTION_FOLLOW) || this instanceof
-		 * L2RiftInvaderInstance || isAfraid()) { if(isOnGeodataPath()) { try {
-		 * if(gtx == _move.geoPathGtx && gty == _move.geoPathGty) return;
-		 * _move.onGeodataPathIndex = -1; // Set not on geodata path }
-		 * catch(NullPointerException e) { e.printStackTrace(); } }
-		 * 
-		 * if(curX < L2World.MAP_MIN_X || curX > L2World.MAP_MAX_X || curY <
-		 * L2World.MAP_MIN_Y || curY > L2World.MAP_MAX_Y) { // Temporary fix for
-		 * character outside world region errors _log.warning("Character " +
-		 * getName() + " outside world area, in coordinates x:" + curX + " y:" +
-		 * curY); getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE); if(this
-		 * instanceof L2PcInstance) { ((L2PcInstance) this).deleteMe(); } else {
-		 * onDecay(); }
-		 * 
-		 * return; } Location destiny = GeoData.getInstance().moveCheck(curX,
-		 * curY, curZ, x, y, z); // location different if destination wasn't
-		 * reached (or just z coord is different) x = destiny.getX(); y =
-		 * destiny.getY(); z = destiny.getZ(); distance = Math.sqrt((x - curX) *
-		 * (x - curX) + (y - curY) * (y - curY));
-		 * 
-		 * } // Pathfinding checks. Only when geodata setting is 2, the LoS
-		 * check gives shorter result // than the original movement was and the
-		 * LoS gives a shorter distance than 2000 // This way of detecting need
-		 * for pathfinding could be changed. if( ((this instanceof L2PcInstance)
-		 * && Config.ALLOW_PLAYERS_PATHNODE || !(this instanceof L2PcInstance))
-		 * && Config.GEODATA == 2 && originalDistance - distance > 100 &&
-		 * distance < 2000 && !isAfraid()) { // Path calculation // Overrides
-		 * previous movement check if(this instanceof L2PlayableInstance ||
-		 * isInCombat() || this instanceof L2MinionInstance) { //int gx = (curX
-		 * - L2World.MAP_MIN_X) >> 4; //int gy = (curY - L2World.MAP_MIN_Y) >>
-		 * 4;
-		 * 
-		 * m.geoPath = PathFinding.getInstance().findPath(curX, curY, curZ,
-		 * originalX, originalY, originalZ); if(m.geoPath == null ||
-		 * m.geoPath.length < 2) // No path found { // Even though there's no
-		 * path found (remember geonodes aren't perfect), // the mob is
-		 * attacking and right now we set it so that the mob will go // after
-		 * target anyway, is dz is small enough. Summons will follow their
-		 * masters no matter what. if(Config.ALLOW_PLAYERS_PATHNODE && (this
-		 * instanceof L2PcInstance)/*this instanceof L2PcInstance || || (!(this
-		 * instanceof L2PlayableInstance) && Math.abs(z - curZ) > 140) || (this
-		 * instanceof L2Summon && !((L2Summon) this).getFollowStatus())) {
-		 * getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE); return; }
-		 * m.disregardingGeodata = true; x = originalX; y = originalY; z =
-		 * originalZ; distance = originalDistance; } else { m.onGeodataPathIndex
-		 * = 0; // on first segment m.geoPathGtx = gtx; m.geoPathGty = gty;
-		 * m.geoPathAccurateTx = originalX; m.geoPathAccurateTy = originalY;
-		 * 
-		 * x = m.geoPath[m.onGeodataPathIndex].getX(); y =
-		 * m.geoPath[m.onGeodataPathIndex].getY(); z =
-		 * m.geoPath[m.onGeodataPathIndex].getZ();
-		 * 
-		 * // check for doors in the route
-		 * if(DoorTable.getInstance().checkIfDoorsBetween(curX, curY, curZ, x,
-		 * y, z)) { m.geoPath = null;
-		 * getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE); return; }
-		 * 
-		 * for(int i = 0; i < m.geoPath.length - 1; i++) {
-		 * if(DoorTable.getInstance().checkIfDoorsBetween(m.geoPath[i],
-		 * m.geoPath[i+1])) { m.geoPath = null;
-		 * getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE); return; } }
-		 * 
-		 * dx = x - curX; dy = y - curY; distance = Math.sqrt(dx * dx + dy *
-		 * dy); sin = dy / distance; cos = dx / distance; } } } // If no
-		 * distance to go through, the movement is canceled if(((this instanceof
-		 * L2PcInstance) && Config.ALLOW_PLAYERS_PATHNODE || !(this instanceof
-		 * L2PcInstance)) && distance < 1 && (Config.GEODATA == 2 || this
-		 * instanceof L2PlayableInstance || this instanceof
-		 * L2RiftInvaderInstance || isAfraid())) { sin = 0; cos = 1; distance =
-		 * 0; x = curX; y = curY;
-		 * 
-		 * if(this instanceof L2Summon) { ((L2Summon)
-		 * this).setFollowStatus(false); }
-		 * 
-		 * //getAI().notifyEvent(CtrlEvent.EVT_ARRIVED, null);
-		 * getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-		 * 
-		 * return; } }
-		 */
 
 		// Caclulate the Nb of ticks between the current position and the
 		// destination

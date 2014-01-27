@@ -10,7 +10,7 @@ import fw.game.model.L2PlayerInventory;
 public class GuiInventory extends JTable {
 	private static final long serialVersionUID = 1L;
 	
-	private String[] columnNames = {"Icon", "Name", "Count"};
+	private String[] columnNames = {"Icon", "Name", "Count","Eqip"};
 	private Object[][] data = {};
 	private DefaultTableModel tableInvModel;
 	private long _lastUpdate = System.currentTimeMillis();
@@ -31,7 +31,7 @@ public class GuiInventory extends JTable {
 		DefaultTableModel model = (DefaultTableModel) getModel();
 		model.setNumRows(0);	
 		for(L2Item _el:list.getObjectList())
-			model.addRow(new Object[]{awtBotFrame.getGameIcon(_el.getIcon()), "("+_el.getId()+")"+_el.getName(), _el.getCount()});		
+			model.addRow(new Object[]{awtBotFrame.getGameIcon(_el.getIcon()), "("+_el.getId()+")"+_el.getName(), _el.getCount(),_el.isEquipped()});		
 	}
 	
 	public Class<? extends Object> getColumnClass(int column)

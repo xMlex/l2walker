@@ -60,8 +60,8 @@ public class UserInfo extends L2GameServerPacket {
 		readD(); // d  RFinger: 0
 		readD(); // d  LFinger: 0
 		readD(); // d  Head: Êîæàíûé Øëåì ID:44 (0x002C)
-		readD(); // d  RHand: Äóáèíà Ãèëüäèè ID:2370 (0x0942)
-		readD(); // d  LHand: 0
+		_char.getInventory().setRHand(readD()); // d  RHand: Äóáèíà Ãèëüäèè ID:2370 (0x0942)
+		_char.getInventory().setLHand(readD()); // d  LHand: 0
 		readD(); // d  Gloves: Êîæàíûå Ïåð÷àòêè ID:50 (0x0032)
 		readD(); // d  Chest: Êîñòÿíàÿ Êèðàñà ID:24 (0x0018)
 		readD(); // d  Legs: Êîñòÿíûå Íàáåäðåííèêè ID:31 (0x001F)

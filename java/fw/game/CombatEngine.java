@@ -48,6 +48,8 @@ public class CombatEngine implements Runnable {
 		
 		
 		_self = _ge.getSelfChar();
+		if(_self.getInventory().getRHand() == null || !_self.getInventory().getRHand().isWeapon())
+			_self.getInventory().equipWeapon();
 		/*Location me = _self.getLoc();
 		Location end = new Location(-96708, 238316, -3376);
 		ArrayList<Location> _path = GeoMove.findPath(_self.getX(), _self.getY(), _self.getZ(), end, null, false, 0);
@@ -109,7 +111,8 @@ public class CombatEngine implements Runnable {
 			_self.sendPacket(new Action(_mob.getObjectId()));
 			return;
 		}else{			
-			_self.sendPacket(new MoveBackwardToLocation(_mob.getLoc()));
+			Location _toloc = _self.applyOffset(_mob.getLoc(), 50);
+			_self.sendPacket(new MoveBackwardToLocation(_toloc));
 			return;
 		}		
 	}

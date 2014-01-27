@@ -52,11 +52,11 @@ public class GameEngine implements IGameConnectionLitener,ILoginConnectionListen
 	private boolean _enabled = false;
 	private L2World _world = new L2World();
 	private L2Player _selfChar;
-	private final CombatEngine _combatengine;
+	//private final CombatEngine _combatengine;
 	private final L2MoveTask _moveTask;
 	
 	public GameEngine(GameVisualInterface visualInterface) {
-		_combatengine = new CombatEngine(this);
+		
 		_moveTask = new L2MoveTask(this);
 		this.visualInterface = visualInterface;
 		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(this, 1000, 1000);

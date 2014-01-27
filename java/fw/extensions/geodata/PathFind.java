@@ -99,7 +99,7 @@ public class PathFind
 			path = findPath();
 
 			//if(Config.GEODATA_DEBUG && obj.isPlayer())
-			//	debugPath((L2Player) obj, buff, path); // TODO дебаг не для лайва!
+			//	debugPath((L2Player) obj, buff, path); 
 
 			buff.free();
 

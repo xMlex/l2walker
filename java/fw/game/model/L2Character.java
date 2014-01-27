@@ -49,8 +49,6 @@ public abstract class L2Character extends L2Object {
 	/** The Constant _log. */
 	protected static final Logger _log = Logger.getLogger(L2Character.class
 			.getName());
-
-	public static final double HEADINGS_IN_PI = 10430.378350470452724949566316381;
 	public static final int INTERACTION_DISTANCE = 200;
 
 	protected double _currentCp = 0;

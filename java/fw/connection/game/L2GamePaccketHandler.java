@@ -67,6 +67,9 @@ public class L2GamePaccketHandler implements IPacketHandler<GameConnection> {
 			case 0x06:
 				msg = new Die();
 				break;
+			case 0x0B:
+				msg = new SpawnItem();
+				break;
 			case 0x12:
 				msg = new DeleteObject();
 				break;
@@ -108,6 +111,9 @@ public class L2GamePaccketHandler implements IPacketHandler<GameConnection> {
 				break;
 			case 0x61:
 				msg = new ValidateLocation();
+				break;
+			case 0x7F:
+				msg = new MagicEffectIcons();
 				break;
 			case 0xFE:
 				int subid = buf.getShort() & 0xFFFF;				

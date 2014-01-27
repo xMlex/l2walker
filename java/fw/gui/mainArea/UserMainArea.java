@@ -3,6 +3,8 @@ package fw.gui.mainArea;
 import fw.game.*;
 import fw.game.clientpackets.Say;
 import fw.game.model.CharSelectInfoPackage;
+import fw.game.model.L2Character;
+import fw.game.model.L2PartyChar;
 import fw.game.model.L2Player;
 import fw.game.model.instances.L2NpcInstance;
 import fw.gui.ServerConfig;
@@ -2066,5 +2068,11 @@ public class UserMainArea extends org.eclipse.swt.widgets.Composite implements G
 			gameEngine.sendRequestSkillList();
 			return;
 		}
+	}
+
+	@Override
+	public void procMyTargetSelected(L2Character targetChar) {
+		// TODO Auto-generated method stub
+		
 	}
 }

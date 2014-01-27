@@ -171,7 +171,7 @@ public class RequestHtmlDialog extends org.eclipse.swt.widgets.Dialog {
 	{
 		String url = event.location.substring(6);
         event.doit = false;
-		mainArea.gameEngine.sendHtmlRequest(url);
+		//mainArea.gameEngine.sendHtmlRequest(url);
 		dialogShell.dispose();
 	}
 

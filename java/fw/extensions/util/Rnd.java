@@ -1,6 +1,7 @@
 package fw.extensions.util;
 
-import fw.clientbase.model.L2Object;
+import fw.game.model.L2Object;
+
 
 public class Rnd
 {

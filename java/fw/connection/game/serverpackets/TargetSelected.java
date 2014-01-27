@@ -25,6 +25,9 @@ public class TargetSelected extends L2GameServerPacket {
 		_o.setLoc(loc);
 		L2Object _target = getClient().getGameEngine().getWorld().getObject(targetId);
 		((L2Character)_o).setTarget(_target);
+		if(_o.getObjectId() == getPlayer().getObjectId()){
+			getPlayer().getGameEngine().getVisualInterface().procMyTargetSelected(((L2Character)_target));
+		}
 	}
 
 }

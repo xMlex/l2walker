@@ -95,11 +95,10 @@ public class GameDraw implements GameCanvasDrawInterface {
 			return false;
 
 		calculateMap(gc);
-		synchronized (gameEngine.getWorld().getObjects()) {
+		//synchronized (gameEngine.getWorld().getObjects()) {
 			
 		
-		for (Entry<Integer, L2Object> obj : gameEngine.getWorld().getObjects()
-				.entrySet()) {			
+		/*for (Entry<Integer, L2Object> obj : gameEngine.getWorld().getObjectList()) {			
 			L2Object _o = obj.getValue();
 			updateMove(_o);
 			if(_o == null) continue;
@@ -118,8 +117,8 @@ public class GameDraw implements GameCanvasDrawInterface {
 			gc.setForeground(defColor);
 			if(_o.getToX() != 0)
 			gc.drawLine(toX(_o.getX()),toY(_o.getY()), toX(_o.getToX()),toY(_o.getToY()));
-		}
-		}
+		}*/
+		//}
 
 		gc.setForeground(fontColor);
 		//gc.drawRectangle(map_center_x, map_center_y, 5, 5);		

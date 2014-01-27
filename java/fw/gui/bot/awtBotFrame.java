@@ -16,15 +16,13 @@ import org.lwjgl.LWJGLException;
 import fw.common.ThreadPoolManager;
 import fw.game.GameEngine;
 import fw.game.GameVisualInterface;
-import fw.game.L2Char;
-import fw.game.L2Item;
-import fw.game.L2PartyChar;
-import fw.game.L2Skill;
-import fw.game.L2SkillUse;
-import fw.game.PlayerChar;
-import fw.game.UserChar;
 import fw.game.model.CharSelectInfoPackage;
+import fw.game.model.L2Char;
+import fw.game.model.L2Character;
+import fw.game.model.L2Item;
+import fw.game.model.L2PartyChar;
 import fw.game.model.L2Player;
+import fw.game.model.L2Skill;
 import fw.game.model.instances.L2NpcInstance;
 import fw.gui.ServerConfig;
 import fw.test.AWTGLRender;
@@ -107,6 +105,10 @@ public class awtBotFrame extends JPanel implements GameVisualInterface, Runnable
 	private GuiInventory tableInv;
 	private botWindowConfig _cWindow;
 	private GuiSkills _skills;
+	private L2GuiBuffs _bufs;
+	
+	private JProgressBar progressBarTargetHP,progressBarTargetMP;
+	private JLabel lblTarget;
 
 	public awtBotFrame(HashMap<String, ServerConfig> srvList,
 			JTabbedPane tabPane, int tind) throws LWJGLException {
@@ -342,18 +344,21 @@ public class awtBotFrame extends JPanel implements GameVisualInterface, Runnable
 		panelInv.setLayout(new GridLayout(0, 1, 0, 0));
 		
 		tableInv = new GuiInventory();
-		panelInv.add( new JScrollPane(tableInv, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
+		panelInv.add( new JScrollPane(tableInv, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
 		tabUserInfo.setIconAt(2, getIcon("drive_user"));
 
 		_skills = new GuiSkills();
 		tabUserInfo.addTab("Skills", null,
-				new JScrollPane(_skills, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
+				new JScrollPane(_skills, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
 				, "");
 		tabUserInfo.setIconAt(3, getIcon("skills"));
 
-		tabUserInfo.addTab("Buffs", null, new JPanel(), "");
+		_bufs = new L2GuiBuffs();
+		tabUserInfo.addTab("Buffs", null,
+				new JScrollPane(_bufs, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER),
+				"");
 		tabUserInfo.setIconAt(4, getIcon("buffs"));
-		// splitMapInfo.setContinuousLayout(false);
+		// splitMapInfo.setContinuousLayout(false); 
 		// splitMapInfo.setResizeWeight(0.3);
 		panelMapInfo.add(centerBlock);
 		GroupLayout gl_centerBlock = new GroupLayout(centerBlock);
@@ -529,6 +534,23 @@ public class awtBotFrame extends JPanel implements GameVisualInterface, Runnable
 			}
 		});
 		panelUserStatus.add(btnConfig);
+		
+		JPanel panelTargetStatus = new JPanel();
+		panelUserStatus.add(panelTargetStatus);
+		panelTargetStatus.setLayout(new GridLayout(3, 1, 0, 0));
+		
+		lblTarget = new JLabel("Target:");
+		panelTargetStatus.add(lblTarget);
+		
+		progressBarTargetHP = new JProgressBar();
+		progressBarTargetHP.setValue(50);
+		progressBarTargetHP.setForeground(Color.RED);
+		panelTargetStatus.add(progressBarTargetHP);
+		
+		progressBarTargetMP = new JProgressBar();
+		progressBarTargetMP.setValue(50);
+		progressBarTargetMP.setForeground(Color.BLUE);
+		panelTargetStatus.add(progressBarTargetMP);
 		panelMapContainer.setLayout(gl_panelMapContainer);
 		centerBlock.setLayout(gl_centerBlock);
 		setLayout(groupLayout);
@@ -572,163 +594,134 @@ public class awtBotFrame extends JPanel implements GameVisualInterface, Runnable
 	}
 
 	public void procLogoutEvent() {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void requestPartyDialog(String requestor, String partyType) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void requestHtmlDialog(String htmlMessage) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void requestHeroesListDialog(CharSelectInfoPackage[] heroesList,
 			int size) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void procPlayerChar(L2Player playerChar) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void procNpcChar(L2NpcInstance npcChar) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void procDeleteL2char(L2Char l2Char) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void procDeleteItem(L2Item item) {
-		// TODO Auto-generated method stub
 
 	}
 
-	public void procPlayerCharClanInfo(PlayerChar playerChar) {
-		// TODO Auto-generated method stub
+	public void procPlayerCharClanInfo(L2Player playerChar) {
 
 	}
 
-	public void procMyTargetSelected(L2Char targetChar) {
-		// TODO Auto-generated method stub
-
+	public void procMyTargetSelected(L2Character targetChar) {
+		if(targetChar == null) return;
+		progressBarTargetHP.setValue((int) targetChar.getCurrentHpPercents());
+		progressBarTargetMP.setValue((int) targetChar.getCurrentMpPercents());
+		lblTarget.setText(targetChar.getName());
 	}
 
 	public void procUpdateTargetcharStatus(L2Char targetChar) {
-		// TODO Auto-generated method stub
 
 	}
 
-	public void procUpdateUsercharStatus(UserChar userChar) {
-		// TODO Auto-generated method stub
+	public void procUpdateUsercharStatus(L2Char userChar) {
 
 	}
 
 	public void procMyTargetUnselected() {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void procAddSkill(L2Skill l2Skill) {
-		// TODO Auto-generated method stub
 
 	}
 
-	public void procSelfSkillUse(L2Skill l2Skill, L2SkillUse l2SkillUse) {
-		// TODO Auto-generated method stub
+	public void procSelfSkillUse(L2Skill l2Skill, L2Skill l2SkillUse) {
 
 	}
 
 	public void procRemoveSkill(L2Skill l2Skill) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void procAddPartyChars(L2PartyChar[] l2PartyChars) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void procUpdatePartyChar(L2PartyChar l2PartyChar) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void procDeletePartyChar(L2PartyChar l2PartyChar) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void procDeleteAllPartyChars() {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void procAddItems(L2Item[] items) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void procAddEnvItem(L2Item item) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void procUpdateItems(L2Item[] items) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void procDeletItems(L2Item[] items) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void procTeleportClear() {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void requestTrade(L2Char tradeChar) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void requestTradeDialog(L2Item[] items) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void procSendTradeDone() {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void procConfirmedTrade() {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void procTradeAddOwnItem(L2Item item) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void procTradeAddOtherItem(L2Item item) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public boolean checkTradeDialog() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -738,6 +731,12 @@ public class awtBotFrame extends JPanel implements GameVisualInterface, Runnable
 		//System.out.print("Start inv update...");
 		tableInv.updateInventory(_gameEngine.getSelfChar().getInventory());
 		_skills.updateSkills(_gameEngine.getSelfChar().getSkills());
+		_bufs.updateBaffs(_gameEngine.getSelfChar());
+	}
+
+	@Override
+	public void procUpdateUsercharStatus(L2Player userChar) {
+		// TODO Auto-generated method stub
 		
 	}
 }

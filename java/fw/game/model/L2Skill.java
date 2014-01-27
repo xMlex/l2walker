@@ -10,10 +10,14 @@ public class L2Skill {
 	private int level=1;	
 	private dbSkill _dbskill;
 	
+	// Skill
 	private long initReuseDelayTime=0;
 	private long endReuseDelayTime=0;
 	private long initCastTime=0;
 	private long endCastTime=0;
+	//Buff
+	private long startBuffTime=0;
+	private long initbuffTime=-1;
 	
 	public int getSkill_id() {
 		return skill_id;
@@ -39,6 +43,20 @@ public class L2Skill {
 	}
 	public String getIcon() {
 		return _dbskill.getIcon();
+	}
+	
+	public void setInitBuff(long timecount) {
+		this.startBuffTime = System.currentTimeMillis();
+		this.initbuffTime = timecount;
+	}
+	public boolean isMyBuff(){
+		return (initbuffTime != -1);
+	}
+	public boolean isMyBuffEnd(){
+		return ( (System.currentTimeMillis()-startBuffTime) >=  initbuffTime);
+	}	
+	public int getBuffLeft(){		
+		return (int) ((System.currentTimeMillis()-(startBuffTime+(initbuffTime*1000)))/1000);
 	}
 	
 	public long getInitReuseDelayTime() {

@@ -200,7 +200,7 @@ public class RequestPartyDaialog extends org.eclipse.swt.widgets.Dialog
 							{
 								if (!dialogShell.isDisposed())
 								{
-									mainArea.gameEngine.sendAnswerJoinParty(0);
+									//mainArea.gameEngine.sendAnswerJoinParty(0);
 									shell.dispose();
 								}
 							}
@@ -228,13 +228,13 @@ public class RequestPartyDaialog extends org.eclipse.swt.widgets.Dialog
 
 	private void btnYesWidgetSelected(SelectionEvent evt)
 	{
-		mainArea.gameEngine.sendAnswerJoinParty(1);
+		//mainArea.gameEngine.sendAnswerJoinParty(1);
 		shell.dispose();
 	}
 
 	private void btnNoWidgetSelected(SelectionEvent evt)
 	{
-		mainArea.gameEngine.sendAnswerJoinParty(0);
+		//mainArea.gameEngine.sendAnswerJoinParty(0);
 		shell.dispose();
 	}
 

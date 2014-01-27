@@ -84,7 +84,6 @@ public class dbManager {
 			stmt = _con.createStatement();
 			rs = stmt.executeQuery(q);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return rs;

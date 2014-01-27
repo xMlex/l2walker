@@ -38,13 +38,13 @@ public class AIPlayerHeals extends AIInterface {
 			run();		
 	}
 
-	public void onPlayerEvent(L2PlayerEvent evt, int objId) {
-		// TODO Auto-generated method stub
+	public void onPlayerEvent(L2PlayerEvent evt, int objId)
+	{
 		
 	}
 
-	public void onPlayerEvent(L2PlayerEvent evt, L2Object objId) {
-		// TODO Auto-generated method stub
+	public void onPlayerEvent(L2PlayerEvent evt, L2Object objId) 
+	{
 		
 	}
 	

@@ -1,9 +1,12 @@
 package fw.gui.mainArea;
 
 import fw.game.GameEngine;
-import fw.game.L2PartyChar;
+import fw.game.model.L2PartyChar;
+
 import java.util.Iterator;
+
 import javolution.util.FastMap;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.FocusAdapter;
@@ -21,6 +24,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+
 import fw.com.swtdesigner.SWTResourceManager;
 
 /**

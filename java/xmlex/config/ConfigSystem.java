@@ -26,7 +26,7 @@ public class ConfigSystem {
 			loadLogConfig();
 			parseFiles(files.listFiles());
 		}
-		Util.getOs();
+		//Util.getOs();
 		//System.setProperty("org.lwjgl.librarypath","/lib/");
 		System.setProperty( "org.lwjgl.librarypath", System.getProperty("user.dir")+"/libs/slik2d" );
 	}

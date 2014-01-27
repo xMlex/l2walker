@@ -1,7 +1,7 @@
 package fw.gui.mainArea;
 
 import fw.game.GameEngine;
-import fw.game.L2PartyChar;
+import fw.game.model.L2PartyChar;
 
 import java.util.Iterator;
 

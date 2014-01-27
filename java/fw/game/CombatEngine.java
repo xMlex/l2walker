@@ -68,7 +68,7 @@ public class CombatEngine implements Runnable {
 		
 		L2Drop _drop = _ge.getWorld().getDropInRadius(_self.getLoc(), 300);
 		if(_drop != null){
-			//log("Self _drop puckup...");
+			log("Self _drop puckup...");
 			_self.sendPacket(new Action(_drop.getObjectId()));
 			return;
 		}
@@ -86,19 +86,14 @@ public class CombatEngine implements Runnable {
 		
 		if(_mob == null){
 			_ai_heal.run();
-			/*if(_self.getCurrentHpPercents() < 80){ 
-				if(!_self.isSitting()){
-					_self.sendPacket(new RequestActionUse(0));
-				}
-				return;		
-			}	*/	
 			if(!_self.isSitting())
 			_mob =  _ge.getWorld().getMobInRadius(_self.getLoc(), 1500);
 		}
-		if(_mob == null){ /*log("_mob == null");*/ return;	}		
+		if(_mob == null){ log("_mob == null"); return;	}		
 		
 		
 		if(_self.isSitting()){
+			log("Встаем");
 			//_self.sendPacket(new RequestActionUse(0));
 			return;
 		}

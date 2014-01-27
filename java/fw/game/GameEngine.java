@@ -1,8 +1,10 @@
 package fw.game;
 
-import fw.game.clientpackets.*;
-import fw.game.model.L2MoveTask;
+import fw.game.model.L2Character;
+import fw.game.model.L2Item;
+
 import fw.game.model.L2Object;
+import fw.game.model.L2PartyChar;
 import fw.game.model.L2Player;
 
 import java.util.logging.Logger;
@@ -14,6 +16,8 @@ import fw.connection.LoginConnection;
 import fw.connection.LoginResult;
 import fw.connection.game.IGameConnectionLitener;
 import fw.connection.game.clientpackets.LogoutRequest;
+import fw.connection.game.clientpackets.RequestSkillCoolTime;
+import fw.connection.game.clientpackets.RequestSkillList;
 import fw.connection.login.clientpackets.ILoginConnectionListener;
 import fw.dbClasses.DbObjects;
 
@@ -53,14 +57,10 @@ public class GameEngine implements IGameConnectionLitener,ILoginConnectionListen
 	private L2World _world = new L2World();
 	private L2Player _selfChar;
 	//private final CombatEngine _combatengine;
-	private final L2MoveTask _moveTask;
 	
 	public GameEngine(GameVisualInterface visualInterface) {
-		
-		_moveTask = new L2MoveTask(this);
 		this.visualInterface = visualInterface;
 		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(this, 1000, 1000);
-		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(_moveTask, 1000, 500);
 	}
 
 	public void setLogout() {
@@ -144,40 +144,9 @@ public class GameEngine implements IGameConnectionLitener,ILoginConnectionListen
 
 	public void sendRequestSkillList() {
 		if (gameConnection == null)
-			return;
-
-		RequestSkillList myRequestSkillList = new RequestSkillList(this);
-		myRequestSkillList.runImpl();
-
-		RequestSkillCooltime myRequestSkillCooltime = new RequestSkillCooltime(
-				this);
-		myRequestSkillCooltime.runImpl();
-	}
-
-	public void sendRequestUseSkill(int skill_id, int ctrlPressed,
-			int shiftPressed) {
-		if (gameConnection == null)
-			return;
-		RequestSkillUse myRequestSkillUse = new RequestSkillUse(this, skill_id,
-				ctrlPressed, shiftPressed);
-		myRequestSkillUse.runImpl();
-	}
-
-	public void sendAnswerJoinParty(int response) {
-		if (gameConnection == null)
-			return;
-		RequestAnswerJoinParty myRequestAnswerJoinParty = new RequestAnswerJoinParty(
-				this, response);
-		myRequestAnswerJoinParty.runImpl();
-	}
-
-	public void sendHtmlRequest(String command) {
-		if (gameConnection == null)
-			return;
-		RequestBypassToServer myRequestBypassToServer = new RequestBypassToServer(
-				this, command);
-		myRequestBypassToServer.runImpl();
-		// System.out.println(command);
+			return;		
+		getGameConnection().sendPacket(new RequestSkillList());
+		getGameConnection().sendPacket(new RequestSkillCoolTime());
 	}
 
 
@@ -186,15 +155,11 @@ public class GameEngine implements IGameConnectionLitener,ILoginConnectionListen
 		visualInterface.procMyTargetUnselected();
 	}
 
-	public void deleteL2char(L2Char l2Char) {
-		visualInterface.procDeleteL2char(l2Char);
-	}
-
 	public void deleteItem(L2Item item) {
 		visualInterface.procDeleteItem(item);
 	}
 
-	public void setCurrentTarget(L2Char currentTarget) {
+	public void setCurrentTarget(L2Character currentTarget) {
 		//this.currentTarget = currentTarget;
 		visualInterface.procMyTargetSelected(currentTarget);
 	}

@@ -6,7 +6,7 @@ public class AskJoinParty extends L2GameServerPacket {
 
 	@Override
 	public void read() {
-		// TODO Auto-generated method stub
+		//TODO AskJoinParty
 	}
 
 	@Override

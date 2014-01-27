@@ -17,7 +17,12 @@ public class GuiInventory extends JTable {
 	
 	public GuiInventory() {
 		super();
-		tableInvModel = new DefaultTableModel(data,columnNames);
+		tableInvModel = new DefaultTableModel(data,columnNames){
+			@Override
+		    public boolean isCellEditable(int row, int column) {
+		       return false;
+		    }
+		};
 		setModel(tableInvModel);
 		fixWidth(0, 32);
 		setRowHeight(32);

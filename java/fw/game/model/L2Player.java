@@ -7,6 +7,7 @@ import fw.connection.game.clientpackets.L2GameClientPacket;
 import fw.connection.game.clientpackets.RequestMagicSkillUse;
 import fw.connection.game.clientpackets.UseItem;
 import fw.extensions.util.GCArray;
+import fw.extensions.util.SArrayList;
 import fw.game.CombatEngine;
 import fw.game.GameEngine;
 import fw.game.engines.FishingEngine;
@@ -31,6 +32,7 @@ public final class L2Player extends L2Playable {
 
 	private L2PlayerInventory _inventory=null;
 	private ArrayList<L2Skill> _skills = new ArrayList<L2Skill>();
+	private SArrayList<L2Skill> _buffs = new SArrayList<L2Skill>();
 
 	// AI
 	private Runnable _curAction = null;
@@ -59,8 +61,7 @@ public final class L2Player extends L2Playable {
 
 	@Override
 	public synchronized void sendPacket(L2GameClientPacket... mov) {
-		if (getGameEngine() == null)
-			return;
+		//if (getGameEngine() == null) return;
 		for (int i = 0; i < mov.length; i++)
 			getGameEngine().getGameConnection().sendPacket(mov[i]);
 	}
@@ -274,5 +275,9 @@ public final class L2Player extends L2Playable {
 
 	public L2FishingInfo getFishingInfo() {
 		return _fishingInfo;
+	}
+
+	public SArrayList<L2Skill> getBuffs() {
+		return _buffs;
 	}
 }

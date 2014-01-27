@@ -1,10 +1,8 @@
 package fw.extensions.util;
 
-import fw.clientbase.model.L2Object;
-//import fw.clientbase.model.L2World;
-
 import fw.extensions.geodata.GeoEngine;
 import fw.extensions.geodata.L2World;
+import fw.game.model.L2Object;
 
 import java.io.Serializable;
 

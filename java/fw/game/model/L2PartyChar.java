@@ -1,4 +1,4 @@
-package fw.game;
+package fw.game.model;
 
 public class L2PartyChar
 {

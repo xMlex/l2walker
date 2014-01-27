@@ -1,6 +1,6 @@
 package fw.gui.dialogs;
 
-import fw.game.L2Item;
+import fw.game.model.L2Item;
 import fw.gui.mainArea.L2ItemVisualObject;
 import fw.gui.mainArea.UserMainArea;
 
@@ -281,7 +281,7 @@ public class RequestTradeDialog extends org.eclipse.swt.widgets.Dialog {
 						visualObject.tableItemChar.setData(l2Item);
 						visualObject.tableItemChar.setText(new String[]
 						{
-								l2Item.dbL2Item.getName(), String.valueOf(l2Item.itemCount)
+								l2Item.getName(), String.valueOf(l2Item.getCount())
 						});
 
 						l2Item.visualObject = visualObject;
@@ -316,7 +316,7 @@ public class RequestTradeDialog extends org.eclipse.swt.widgets.Dialog {
 						visualObject.tableItemChar.setData(item);
 						visualObject.tableItemChar.setText(new String[]
 						{
-								item.dbL2Item.getName(), String.valueOf(item.itemCount)
+								item.getName(), String.valueOf(item.getCount())
 						});
 
 						item.visualObject = visualObject;
@@ -352,7 +352,7 @@ public class RequestTradeDialog extends org.eclipse.swt.widgets.Dialog {
 						visualObject.tableItemChar.setData(item);
 						visualObject.tableItemChar.setText(new String[]
 						{
-								item.dbL2Item.getName(), String.valueOf(item.itemCount)
+								item.getName(), String.valueOf(item.getCount())
 						});
 
 						item.visualObject = visualObject;
@@ -387,9 +387,9 @@ public class RequestTradeDialog extends org.eclipse.swt.widgets.Dialog {
 					count=1;
 					count = dialog.open();
 
-					if(tradeItem.itemCount > 1)
+					if(tradeItem.getCount() > 1)
 					{
-						if(count <= tradeItem.itemCount){
+						if(count <= tradeItem.getCount()){
 							//mainArea.gameEngine.sendAddTradeItem(tradeItem,count);
 						}
 					}else{

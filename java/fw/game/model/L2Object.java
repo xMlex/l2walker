@@ -32,6 +32,7 @@ import fw.game.model.instances.*;
 public abstract class L2Object
 {
 	public Object visualObject = null;
+	public static final double HEADINGS_IN_PI = 10430.378350470452724949566316381;
 	/** Object identifier */
 	protected int _objectId;
 	protected Long _storedId;
@@ -364,5 +365,13 @@ public abstract class L2Object
 	public String toString()
 	{
 		return "L2Object " + getObjectId();
+	}
+
+	public int getColRadius() {		
+		return 10;
+	}
+
+	public int getReflection() {
+		return 0;
 	}
 }

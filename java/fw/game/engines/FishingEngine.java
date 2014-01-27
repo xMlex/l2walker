@@ -69,13 +69,6 @@ public class FishingEngine extends IEngine implements Runnable,L2FishingListener
 		// COMBAT 
 		while(killAround()){}
 		
-		/*long _start = System.currentTimeMillis() - _lastStart;
-		if(!_self.getFishingInfo().started && _start > 5000 && !_started){
-			_self.useSkill(id_fishing);
-			_lastStart = System.currentTimeMillis();
-		}
-		ThreadPoolManager.getInstance().getGeneralScheduledThreadPool().remove(this);	*/	
-		//_log.info("End");
 		sleep(1000);
 	}
 	

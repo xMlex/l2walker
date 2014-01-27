@@ -1,10 +1,5 @@
 package fw.extensions.util;
 
-//import fw.common.ThreadPoolManager;
-
-//import l2open.gameserver.model.L2Character;
-//import l2open.gameserver.model.L2Drop;
-import fw.clientbase.model.L2Object;
 //import l2open.gameserver.model.L2Player;
 //import l2open.gameserver.taskmanager.MemoryWatchDog;
 
@@ -25,6 +20,8 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
+import fw.game.model.L2Object;
 
 public class Util
 {

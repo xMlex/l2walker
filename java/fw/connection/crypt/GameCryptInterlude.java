@@ -22,6 +22,7 @@ public class GameCryptInterlude
 	//private static final Logger _log = Logger.getLogger(GameCryptInterlude.class.getName());
 	private final byte[] _inKey = new byte[16];
 	private final byte[] _outKey = new byte[16];
+	public boolean _toClient = false;
 	private boolean _isEnabled = false;
 
 	public  void decrypt(final byte[] raw, final int offset, final int size)
@@ -58,6 +59,10 @@ public class GameCryptInterlude
 	{
 		if(!_isEnabled)				
 			return;
+		if(_toClient){
+			_toClient=false;
+			return;
+		}
 		
 		//_log.info("Game crypt crypted");
 		int temp = 0;
@@ -89,6 +94,6 @@ public class GameCryptInterlude
 		System.arraycopy(key, 0, _inKey, 0, 16);
 		System.arraycopy(key, 0, _outKey, 0, 16);
 		this._isEnabled = true;
-		//_log.info(Printer.printData(key, key.length, "Set Game crypt key"));
+		//System.out.println("Set Game crypt key");
 	}
 }

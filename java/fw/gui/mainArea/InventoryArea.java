@@ -1,9 +1,12 @@
 package fw.gui.mainArea;
 
 import fw.game.GameEngine;
-import fw.game.L2Item;
+import fw.game.model.L2Item;
+
 import java.util.Iterator;
+
 import javolution.util.FastMap;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ControlAdapter;
@@ -91,7 +94,7 @@ public class InventoryArea extends ScrolledComposite
 			skillAreaItemData.grabExcessHorizontalSpace = true;
 			item.setLayoutData(skillAreaItemData);
 
-			item.setL2Item(gameEngine, l2Item);
+			//item.setL2Item(gameEngine, l2Item);
 			
 			L2InventoryItemVisualObject visualObject=new L2InventoryItemVisualObject();
 			visualObject.inventoryAreaItem=item;

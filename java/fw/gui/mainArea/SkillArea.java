@@ -1,10 +1,13 @@
 package fw.gui.mainArea;
 
 import fw.game.GameEngine;
-import fw.game.L2Skill;
+import fw.game.model.L2Skill;
 import fw.gui.mainArea.efects.VisualEfectsTimer;
+
 import java.util.Iterator;
+
 import javolution.util.FastMap;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ControlAdapter;
@@ -88,7 +91,7 @@ public class SkillArea extends ScrolledComposite
 		skillAreaItemData.grabExcessHorizontalSpace = true;		
 		skillAreaItem.setLayoutData(skillAreaItemData);
 
-		skillAreaItem.setL2Skill(gameEnginer,visualEfectsTimer, l2Skill);
+		//skillAreaItem.setL2Skill(gameEnginer,visualEfectsTimer, l2Skill);
 		skillAreaItens.put(skillAreaItem, skillAreaItem);
 
 		cpRows.layout();

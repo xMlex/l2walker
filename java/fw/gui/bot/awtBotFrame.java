@@ -716,7 +716,7 @@ public class awtBotFrame extends JPanel implements GameVisualInterface, Runnable
 	public void procTradeAddOwnItem(L2Item item) {
 
 	}
-
+ 
 	public void procTradeAddOtherItem(L2Item item) {
 
 	}
@@ -734,9 +734,8 @@ public class awtBotFrame extends JPanel implements GameVisualInterface, Runnable
 		_bufs.updateBaffs(_gameEngine.getSelfChar());
 	}
 
-	@Override
+	
 	public void procUpdateUsercharStatus(L2Player userChar) {
-		// TODO Auto-generated method stub
 		
 	}
 }

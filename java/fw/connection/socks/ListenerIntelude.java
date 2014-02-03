@@ -72,8 +72,6 @@ public class ListenerIntelude extends ISocksListener {
 			_cryptServer.decrypt(buf.array(), 0, buf.array().length);
 			if (_phandler.handlePacketServer(buf, this))				
 				sendToClientCrypt(buf);
-			else
-				_log.info("Not sendS: "+buf.remaining());
 		} else {
 			sendToClient(buf);
 		}
@@ -98,8 +96,6 @@ public class ListenerIntelude extends ISocksListener {
 			_cryptClient.decrypt(buf.array(), 0, buf.array().length);
 			if (_phandler.handlePacketClient(buf, this))
 				sendToServerCrypt(buf);
-			else
-				_log.info("Not sendC: "+buf.remaining());
 		} else
 			sendToServer(buf);
 	}

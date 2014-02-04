@@ -14,9 +14,10 @@ public class KeyPacket extends L2GameSocksServerPacket{
 	}
 
 	@Override
-	public void excecute() {
+	public boolean excecute() {
 		_log.info("Key Status: "+status);
-		getClient().setGameCrypt(_key);		
+		getClient().setGameCrypt(_key);	
+		return true;
 	}
 
 }

@@ -76,15 +76,15 @@ public abstract class BaseReceivableSocksPacket<T extends ISocksListener> {
 
 	public abstract void read();
 
-	public abstract void excecute();
+	public abstract boolean excecute();
 
-	public void run() {
+	public boolean run() {
 
 		try {
-			excecute();
+			return excecute();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		return true;
 	}
 }

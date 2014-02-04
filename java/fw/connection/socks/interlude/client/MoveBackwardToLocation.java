@@ -10,7 +10,7 @@ public class MoveBackwardToLocation extends L2GameSocksClientPacket{
 	@Override
 	public void excecute() {
 		_to = new Location(readD(), readD(), readD());
-		_log.info("ToLoc: "+_to);
+		//_log.info("ToLoc: "+_to);
 		_from = new Location(readD(), readD(), readD());
 		
 		writeC(0x01);		

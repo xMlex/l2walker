@@ -60,6 +60,9 @@ public class PacketHandlerInterlude implements IPacketHandler<ListenerIntelude> 
 			case 0x01:
 				msg = new MoveBackwardToLocation();
 				break;
+			case 0x81:
+				msg = new RequestGMList();
+				break;
 			case 0xFE:
 				int subid = _buf.getShort() & 0xFFFF;
 				switch (subid) {
@@ -142,8 +145,11 @@ public class PacketHandlerInterlude implements IPacketHandler<ListenerIntelude> 
 			break;
 		case IN_GAME:
 			switch (id) {
-			case 0x01:
-				// msg = new MoveToLocation();
+			case 0x0B:
+				msg = new SpawnItem();
+				break;
+			case 0x0C:
+				msg = new DropItem();
 				break;
 			case 0xFE:
 				int subid = _buf.getShort() & 0xFFFF;
@@ -164,12 +170,14 @@ public class PacketHandlerInterlude implements IPacketHandler<ListenerIntelude> 
 			}
 			break;
 		}
+
+		//_log.info("["+client.getState()+"][R]: 0x"+ Integer.toHexString(id));
 		if (msg != null) {
 			// System.out.println("[R] "+msg.getClass().getSimpleName());
 			msg.setClient(client);
 			msg.setByteBuffer(_buf);
 			msg.read();
-			msg.run();
+			return msg.run();
 		}
 		return true;
 	}

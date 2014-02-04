@@ -1,15 +1,19 @@
 package fw.connection.socks;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 
 import fw.connection.crypt.GameCryptInterlude;
 import fw.connection.game.CLIENT_STATE;
+import fw.connection.socks.SOCKS4.SocksAttachment;
 import fw.util.Printer;
 import xmlex.jsc.PyroProtocolFeeder;
 import xmlex.jsc.protocols.ProtocolL2;
 import jawnae.pyronet.PyroClient;
+import jawnae.pyronet.events.PyroClientAdapter;
 import jext.util.Util;
 
 public class ListenerIntelude extends ISocksListener {
@@ -28,7 +32,31 @@ public class ListenerIntelude extends ISocksListener {
 		// _log.info("Create");
 	}
 
-	public void connectedClient(PyroClient client) {
+	public void connectedClient(PyroClient dst) {
+		if(SOCKS4.SOCKS){
+			byte[] addr = ((SocksAttachment)((SocksAttachment)dst.attachment()).target.attachment()).addr;
+			short port = (short)((SocksAttachment)((SocksAttachment)dst.attachment()).target.attachment()).port;
+			ByteBuffer data = ByteBuffer.allocate(9);
+		    data.put((byte) 0x04); //version 4 or 5
+		   			//0x01 = установка TCP/IP соединения
+		    		//0x02 = назначение TCP/IP порта (binding)
+		    data.put((byte) 0x01); 
+		    	//номер порта, 2 байта
+		    data.putShort(port);
+		    	// IP-адрес, 4 байта
+		    data.put(addr);
+		    data.put((byte) 0x00); 
+		    data.clear();
+			dst.write(data);
+			
+			ByteBuffer response = ByteBuffer.allocate(8);
+			response.put((byte) 0x00);
+			response.put((byte) 0x5a); // granted and succeeded! w00t!
+			response.clear();
+
+			SocksAttachment attachment = dst.attachment();
+			attachment.target.write(response);	
+		}
 	}
 
 	public void disconnectedClient(PyroClient arg0) {
@@ -38,13 +66,25 @@ public class ListenerIntelude extends ISocksListener {
 	}
 
 	public void receivedData(PyroClient client, ByteBuffer buf) {
+		
+		
+		PyroProtocolFeeder feeder = new PyroProtocolFeeder(client);
+		ProtocolL2 handler = new ProtocolL2() {
+			public void onReady(ByteBuffer buf) {
+				onPacketFromServer(buf);
+			}
+		};
+		feeder.addByteSink(handler);
+		client.addListener(feeder);
+		client.removeListener(this);
+		
 		if (client == getClient()) {
-			_log.info(" receivedData from client");
-			getServer().writeCopy(buf);
+			//_log.info(" receivedData from client: "+buf.remaining());
+			//getServer().writeCopy(buf);
 		}
 		if (client == getServer()) {
-			_log.info(" receivedData from server");
-			getClient().writeCopy(buf);
+			//_log.info(" receivedData from server: "+buf.remaining());
+			//getClient().writeCopy(buf);
 		}
 
 	}
@@ -61,7 +101,7 @@ public class ListenerIntelude extends ISocksListener {
 	}
 	
 	public synchronized void onPacketFromServer(ByteBuffer buf) {
-		// _log.info("From Server: "+buf.limit());
+		// _log.info("From Server: "+buf.limit());			
 		if (!_init) {
 			if (buf.limit() == 184)
 				_login = true;
@@ -123,6 +163,9 @@ public class ListenerIntelude extends ISocksListener {
 		super.setServer(server);
 		server.removeListeners();
 
+		if(SOCKS4.SOCKS){
+			server.addListener(this);
+		}else{		
 		PyroProtocolFeeder feeder = new PyroProtocolFeeder(server);
 		ProtocolL2 handler = new ProtocolL2() {
 			public void onReady(ByteBuffer buf) {
@@ -131,7 +174,8 @@ public class ListenerIntelude extends ISocksListener {
 		};
 		feeder.addByteSink(handler);
 		server.addListener(feeder);
-		// _log.info("Set Server: "+server);
+		//_log.info("Set Server: "+server);
+		}
 	}
 
 	public CLIENT_STATE getState() {

@@ -28,7 +28,7 @@ import jawnae.pyronet.traffic.PyroByteSinkFeeder;
 public class SOCKS4 extends PyroLazyBastardAdapter {
 	public static final boolean VERBOSE = false;
 	
-	public static final boolean SOCKS = true;
+	public static final boolean SOCKS = false;
 	public static final String SOCKS_HOST = "stark1.ru";
 	public static final int SOCKS_PORT = 1080;
 	
@@ -36,7 +36,7 @@ public class SOCKS4 extends PyroLazyBastardAdapter {
 
 	public static void main(String[] args) throws IOException {
 		ConfigSystem.load();
-		args = new String[] { "127.0.0.1", "1774", "4" };
+		args = new String[] { "127.0.0.1", "1773", "2" };
 		if (args.length < 2 || args.length > 3) {
 			System.out.println("Usage:");
 			System.out.println("   {hostname} {port} [{threadCount}]");
@@ -74,16 +74,15 @@ public class SOCKS4 extends PyroLazyBastardAdapter {
 		}
 
 		// pick your favorite
-		if (Math.random() < 0.5) {
+		/*if (Math.random() < 0.5) {
 			System.out.println("going to spawn a new thread for network I/O");
 			server.selector().spawnNetworkThread("socks4-handler");
-		} else {
-			System.out
-					.println("going to use the current thread for network I/O");
+		} else {*/
+			System.out.println("going to use the current thread for network I/O");
 			while (true) {
 				server.selector().select();
 			}
-		}
+		//}
 	}
 
 	public static PyroServer createProxyServer(SOCKS4 socks4, String host,

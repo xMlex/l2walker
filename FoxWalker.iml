@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="EclipseModuleManager">
+    <libelement value="jar://$MODULE_DIR$/libs/jacksum.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/javolution-5.5.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/jawnae-pyronet-bin-140.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/jawnae-pyronet-src-140.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/mmocore.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/mysq-5.1.26_c3p0-0.9.2.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/fw/baseline.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/fw/db4o-6.1-java5.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/fw/db4o-6.4.14.8131-java5.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/fw/swt-grouplayout.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/fw/swt.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/objectmanager/lib/db4o-6.1-java1.2.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/objectmanager/lib/db4o-6.1-java5.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/objectmanager/lib/db4o-sql.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/objectmanager/lib/forms-1.0.7.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/objectmanager/lib/looks-2.0.4.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/objectmanager/lib/objectmanager-api.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/sqlite-jdbc-3.7.2.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/mysql-connector-java-5.1.28.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/slik2d/ibxm.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/slik2d/slick-examples.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/slik2d/slick.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/slik2d/tinylinepp.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/slik2d/slick-util.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/lwjgl/AppleJavaExtensions.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/lwjgl/asm-debug-all.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/lwjgl/jinput.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/lwjgl/lwjgl_test.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/lwjgl/lwjgl_util_applet.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/lwjgl/lwjgl_util.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/lwjgl/lwjgl-debug.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/lwjgl/lwjgl.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/lwjgl/lzma.jar!/" />
+    <src_description expected_position="0">
+      <src_folder value="file://$MODULE_DIR$/java" expected_position="0" />
+      <src_folder value="file://$MODULE_DIR$/data/scripts" expected_position="1" />
+    </src_description>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/build" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/data/scripts" isTestSource="false" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="module-library">
+      <library name="jacksum.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/jacksum.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="javolution-5.5.1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/javolution-5.5.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jawnae-pyronet-bin-140.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/jawnae-pyronet-bin-140.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jawnae-pyronet-src-140.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/jawnae-pyronet-src-140.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="mmocore.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/mmocore.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="mysq-5.1.26_c3p0-0.9.2.1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/mysq-5.1.26_c3p0-0.9.2.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="baseline.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/fw/baseline.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="db4o-6.1-java5.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/fw/db4o-6.1-java5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="db4o-6.4.14.8131-java5.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/fw/db4o-6.4.14.8131-java5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="swt-grouplayout.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/fw/swt-grouplayout.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="swt.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/fw/swt.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="http://help.eclipse.org/indigo/nftopic/org.eclipse.platform.doc.isv/reference/api/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="file://libs/jfreechart-1.0.13-swt-src.jar" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="db4o-6.1-java1.2.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/objectmanager/lib/db4o-6.1-java1.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="libs/objectmanager/lib/db4o-6.1-java5.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/objectmanager/lib/db4o-6.1-java5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="db4o-sql.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/objectmanager/lib/db4o-sql.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="forms-1.0.7.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/objectmanager/lib/forms-1.0.7.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="looks-2.0.4.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/objectmanager/lib/looks-2.0.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="objectmanager-api.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/objectmanager/lib/objectmanager-api.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="sqlite-jdbc-3.7.2.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/sqlite-jdbc-3.7.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="mysql-connector-java-5.1.28.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/mysql-connector-java-5.1.28.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="ibxm.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/slik2d/ibxm.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="slick-examples.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/slik2d/slick-examples.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="slick.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/slik2d/slick.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://tmp/slik2d/src" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="tinylinepp.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/slik2d/tinylinepp.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="slick-util.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/slik2d/slick-util.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="AppleJavaExtensions.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/lwjgl/AppleJavaExtensions.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="asm-debug-all.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/lwjgl/asm-debug-all.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jinput.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/lwjgl/jinput.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="lwjgl_test.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/lwjgl/lwjgl_test.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="lwjgl_util_applet.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/lwjgl/lwjgl_util_applet.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="lwjgl_util.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/lwjgl/lwjgl_util.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar:file:/D:/Projects/l2walker/tmp/docs-lwjgl-2.9.1.zip!/" />
+        </JAVADOC>
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="lwjgl-debug.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/lwjgl/lwjgl-debug.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="lwjgl.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/lwjgl/lwjgl.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar:file:/D:/Projects/l2walker/tmp/docs-lwjgl-2.9.1.zip!/" />
+        </JAVADOC>
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="lzma.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/lwjgl/lzma.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar:file:/D:/Projects/l2walker/tmp/docs-lwjgl-2.9.1.zip!/" />
+        </JAVADOC>
+        <SOURCES />
+      </library>
+    </orderEntry>
+  </component>
+</module>
+

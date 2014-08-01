@@ -29,7 +29,7 @@ public class ListenerIntelude extends ISocksListener {
 	private boolean _init = false;
 
 	public ListenerIntelude() {
-		// _log.info("Create");
+		 _log.info("Create");
 	}
 
 	public void connectedClient(PyroClient dst) {
@@ -79,11 +79,11 @@ public class ListenerIntelude extends ISocksListener {
 		client.removeListener(this);
 		
 		if (client == getClient()) {
-			//_log.info(" receivedData from client: "+buf.remaining());
+			_log.info(" receivedData from client: "+buf.remaining());
 			//getServer().writeCopy(buf);
 		}
 		if (client == getServer()) {
-			//_log.info(" receivedData from server: "+buf.remaining());
+			_log.info(" receivedData from server: "+buf.remaining());
 			//getClient().writeCopy(buf);
 		}
 
@@ -101,7 +101,7 @@ public class ListenerIntelude extends ISocksListener {
 	}
 	
 	public synchronized void onPacketFromServer(ByteBuffer buf) {
-		// _log.info("From Server: "+buf.limit());			
+		//_log.info("From Server: "+buf.limit());
 		if (!_init) {
 			if (buf.limit() == 184)
 				_login = true;

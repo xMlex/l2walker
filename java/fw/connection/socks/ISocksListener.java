@@ -3,11 +3,15 @@ package fw.connection.socks;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 
 import jawnae.pyronet.PyroClient;
 import jawnae.pyronet.events.PyroClientListener;
 
 public abstract class ISocksListener implements PyroClientListener,Runnable {
+
+    public ArrayList<String> bypass_list = new ArrayList<String>();
+
 	private PyroClient client, server;
 	private final ArrayDeque<BaseSendableSocketPacket<?>> _sendListServer = new ArrayDeque<BaseSendableSocketPacket<?>>();
 	

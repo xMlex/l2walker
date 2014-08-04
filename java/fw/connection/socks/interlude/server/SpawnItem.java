@@ -14,7 +14,6 @@ public class SpawnItem extends L2GameSocksServerPacket {
 	@Override
 	public boolean excecute() {
 		if( id > 33000 && id < 33010 ){
-			_log.info("Not send(SpawnItem): "+id);
 			return false;
 		}
 		return true;

@@ -18,7 +18,6 @@ public class DropItem extends L2GameSocksServerPacket {
 	@Override
 	public boolean excecute() {
 		if( id > 33000 && id < 33010 ){
-			_log.info("Not send(DropItem): "+id);
 			return false;
 		}
 		//_log.info("Send: "+id);

@@ -66,8 +66,13 @@ public class LitenerInterludeLogin extends ISocksListener {
     }
 
     @Override
-    public void receivedData(PyroClient client, ByteBuffer byteBuffer) {
-        _log.info("receivedData");
+    public void receivedData(PyroClient client, ByteBuffer buf) {
+        if (client == getClient()) {
+            _log.info(" receivedData from client: "+buf.remaining());
+        }
+        if (client == getServer()) {
+            _log.info(" receivedData from server: "+buf.remaining());
+        }
     }
 
     public void sendToServerPkt(BaseLoginClientPacket pkt) {

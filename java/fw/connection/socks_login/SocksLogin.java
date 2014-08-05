@@ -1,6 +1,7 @@
 package fw.connection.socks_login;
 
 import fw.connection.socks.ListenerIntelude;
+import fw.util.Printer;
 import jawnae.pyronet.PyroClient;
 import jawnae.pyronet.PyroSelector;
 import jawnae.pyronet.PyroServer;
@@ -27,7 +28,7 @@ import java.util.logging.Logger;
 public class SocksLogin extends PyroLazyBastardAdapter {
 
     protected static Logger _log = Logger.getLogger(SocksLogin.class.getName());
-    public static final boolean VERBOSE = false;
+    public static final boolean VERBOSE = true;
     public static final boolean SOCKS = false;
     public static final String SOCKS_HOST = "188.126.44.110";
     public static final int SOCKS_PORT = 1080;
@@ -37,7 +38,7 @@ public class SocksLogin extends PyroLazyBastardAdapter {
         ConfigSystem.load();
 
         _instance = new SocksLogin();
-        PyroServer server = createProxyServer(_instance, "127.0.0.1", 2105);
+        PyroServer server = createProxyServer(_instance, "127.0.0.1", 2107);
         int selectorCount = 4;
         // make traffic-selector pool
         PyroSelector[] pool = new PyroSelector[selectorCount];
@@ -101,8 +102,10 @@ public class SocksLogin extends PyroLazyBastardAdapter {
     }
     @Override
     public void receivedData(PyroClient client, ByteBuffer data) {
-        if (VERBOSE)
-            _log.info("receivedData:" + data.remaining());
+        if (VERBOSE){
+            _log.info("receivedData:" + data.remaining()+" Limit: "+data.limit());
+            //_log.info("\n"+ Printer.printData());
+        }
         SocksAttachment attachment = client.attachment();
         if (attachment.header != null) {
             // we are still reading the SOCKS4 header...
@@ -133,13 +136,13 @@ public class SocksLogin extends PyroLazyBastardAdapter {
                         .getHostAddress();
                 String to = attachment.target.getRemoteAddress().getAddress()
                         .getHostAddress();
-                System.out.println("   traffic: [" + from + " => " + to + "]");
+                _log.info("   traffic: [" + from + " => " + to + "]");
             }
             if (!attachment.socksAuthed && SOCKS) {
 
                 if (attachment.src != null) {
                     attachment.socksAuthed = true;
-                    System.out.println("   data: " + data.remaining());
+                    _log.info("   data: " + data.remaining());
                     //if(attachment.src != null)
                     ((SocksAttachment) attachment.src.attachment()).init();
                     //else
@@ -156,7 +159,7 @@ public class SocksLogin extends PyroLazyBastardAdapter {
     }
     @Override
     public void unconnectableClient(PyroClient dst) {
-        System.out.println(" => target-unreachable: " + dst);
+        _log.info(" => target-unreachable: " + dst);
         // SOCK4 protocol
         ByteBuffer response = ByteBuffer.allocate(8);
         response.put((byte) 0x00);

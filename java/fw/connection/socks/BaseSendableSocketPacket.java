@@ -3,6 +3,7 @@ package fw.connection.socks;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import fw.connection.crypt.NewCrypt;
 import javolution.text.TextBuilder;
 import fw.extensions.util.Location;
 
@@ -147,13 +148,23 @@ public abstract class BaseSendableSocketPacket<T extends ISocksListener> impleme
 	public abstract void excecute();
 	
 	public ByteBuffer getData()
-	{		
+	{
+        /*byte[] result;
+        _buf.flip();
+        int size = _buf.limit() + 4;
+        size += 8 - size % 8;
+
+        result = new byte[size];
+        System.arraycopy(_buf.array(), 0, result, 0, result.length);
+        NewCrypt.appendChecksum(result);
+        return ByteBuffer.wrap(result).order(ByteOrder.LITTLE_ENDIAN);
+*/
 		byte[] result;
 		_buf.flip();		
 		result = new byte[_buf.limit()];
 		System.arraycopy(_buf.array(), 0, result, 0, result.length);
-		return ByteBuffer.wrap(result).order(ByteOrder.LITTLE_ENDIAN);		
-	}
+		return ByteBuffer.wrap(result).order(ByteOrder.LITTLE_ENDIAN);
+    }
 
 	public void run() {				
 		_buf = ByteBuffer.wrap(new byte[1*1024]).order(ByteOrder.LITTLE_ENDIAN);		

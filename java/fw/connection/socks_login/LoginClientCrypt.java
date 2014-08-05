@@ -31,18 +31,23 @@ public class LoginClientCrypt {
 
     private NewCrypt _staticCrypt = new NewCrypt(true);
     private NewCrypt _crypt;
-    private boolean _static = true;
+    public boolean _static = true;
 
     public void setKey(byte[] key)
     {
         _crypt = new NewCrypt(key);
     }
 
+    public NewCrypt getCrypt()
+    {
+        return _crypt;
+    }
+
     public boolean decrypt(byte[] raw, final int offset, final int size) throws IOException
     {
         if(_static){
-            NewCrypt.decXORPass(raw, offset, size);
             _staticCrypt.decrypt(raw, offset, size);
+            NewCrypt.decXORPass(raw, offset, size);
         }else
             _crypt.decrypt(raw, offset, size);
         return NewCrypt.verifyChecksum(raw, offset, size);
@@ -61,6 +66,7 @@ public class LoginClientCrypt {
             size += 8 - size % 8;
             NewCrypt.encXORPass(raw, offset, size, Rnd.nextInt());
             _staticCrypt.crypt(raw, offset, size);
+            _static = false;
         }
         else
         {

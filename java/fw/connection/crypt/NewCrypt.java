@@ -1,6 +1,7 @@
 package fw.connection.crypt;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.logging.Logger;
 
 import fw.util.BlowfishEngine;
@@ -262,5 +263,33 @@ public class NewCrypt {
 
 		System.arraycopy(result, 0, raw, offset, size);
 	}
+
+    public static BigInteger descrambleModulus(byte[] scrambledMod) {
+        if (scrambledMod.length != 0x80)
+            return null;
+        // step 1 : xor last $40 bytes with first $40 bytes
+        for (int i = 0; i < 0x40; i++) {
+            scrambledMod[0x40 + i] ^= scrambledMod[i];
+        }
+        // step 2 : xor bytes $0d-$10 with bytes $34-$38
+        for (int i = 0; i <= 3; i++) {
+            scrambledMod[0x0d + i] ^= scrambledMod[0x34 + i];
+        }
+        // step 3 : xor first $40 bytes with last $40 bytes
+        for (int i = 0; i < 0x40; i++) {
+            scrambledMod[i] ^= scrambledMod[0x40 + i];
+        }
+        // step 4 : $4d-$50 <-> $00-$04
+        byte tmp = 0;
+        for (int i = 0; i <= 3; i++) {
+            tmp = scrambledMod[0x00 + i];
+            scrambledMod[0x00 + i] = scrambledMod[0x4d + i];
+            scrambledMod[0x4d + i] = tmp;
+        }
+        byte[] result = new byte[129];
+        System.arraycopy(scrambledMod, 0, result, 1, 128);
+        BigInteger _modulus = new BigInteger(result);
+        return _modulus;
+    }
 
 }

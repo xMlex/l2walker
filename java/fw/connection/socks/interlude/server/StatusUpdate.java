@@ -9,13 +9,13 @@ import java.util.ArrayList;
  */
 public class StatusUpdate extends L2GameSocksServerPacket {
 
-    private int _actorId = 0;
+    private int _actorId = 0,_count=0;
     private ArrayList<Attribute> _attrs = new ArrayList<Attribute>();
     @Override
     public void read() {
         _actorId = readD();
-        int count = readD();
-        for (int i = 0;i<count; i++){
+        _count = readD();
+        for (int i = 0;i<_count; i++){
             Attribute atr = new Attribute();
             atr.id = readD();
             atr.value = readD();
@@ -25,7 +25,22 @@ public class StatusUpdate extends L2GameSocksServerPacket {
 
     @Override
     public boolean excecute() {
-        return true;
+        if(_actorId == getClient().user.objectId){
+            for(Attribute atr : _attrs)
+                if(atr.id == CUR_HP){
+                    if( getClient().user.getPercentHPReduce(atr.value) > 20 ){
+                        getClient().user.curHp = atr.value;
+                        return false;
+                    }else{
+                        getClient().user.curHp = atr.value;
+                    }
+                }else if(atr.id == MAX_HP){
+                    getClient().user.maxHp = atr.value;
+                }
+            return true;
+        }else{
+            return true;
+        }
     }
 
     public static final int LEVEL = 0x01;

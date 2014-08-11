@@ -72,9 +72,7 @@
           <root url="jar://$MODULE_DIR$/libs/jawnae-pyronet-bin-140.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/libs/jawnae-pyronet-src-140.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">

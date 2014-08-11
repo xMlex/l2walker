@@ -41,6 +41,8 @@ public abstract class ISocksListener implements PyroClientListener,Runnable {
 	
 	public abstract void onDataWrite(ByteBuffer buf);
 
+    public abstract void sendToServer(BaseSendableSocketPacket pkt);
+
 	public void sendToClient(ByteBuffer buf) {
 		int len = buf.remaining() + 2;
 		byte[] lendata = new byte[2];

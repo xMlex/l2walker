@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import fw.connection.crypt.GameCryptInterlude;
 import fw.connection.game.CLIENT_STATE;
 import fw.connection.socks.SOCKS4.SocksAttachment;
+import fw.connection.socks.interlude.gameserver.model.L2User;
 import fw.util.Printer;
 import xmlex.jsc.PyroProtocolFeeder;
 import xmlex.jsc.protocols.ProtocolL2;
@@ -27,6 +28,8 @@ public class ListenerIntelude extends ISocksListener {
 	private CLIENT_STATE _state = CLIENT_STATE.CONNECTED;
 	private boolean _game = false, _login = false;
 	private boolean _init = false;
+
+    public L2User user = new L2User();
 
 	public ListenerIntelude() {
 		 _log.info("Create");
@@ -134,10 +137,11 @@ public class ListenerIntelude extends ISocksListener {
 		}
 		if (_game) {
 			_cryptClient.decrypt(buf.array(), 0, buf.array().length);
+        }
 			if (_phandler.handlePacketClient(buf, this))
 				sendToServerCrypt(buf);
-		} else
-			sendToServer(buf);
+		//} else
+		//	sendToServer(buf);
 	}
 
 	@Override
@@ -183,6 +187,7 @@ public class ListenerIntelude extends ISocksListener {
 	}
 
 	public void setState(CLIENT_STATE _state) {
+        _log.info("SetState: "+_state);
 		this._state = _state;
 	}
 
@@ -192,7 +197,18 @@ public class ListenerIntelude extends ISocksListener {
 		_cryptServer.encrypt(buf.array(), 0, buf.array().length);
 	}
 
-	@Override
+    @Override
+    public void sendToServer(BaseSendableSocketPacket msg) {
+        _log.info("[To S] "+msg.getClass().getSimpleName());
+        //_log.info(Util.printData(_buf.array()));
+        //_log.info("Pos read: "+_buf.position()+" x: "+_buf.getInt());
+        msg.setClient(this);
+        msg.run();
+        this.addToServer(msg);
+        this.run();
+    }
+
+    @Override
 	public void setGameCrypt(byte[] key) {
 		_cryptClient.setKey(key);
 		_cryptClient._toClient = true;

@@ -2,6 +2,7 @@ package fw.connection.socks_login;
 
 import fw.connection.crypt.GameCryptInterlude;
 import fw.connection.crypt.NewCrypt;
+import fw.connection.socks.BaseSendableSocketPacket;
 import fw.connection.socks.ISocksListener;
 import fw.connection.socks_login.clientanswerpackets.BaseLoginClientAnswerPacket;
 import fw.connection.socks_login.clientpackets.BaseLoginClientPacket;
@@ -38,6 +39,16 @@ public class LitenerInterludeLogin extends ISocksListener {
     @Override
     public void onDataWrite(ByteBuffer buf) {
         _log.info("onDataWrite");
+    }
+
+    @Override
+    public void sendToServer(BaseSendableSocketPacket pkt) {
+        if (pkt != null) {
+            pkt.setClient(this);
+            pkt.run();
+            ByteBuffer buf = pkt.getData();
+            sendToServerCrypt(buf);
+        }
     }
 
     @Override

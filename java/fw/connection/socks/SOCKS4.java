@@ -30,15 +30,15 @@ public class SOCKS4 extends PyroLazyBastardAdapter {
     protected static Logger _log = Logger.getLogger(SOCKS4.class.getName());
     public static final boolean VERBOSE = false;
 
-    public static final boolean SOCKS = true;
-    public static final String SOCKS_HOST = "188.126.44.110";
-    public static final int SOCKS_PORT = 1080;
+    public static final boolean SOCKS = false;
+    public static final String SOCKS_HOST = "70.175.230.124";
+    public static final int SOCKS_PORT = 30288;
 
     private PyroSelector selector;
 
     public static void main(String[] args) throws IOException {
         ConfigSystem.load();
-        args = new String[]{"127.0.0.1", "1773", "2"};
+        args = new String[]{"127.0.0.1", "1081", "4"};
         if (args.length < 2 || args.length > 3) {
             System.out.println("Usage:");
             System.out.println("   {hostname} {port} [{threadCount}]");
@@ -178,7 +178,7 @@ public class SOCKS4 extends PyroLazyBastardAdapter {
             data.put((byte) 0x00);
             data.clear();
             dst.write(data);
-        }
+        }else{
         // SOCK4 protocol
         ByteBuffer response = ByteBuffer.allocate(8);
         response.put((byte) 0x00);
@@ -187,6 +187,7 @@ public class SOCKS4 extends PyroLazyBastardAdapter {
 
         SocksAttachment attachment = dst.attachment();
         attachment.target.write(response);
+        }
     }
 
     @Override

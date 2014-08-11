@@ -28,6 +28,8 @@ public abstract class ISocksListener implements PyroClientListener,Runnable {
 					ByteBuffer buf = pkt.getData();
 					onDataWrite(buf);
 					int len =buf.remaining() + 2;
+                    if(len == 2)
+                        continue;
 					byte[] lendata = new byte[2];
 					lendata[0] = (byte) (len & 0xff);
 					lendata[1] = (byte) (len >> 8 & 0xff);

@@ -215,4 +215,5 @@ public class ListenerIntelude extends ISocksListener {
 		_cryptServer.setKey(key);
 	}
 
+    public long LastMoveBackwardToLocation = System.currentTimeMillis();
 }

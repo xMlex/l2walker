@@ -31,8 +31,8 @@ public class SOCKS4 extends PyroLazyBastardAdapter {
     public static final boolean VERBOSE = false;
 
     public static final boolean SOCKS = false;
-    public static final String SOCKS_HOST = "70.175.230.124";
-    public static final int SOCKS_PORT = 30288;
+    public static final String SOCKS_HOST = "213.111.221.57";
+    public static final int SOCKS_PORT = 1080;
 
     private PyroSelector selector;
 

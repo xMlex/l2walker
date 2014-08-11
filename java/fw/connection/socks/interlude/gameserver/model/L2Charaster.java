@@ -6,8 +6,8 @@ package fw.connection.socks.interlude.gameserver.model;
 public class L2Charaster extends L2Object {
 
     public String name = "";
-    public int curHp = 0;
-    public int maxHp = 0;
+    public int curHp = 5;
+    public int maxHp = 10;
 
     public int Heading = 34157;
 

@@ -42,19 +42,17 @@ public class PacketHandlerInterlude implements IPacketHandler<ListenerIntelude> 
                         break;
                     case 0x03://EnterWorld
                         _log.info("RequestManorList");
-                        /*client.sendToServer(new RequestManorList());
+                        client.sendToServer(new RequestManorList());
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {}
                         _log.info("EnterWorld");
                         try {
-                            Thread.sleep(3000);
+                            Thread.sleep(2000);
                         } catch (InterruptedException e) {}
                         msg = new EnterWorld();
                         //client.sendToServer(new EnterWorld());
                         client.setState(CLIENT_STATE.IN_GAME);
-                        */
-                        sendPacket = false;
                         break;
                     case 0x08:
                         _log.info("RequestAuthLogin");
@@ -71,8 +69,39 @@ public class PacketHandlerInterlude implements IPacketHandler<ListenerIntelude> 
                     case 0x01:
                         msg = new MoveBackwardToLocation();
                         break;
-                    case 0x81:
-                        msg = new RequestGMList();
+                    case 0x03: //EnterWorld
+                        sendPacket = false;
+                        break;
+                    case 0x21://RequestBypassToServer
+                        msg = new RequestBypassToServer();
+                        break;
+                    case 0x9D:
+                        msg = new RequestSkillCoolTime();
+                        break;
+                    case 0x1D:// (ChangeWaitType)
+                        msg = new ChangeWaitType();
+                        break;
+                    case 0x48:
+                        msg = new ValidatePosition();
+                        break;
+                    case 0x04:
+                        msg = new Action();
+                        break;
+                    case 0x2F:
+                        msg = new RequestMagicSkillUse();
+                        break;
+                    case 0x14: //UseItem
+                        msg = new UseItem();
+                        break;
+                    case 0x45:// (RequestActionUse)
+                        msg = new RequestActionUse();
+                        break;
+                    case 0x4B:// FinishRotating
+                    case 0x81:// GMList
+                    case 0x37:// (RequestTargetCancel)
+                    case 0xd0:// Unknown walker packet
+                    case 0x3F:// (RequestSkillList)
+                        sendPacket = false;
                         break;
                     case 0xFE:
                         int subid = _buf.getShort() & 0xFFFF;
@@ -86,20 +115,16 @@ public class PacketHandlerInterlude implements IPacketHandler<ListenerIntelude> 
                                 break;
                         }
                         break;
-                    case 0x21://RequestBypassToServer
-                        msg = new RequestBypassToServer();
-                        break;
-                    case 0x03:
-                        sendPacket = false;
-                        break;
+
                     default:
-                        //_log.info("[C]Uncknow packet(IN_GAME): 0x" + Integer.toHexString(id));
+                        _log.info("[C] Unknown packet(IN_GAME): 0x" + Integer.toHexString(id));
+                        sendPacket = false;
                         break;
                 }
                 break;
         }
         if (msg != null) {
-            _log.info("[C] " + msg.getClass().getSimpleName());
+            //_log.info("[C] " + msg.getClass().getSimpleName());
             //_log.info(Util.printData(_buf.array()));
             //_log.info("Pos read: "+_buf.position()+" x: "+_buf.getInt());
             msg.setClient(client);
@@ -121,6 +146,7 @@ public class PacketHandlerInterlude implements IPacketHandler<ListenerIntelude> 
         // _log.info("Pos: "+_buf.position()+" limit: "+_buf.limit());
         // _log.info(Printer.printData(_buf.array()));
         L2GameSocksServerPacket msg = null;
+        boolean send = true;
         switch (client.getState()) {
             case CONNECTED:
                 switch (id) {
@@ -177,6 +203,13 @@ public class PacketHandlerInterlude implements IPacketHandler<ListenerIntelude> 
                     case 0x0E:
                         msg = new StatusUpdate();
                         break;
+                    case 0xA0:// TutorialShowHtml
+                    case 0xA1:// (TutorialShowQuestionMark)
+                    case 0xA2:// (TutorialEnableClientEvent)
+                    case 0xA3:// (TutorialCloseHtml)
+                    case 0x98:// (PlaySound)
+                        send = false;
+                        break;
                     case 0xFE:
                         int subid = _buf.getShort() & 0xFFFF;
                         switch (subid) {
@@ -209,7 +242,7 @@ public class PacketHandlerInterlude implements IPacketHandler<ListenerIntelude> 
             msg.read();
             return msg.run();
         }
-        return true;
+        return send;
     }
 
 }

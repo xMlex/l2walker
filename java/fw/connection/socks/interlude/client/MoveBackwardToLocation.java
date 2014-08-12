@@ -12,7 +12,7 @@ public class MoveBackwardToLocation extends L2GameSocksClientPacket{
 		_to = new Location(readD(), readD(), readD());
 		//_log.info("ToLoc: "+_to);
 		_from = new Location(readD(), readD(), readD());
-		if( (System.currentTimeMillis()- getClient().LastMoveBackwardToLocation) < 1100 )
+		if( (System.currentTimeMillis()- getClient().LastMoveBackwardToLocation) < 500 )
             return;
 
         getClient().LastMoveBackwardToLocation = System.currentTimeMillis();

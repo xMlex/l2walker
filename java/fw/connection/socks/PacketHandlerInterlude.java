@@ -12,8 +12,7 @@ import fw.connection.socks.interlude.server.*;
 
 public class PacketHandlerInterlude implements IPacketHandler<ListenerIntelude> {
 
-    private static final Logger _log = Logger
-            .getLogger(PacketHandlerInterlude.class.getName());
+    private static final Logger _log = Logger.getLogger(PacketHandlerInterlude.class.getName());
 
     public boolean handlePacketClient(ByteBuffer bufx, ListenerIntelude client) {
         ByteBuffer _buf = client.copy(bufx);

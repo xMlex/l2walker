@@ -31,7 +31,7 @@ public class SOCKS4 extends PyroLazyBastardAdapter {
     public static final boolean VERBOSE = false;
 
     public static final boolean SOCKS = false;
-    public static final String SOCKS_HOST = "213.111.221.57";
+    public static final String SOCKS_HOST = "46.182.83.189";
     public static final int SOCKS_PORT = 1080;
 
     private PyroSelector selector;
@@ -40,8 +40,8 @@ public class SOCKS4 extends PyroLazyBastardAdapter {
         ConfigSystem.load();
         args = new String[]{"127.0.0.1", "1081", "4"};
         if (args.length < 2 || args.length > 3) {
-            System.out.println("Usage:");
-            System.out.println("   {hostname} {port} [{threadCount}]");
+            _log.info("Usage:");
+            _log.info("   {hostname} {port} [{threadCount}]");
             System.exit(0);
         }
 
@@ -52,7 +52,7 @@ public class SOCKS4 extends PyroLazyBastardAdapter {
         // create the SOCKS4 handler and the (NIO) server
         SOCKS4 socks4 = new SOCKS4();
         PyroServer server = createProxyServer(socks4, host, port);
-        System.out.println("launched SOCKS4 server: " + server);
+        _log.info("launched SOCKS4 server: " + server);
 
         if (args.length == 3) {
             // how many networking threads on the pool...?
@@ -77,10 +77,10 @@ public class SOCKS4 extends PyroLazyBastardAdapter {
 
         // pick your favorite
         /*if (Math.random() < 0.5) {
-			System.out.println("going to spawn a new thread for network I/O");
+            System.out.println("going to spawn a new thread for network I/O");
 			server.selector().spawnNetworkThread("socks4-handler");
 		} else {*/
-        System.out.println("going to use the current thread for network I/O");
+        _log.info("going to use the current thread for network I/O");
         while (true) {
             server.selector().select();
         }
@@ -103,7 +103,7 @@ public class SOCKS4 extends PyroLazyBastardAdapter {
 
     @Override
     public void acceptedClient(final PyroClient src) {
-        System.out.println("accepted-client: " + src + " using "
+        _log.info("accepted-client: " + src + " using "
                 + Thread.currentThread().getName());
 
         final SocksRedirectRequest request = new SocksRedirectRequest(src);
@@ -112,8 +112,7 @@ public class SOCKS4 extends PyroLazyBastardAdapter {
             // @Override
             public void onReady(ByteBuffer buffer) {
                 if (VERBOSE)
-                    System.out.println("socks4.header.onReady:"
-                            + buffer.remaining());
+                    _log.info("socks4.header.onReady:" + buffer.remaining());
                 request.version = buffer.get() & 0xFF;
                 request.command = buffer.get() & 0xFF;
                 request.port = buffer.getShort() & 0xFFFF;
@@ -127,8 +126,7 @@ public class SOCKS4 extends PyroLazyBastardAdapter {
             // @Override
             public void onReady(ByteBuffer buffer) {
                 if (VERBOSE)
-                    System.out.println("socks4.userid.onReady:"
-                            + buffer.remaining());
+                    _log.info("socks4.userid.onReady:" + buffer.remaining());
                 request.userid = new byte[buffer.remaining()];
                 buffer.get(request.userid);
 
@@ -149,10 +147,10 @@ public class SOCKS4 extends PyroLazyBastardAdapter {
 
     @Override
     public void connectedClient(PyroClient dst) {
-        System.out.println(" => connected-to-target: " + dst);
+        _log.info(" => connected-to-target: " + dst);
 
         if (SOCKS) {
-            System.out.println("SOCKS");
+            _log.info("SOCKS");
 
             byte[] addr = ((SocksAttachment) ((SocksAttachment) dst.attachment()).target.attachment()).addr;
             short port = (short) ((SocksAttachment) ((SocksAttachment) dst.attachment()).target.attachment()).port;
@@ -164,7 +162,7 @@ public class SOCKS4 extends PyroLazyBastardAdapter {
                 e.printStackTrace();
             }
 
-            System.out.println("request.host=" + iaddr.getHostName() + " port: " + port);
+            _log.info("request.host=" + iaddr.getHostName() + " port: " + port);
 
             ByteBuffer data = ByteBuffer.allocate(9);
             data.put((byte) 0x04); //version 4 or 5
@@ -178,21 +176,21 @@ public class SOCKS4 extends PyroLazyBastardAdapter {
             data.put((byte) 0x00);
             data.clear();
             dst.write(data);
-        }else{
-        // SOCK4 protocol
-        ByteBuffer response = ByteBuffer.allocate(8);
-        response.put((byte) 0x00);
-        response.put((byte) 0x5a); // granted and succeeded! w00t!
-        response.clear();
+        } else {
+            // SOCK4 protocol
+            ByteBuffer response = ByteBuffer.allocate(8);
+            response.put((byte) 0x00);
+            response.put((byte) 0x5a); // granted and succeeded! w00t!
+            response.clear();
 
-        SocksAttachment attachment = dst.attachment();
-        attachment.target.write(response);
+            SocksAttachment attachment = dst.attachment();
+            attachment.target.write(response);
         }
     }
 
     @Override
     public void unconnectableClient(PyroClient dst) {
-        System.out.println(" => target-unreachable: " + dst);
+        _log.info(" => target-unreachable: " + dst);
 
         // SOCK4 protocol
         ByteBuffer response = ByteBuffer.allocate(8);
@@ -239,27 +237,27 @@ public class SOCKS4 extends PyroLazyBastardAdapter {
         } else {
             if (VERBOSE) {
                 // enqueue data just received to the target it was meant for
-                String from = client.getRemoteAddress().getAddress()
-                        .getHostAddress();
-                String to = attachment.target.getRemoteAddress().getAddress()
-                        .getHostAddress();
+                String from = client.getRemoteAddress().getAddress().getHostAddress();
+                String to = attachment.target.getRemoteAddress().getAddress().getHostAddress();
                 System.out.println("   traffic: [" + from + " => " + to + "]");
             }
             if (!attachment.socksAuthed && SOCKS) {
 
                 if (attachment.src != null) {
                     attachment.socksAuthed = true;
-                    System.out.println("   data: " + data.remaining());
+                    System.out.println("   data1: " + data.remaining());
                     //if(attachment.src != null)
                     ((SocksAttachment) attachment.src.attachment()).init();
                     //else
                     //	((SocksAttachment)attachment.target.attachment()).init();
                 } else {
+                    System.out.println("   data2: " + data.remaining());
                     attachment.target.writeCopy(data);
                 }
 
             } else {
                 //if(SOCKS && data.remaining() != 8)
+                System.out.println("   data3: " + data.remaining());
                 attachment.target.writeCopy(data);
             }
         }

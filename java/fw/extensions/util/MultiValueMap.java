@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-@SuppressWarnings("rawtypes")
 public class MultiValueMap<K, V> implements Map
 {
 	protected transient FastMap<K, GArray<V>> map;
@@ -69,15 +68,15 @@ public class MultiValueMap<K, V> implements Map
 		return map.isEmpty();
 	}
 
-	public Object remove(Object key, Object value)
+	public boolean remove(Object key, Object value)
 	{
 		GArray<V> valuesForKey = map.get(key);
-		if(valuesForKey == null){ return null; }
+		if(valuesForKey == null){ return false; }
 		boolean removed = valuesForKey.remove(value);
-		if(removed == false){ return null; }
+		if(removed == false){ return false; }
 		if(valuesForKey.isEmpty())
 			remove(key);
-		return value;
+		return true;
 	}
 
 	public V removeValue(V value)

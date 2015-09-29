@@ -321,7 +321,7 @@
           <root url="jar://$MODULE_DIR$/libs/lwjgl/lwjgl_util.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar:file:/D:/Projects/l2walker/tmp/docs-lwjgl-2.9.1.zip!/" />
+          <root url="jar:file://D:/Projects/l2walker/tmp/docs-lwjgl-2.9.1.zip!/" />
         </JAVADOC>
         <SOURCES />
       </library>
@@ -341,7 +341,7 @@
           <root url="jar://$MODULE_DIR$/libs/lwjgl/lwjgl.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar:file:/D:/Projects/l2walker/tmp/docs-lwjgl-2.9.1.zip!/" />
+          <root url="jar:file://D:/Projects/l2walker/tmp/docs-lwjgl-2.9.1.zip!/" />
         </JAVADOC>
         <SOURCES />
       </library>
@@ -352,11 +352,10 @@
           <root url="jar://$MODULE_DIR$/libs/lwjgl/lzma.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar:file:/D:/Projects/l2walker/tmp/docs-lwjgl-2.9.1.zip!/" />
+          <root url="jar:file://D:/Projects/l2walker/tmp/docs-lwjgl-2.9.1.zip!/" />
         </JAVADOC>
         <SOURCES />
       </library>
     </orderEntry>
   </component>
 </module>
-

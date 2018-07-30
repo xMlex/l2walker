@@ -1,14 +1,13 @@
 package fw.connection.socks;
 
-import java.nio.ByteBuffer;
-import java.util.logging.Logger;
-
-import com.sun.org.apache.regexp.internal.RE;
 import fw.connection.game.CLIENT_STATE;
 import fw.connection.socks.interlude.L2GameSocksClientPacket;
 import fw.connection.socks.interlude.L2GameSocksServerPacket;
 import fw.connection.socks.interlude.client.*;
 import fw.connection.socks.interlude.server.*;
+
+import java.nio.ByteBuffer;
+import java.util.logging.Logger;
 
 public class PacketHandlerInterlude implements IPacketHandler<ListenerIntelude> {
 
@@ -44,11 +43,13 @@ public class PacketHandlerInterlude implements IPacketHandler<ListenerIntelude> 
                         client.sendToServer(new RequestManorList());
                         try {
                             Thread.sleep(2000);
-                        } catch (InterruptedException e) {}
+                        } catch (InterruptedException e) {
+                        }
                         _log.info("EnterWorld");
                         try {
                             Thread.sleep(2000);
-                        } catch (InterruptedException e) {}
+                        } catch (InterruptedException e) {
+                        }
                         msg = new EnterWorld();
                         //client.sendToServer(new EnterWorld());
                         client.setState(CLIENT_STATE.IN_GAME);
@@ -59,7 +60,7 @@ public class PacketHandlerInterlude implements IPacketHandler<ListenerIntelude> 
                         break;
                     default:
                         _log.info("[C][AUTHED] unk packet: 0x" + Integer.toHexString(id));
-                        sendPacket=false;
+                        sendPacket = false;
                         break;
                 }
                 break;
@@ -176,7 +177,8 @@ public class PacketHandlerInterlude implements IPacketHandler<ListenerIntelude> 
                                 // msg = new ExSendManorList();
                                 try {
                                     Thread.sleep(2500);
-                                } catch (InterruptedException e) {}
+                                } catch (InterruptedException e) {
+                                }
                                 client.sendToServer(new EnterWorld());
                                 client.setState(CLIENT_STATE.IN_GAME);
                                 break;

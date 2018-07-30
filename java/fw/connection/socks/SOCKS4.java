@@ -4,16 +4,6 @@
 
 package fw.connection.socks;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
-import java.util.logging.Logger;
-
-import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
-
-import xmlex.config.ConfigSystem;
 import jawnae.pyronet.PyroClient;
 import jawnae.pyronet.PyroSelector;
 import jawnae.pyronet.PyroServer;
@@ -25,6 +15,14 @@ import jawnae.pyronet.traffic.ByteSink;
 import jawnae.pyronet.traffic.ByteSinkEndsWith;
 import jawnae.pyronet.traffic.ByteSinkLength;
 import jawnae.pyronet.traffic.PyroByteSinkFeeder;
+import xmlex.config.ConfigSystem;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.util.logging.Logger;
 
 public class SOCKS4 extends PyroLazyBastardAdapter {
     protected static Logger _log = Logger.getLogger(SOCKS4.class.getName());

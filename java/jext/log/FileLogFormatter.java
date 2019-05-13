@@ -17,19 +17,19 @@ public class FileLogFormatter extends Formatter {
 	 * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
 	 */
 	private static final String CRLF = "\r\n";
-	private static final String _ = "\t";
+	private static final String TAB = "\t";
 
 	@Override
 	public String format(LogRecord record) {
 		StringBuffer output = new StringBuffer();
 		output.append(record.getMillis());
-		output.append(_);
+		output.append(TAB);
 		output.append(record.getLevel().getName());
-		output.append(_);
+		output.append(TAB);
 		output.append(record.getThreadID());
-		output.append(_);
+		output.append(TAB);
 		output.append(record.getLoggerName());
-		output.append(_);
+		output.append(TAB);
 		output.append(record.getMessage());
 		output.append(CRLF);
 		return output.toString();

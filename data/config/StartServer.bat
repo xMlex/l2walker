@@ -4,7 +4,7 @@ title xMlex: Server Console
 echo %DATE% %TIME% Login server is running !!! > server_is_running.tmp
 echo Starting xMlex Server.
 echo.
-java -server -Xms32m -Xmx64m -cp libs/*;libs/slik2d/*; fw.gui.MainAppForm
+java -server -Xms32m -Xmx64m -cp "libs/*:libs/slik2d/*" fw.gui.MainSwingForm
 if ERRORLEVEL 2 goto restart
 if ERRORLEVEL 1 goto error
 goto end

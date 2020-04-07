@@ -13,3 +13,11 @@
 
 ![http://s5.hostingkartinok.com/uploads/images/2014/01/528c7325687ac1882592f103cc339684.jpg](http://s5.hostingkartinok.com/uploads/images/2014/01/528c7325687ac1882592f103cc339684.jpg)
 ![http://s5.hostingkartinok.com/uploads/images/2014/01/28ab68a3338c2e74fd093ad32924367a.jpg](http://s5.hostingkartinok.com/uploads/images/2014/01/28ab68a3338c2e74fd093ad32924367a.jpg)
+
+
+# Build & run
+```bash
+ant dist
+cd build/distr
+java -cp "libs/*:libs/slik2d/*" fw.gui.MainSwingForm
+```
